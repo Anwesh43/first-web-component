@@ -7,7 +7,7 @@ class PingPongComponent extends HTMLElement {
     }
     startLoop() {
         const interval = setInterval(()=>{
-            this.move()
+            this.pingPong.move()
         },100)
     }
     connectedCallback() {
@@ -38,22 +38,28 @@ class PingPong {
     }
     move() {
         const w = parseFloat(this.div.style.width), h = parseFloat(this.div.style.height)
-        this.x += (this.w/2*this.sx)
-        this.y += (this.w/2*this.sy)
+        this.x += (w/2*this.sx)
+        this.y += (w/2*this.sy)
         if(this.x+w > window.innerWidth) {
             this.sx = -1
+            console.log(window.innerWidth)
         }
         if(this.x < 0) {
             this.sx = 1
+            console.log(this.x)
         }
-        if(this.y+h > window.innerHeight) {
+        if(this.y+w >= window.innerHeight) {
             this.sy = -1
+            console.log(this.y)
         }
         if(this.y < 0) {
             this.sy = 1
+            console.log(this.y)
         }
-        this.div.style.top = this.x
-        this.div.style.left = this.y
+        this.div.style.left = this.x
+        this.div.style.top = this.y
+        // console.log(this.x)
+        // console.log(this.y)
     }
 }
 customElements.define('ping-pong',PingPongComponent)
