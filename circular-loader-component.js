@@ -3,6 +3,8 @@ class CircularLoaderComponent extends HTMLElement {
         super()
         this.img = document.createElement('img')
         this.deg = 0
+        const shadow = this.attachShadow({mode:'open'})
+        shadow.appendChild(this.img)
     }
     draw() {
         const w = window.innerWidth,h = window.innerHeight
