@@ -13,7 +13,7 @@ class RippleLoaderComponent extends HTMLElement {
     drawArc(context,r) {
         context.beginPath()
         context.arc(0,0,r,0,2*Math.PI)
-        context.fill()
+        context.stroke()
     }
     draw(w) {
         const canvas = document.createElement('canvas')
@@ -21,27 +21,24 @@ class RippleLoaderComponent extends HTMLElement {
         canvas.height = w
         const context = canvas.getContext('2d')
         const r = w/2
+        context.lineWidth = r/4
         context.clearRect(0,0,w,w)
         context.save()
         context.translate(w/2,w/2)
         context.scale(this.state.scale,this.state.scale)
         context.beginPath()
-        context.fillStyle = this.color
-        this.drawArc(context,r)
-        context.save()
-        context.beginPath()
-        context.globalAlpha = 0
+        context.strokeStyle = this.color
         this.drawArc(context,r/2)
         context.restore()
-        context.restore()
         this.update()
+        this.img.src = canvas.toDataURL()
     }
     update() {
         this.state.scale += (0.1*(this.state.dir))
         if(this.state.scale >= 1) {
             this.state.dir = -1
         }
-        if(this.state.scale <= 0) {
+        if(this.state.scale <= 0.5) {
             this.state.dir = 1
         }
     }
