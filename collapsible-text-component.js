@@ -24,13 +24,26 @@ class CollapsibleTextComponent extends HTMLElement {
             this.wx = maxW
             this.dir= 0
         }
-        if(this.wx <= 0) {
-            this.wx = 0
+        if(this.wx <= currW) {
+            this.wx = currW
             this.dir = 0
         }
+        this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+          if(this.dir == 0) {
+              const interval = setInterval(()=>{
+                  if(this.wx <= currW) {
+                      this.dir = 1
+                  }
+                  else if(this.wx >= maxW){
+                      this.dir = -1
+                  }
+              },100)
+           }
+       }
     }
 }
 class CollapsibleButton {
