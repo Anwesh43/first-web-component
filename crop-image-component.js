@@ -8,6 +8,7 @@ class CropImageComponent extends HTMLElement {
         this.img.src = this.getAttribute('src')
         this.image.src = this.img.src
         this.img.draggable = 'false'
+        this.color = this.getAttribute('color') || '#2196F3'
     }
     render(scale) {
         const canvas = document.createElement('canvas')
@@ -15,6 +16,11 @@ class CropImageComponent extends HTMLElement {
         canvas.width = this.img.width
         canvas.height = this.img.height
         const context = canvas.getContext('2d')
+        context.save()
+        context.fillStyle = this.color
+        context.globalAlpha = 0.7
+        context.fillRect(0,0,w,h)
+        context.restore()
         context.beginPath()
         context.rect(w/2-scale*w/2,h/2-scale*h/2,w*scale,h*(scale))
         context.clip()
