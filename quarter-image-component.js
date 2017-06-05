@@ -16,11 +16,11 @@ class AnimationHandler {
     animate() {
         if(this.isAnimated == true) {
             this.drawingCb()
-            quarters.forEach((quarter)=>{
+            this.animatedQuarters.forEach((quarter)=>{
                 quarter.update()
                 if(quarter.stopUpdating() == true) {
-                    this.quarters.splice(0,1)
-                    if(this.quarters.length == 0) {
+                    this.animatedQuarters.splice(0,1)
+                    if(this.animatedQuarters.length == 0) {
                         this.isAnimated = false
                         clearInterval(this.interval)
                     }
@@ -46,10 +46,13 @@ class QuarterImageComponent extends HTMLElement {
             const lowerX = [w/2,0,0,w/2],upperX = [w,w/2,w/2,w],lowerY = [h/2,h/2,0,0],upperY = [h,h,h/2,h/2]
             for(var i=0;i<4;i++) {
                 this.quarters.push(new Quarter(i,(x,y)=>{
-                    return x>=lowerX && x<=upperX && y>=lowerY && y<=upperY
+                    console.log(i)
+                    const condition =  x>=lowerX[i] && x<=upperX[i] && y>=lowerY[i] && y<=upperY[i]
+                    console.log(`${i} ${condition}`)
+                    return condition
                 }))
             }
-            this.quarters.push(new Quarter)
+
         }
         const canvas = document.createElement('canvas')
         canvas.width = w
@@ -78,7 +81,16 @@ class QuarterImageComponent extends HTMLElement {
     connectedCallback() {
         this.image = new Image()
         this.image.src = this.src
-        this.animationHandler = new AnimationHandler(this.render)
+        this.animationHandler = new AnimationHandler(()=>{this.render})
+        this.img.onmousedown = (event) => {
+            const x = event.offsetX,y = event.offsetY
+            this.quarters.forEach((quarter,index)=>{
+                if(quarter.handleTap(x,y) == true) {
+                    console.log(index)
+                    this.animationHandler.addQuarter(quarter)
+                }
+            })
+        }
         this.image.onload = () => {
             this.render()
         }
@@ -91,8 +103,10 @@ class Quarter  {
         this.a = 0
         this.dir = 0
         this.boundsCb = boundsCb
+        console.log(this.deg)
     }
     draw(context,x,y,r,color)  {
+        console.log(`${this.deg/90} updating`)
         context.save()
         context.fillStyle = color
         context.globalAlpha = 0.5
@@ -123,9 +137,21 @@ class Quarter  {
             if(this.a == 90) {
                 this.dir = -1
             }
+            return true
         }
     }
     stopUpdating() {
         return this.dir == 0
+    }
+}
+class Bound {
+    constructor(x1,y1,x2,y2)  {
+        this.x1 = x1
+        this.y1 = y1
+        this.x2 = x2
+        this.y2 = y2
+    }
+    insideBounds(x,y) {
+        return x>=this.x1 && x<=this.x2 && y>=this.y1 && y<=this.y2
     }
 }
