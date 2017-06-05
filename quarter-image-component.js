@@ -1,3 +1,34 @@
+class AnimationHandler {
+    constructor(drawingCb) {
+        this.isAnimated = false
+        this.animatedQuarters = []
+        this.drawingCb = drawingCb
+    }
+    addQuarter(quarter) {
+        this.animatedQuarters.push(quarter)
+        if(this.animatedQuarters.length == 1) {
+            this.isAnimated = true
+            this.interval = setInterval(()=>{
+                this.animate()
+            },100)
+        }
+    }
+    animate() {
+        if(this.isAnimated == true) {
+            this.drawingCb()
+            quarters.forEach((quarter)=>{
+                quarter.update()
+                if(quarter.stopUpdating() == true) {
+                    this.quarters.splice(0,1)
+                    if(this.quarters.length == 0) {
+                        this.isAnimated = false
+                        clearInterval(this.interval)
+                    }
+                }
+            })
+        }
+    }
+}
 class QuarterImageComponent extends HTMLElement {
     constructor() {
         super()
@@ -47,6 +78,7 @@ class QuarterImageComponent extends HTMLElement {
     connectedCallback() {
         this.image = new Image()
         this.image.src = this.src
+        this.animationHandler = new AnimationHandler(this.render)
         this.image.onload = () => {
             this.render()
         }
@@ -92,5 +124,8 @@ class Quarter  {
                 this.dir = -1
             }
         }
+    }
+    stopUpdating() {
+        return this.dir == 0
     }
 }
