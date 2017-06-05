@@ -20,6 +20,18 @@ class QuarterImageComponent extends HTMLElement {
         context.clip()
         context.drawImage(this.image,0,0)
         context.restore()
+        for(var i=0;i<2;i++) {
+            context.save()
+            context.translate(w/2,h/2)
+            context.rotate(i*Math.PI/2)
+            context.strokeStyle = this.color
+            context.lineWidth = Math.max(w,h)/80
+            context.beginPath()
+            context.moveTo(0,-h/2)
+            context.lineTo(0,h/2)
+            context.stroke()
+            context.restore()
+        }
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
