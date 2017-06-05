@@ -1,8 +1,8 @@
 class AnimationHandler {
-    constructor(drawingCb) {
+    constructor(component) {
         this.isAnimated = false
         this.animatedQuarters = []
-        this.drawingCb = drawingCb
+        this.component = component
     }
     addQuarter(quarter) {
         this.animatedQuarters.push(quarter)
@@ -15,7 +15,8 @@ class AnimationHandler {
     }
     animate() {
         if(this.isAnimated == true) {
-            this.drawingCb()
+            this.component.render()
+            //console.log(`animating ${this.animatedQuarters.length}`)
             this.animatedQuarters.forEach((quarter)=>{
                 quarter.update()
                 if(quarter.stopUpdating() == true) {
@@ -39,18 +40,14 @@ class QuarterImageComponent extends HTMLElement {
         this.color = this.getAttribute('color') || 'green'
     }
     render() {
+        console.log("rendering")
         const w = this.image.width , h = this.image.height
         const r = Math.min(w,h)/2
         if(!this.quarters) {
             this.quarters = []
             const lowerX = [w/2,0,0,w/2],upperX = [w,w/2,w/2,w],lowerY = [h/2,h/2,0,0],upperY = [h,h,h/2,h/2]
             for(var i=0;i<4;i++) {
-                this.quarters.push(new Quarter(i,(x,y)=>{
-                    console.log(i)
-                    const condition =  x>=lowerX[i] && x<=upperX[i] && y>=lowerY[i] && y<=upperY[i]
-                    console.log(`${i} ${condition}`)
-                    return condition
-                }))
+                this.quarters.push(new Quarter(i,new Bound(lowerX[i],lowerY[i],upperX[i],upperY[i])))
             }
 
         }
@@ -76,12 +73,15 @@ class QuarterImageComponent extends HTMLElement {
             context.stroke()
             context.restore()
         }
+        this.quarters.forEach((quarter)=>{
+            quarter.draw(context,w/2,h/2,r,this.color)
+        })
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.image = new Image()
         this.image.src = this.src
-        this.animationHandler = new AnimationHandler(()=>{this.render})
+        this.animationHandler = new AnimationHandler(this)
         this.img.onmousedown = (event) => {
             const x = event.offsetX,y = event.offsetY
             this.quarters.forEach((quarter,index)=>{
@@ -98,11 +98,11 @@ class QuarterImageComponent extends HTMLElement {
 }
 customElements.define('quarter-image',QuarterImageComponent)
 class Quarter  {
-    constructor(i,boundsCb) {
+    constructor(i,bound) {
         this.deg = 90*i
         this.a = 0
         this.dir = 0
-        this.boundsCb = boundsCb
+        this.bound = bound
         console.log(this.deg)
     }
     draw(context,x,y,r,color)  {
@@ -132,7 +132,7 @@ class Quarter  {
         }
     }
     handleTap(x,y) {
-        if(this.boundsCb(x,y) == true && this.dir == 0) {
+        if(this.bound.insideBounds(x,y) == true && this.dir == 0) {
             this.dir = 1
             if(this.a == 90) {
                 this.dir = -1
