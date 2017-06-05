@@ -10,6 +10,16 @@ class QuarterImageComponent extends HTMLElement {
     render() {
         const w = this.image.width , h = this.image.height
         const r = Math.min(w,h)/2
+        if(!this.quarters) {
+            this.quarters = []
+            const lowerX = [w/2,0,0,w/2],upperX = [w,w/2,w/2,w],lowerY = [h/2,h/2,0,0],upperY = [h,h,h/2,h/2]
+            for(var i=0;i<4;i++) {
+                this.quarters.push(new Quarter(i,(x,y)=>{
+                    return x>=lowerX && x<=upperX && y>=lowerY && y<=upperY
+                }))
+            }
+            this.quarters.push(new Quarter)
+        }
         const canvas = document.createElement('canvas')
         canvas.width = w
         canvas.height = h
