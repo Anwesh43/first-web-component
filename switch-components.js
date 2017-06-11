@@ -1,4 +1,4 @@
-const maxDimension = Math.max(w,h)
+const maxDimension = Math.max(window.innerWidth,window.innerHeight)
 class SwitchComponent extends HTMLElement{
     constructor() {
         super()
@@ -30,20 +30,20 @@ class SwitchComponent extends HTMLElement{
     render() {
         const canvas = document.createElement('canvas')
         const context = canvas.getContext('2d')
-        context.font = context.font.replace(/\d{2}/,maxDimension/20)
+        const r = maxDimension/60,wSwitch = maxDimension/20
+        context.font = context.font.replace(/\d{2}/,r)
         const w = context.measureText(this.text).width
-        const r = maxDimension/20
-        canvas.width = 2*w + 4*r
-        canvas.height = 2*r
+        canvas.width = 2*w + 4*wSwitch
+        canvas.height = 3*r
 
         const ctx = canvas.getContext('2d')
         ctx.fillStyle = 'black'
-        context.font = ctx.font
-        context.fillText(this.text,w/10,r)
+        ctx.font = ctx.font.replace(/\d{2}/,r)
+        ctx.fillText(this.text,w/10,3*r/2)
         if(!this.switch) {
-            this.switch = new Switch(1.3*w,r,r,2.5*r)
+            this.switch = new Switch(1.3*w,3*r/2,r,2.5*wSwitch)
         }
-        this.switch.draw()
+        this.switch.draw(ctx)
         this.img.src = canvas.toDataURL()
     }
 }
@@ -53,25 +53,34 @@ class Switch {
         this.y = y
         this.r = r
         this.w = w
+        console.log(this.w)
         this.l = 0
         this.dir = 0
     }
     draw(context) {
         context.fillStyle = 'gray'
-        this.drawShape()
+        this.drawShape(context)
         context.save()
         context.beginPath()
-        context.rect(this.x-this.r,this.y-this.r,this.x-this.r+this.l,this.y+this.r)
+        context.rect(this.x-this.r,this.y-this.r,this.l,2*this.r)
         context.clip()
         context.fillStyle = 'blue'
         this.drawShape(context)
         context.restore()
+        context.fillStyle = '#757575'
+        context.beginPath()
+        context.arc(this.x+this.l-this.r,this.y,1.25*this.r,0,2*Math.PI)
+        context.fill()
     }
     drawArc(context,gap,start) {
+      var offset = 0
+      if(start == false) {
+          offset = this.w
+      }
       for(var i=0;i<180;i++) {
-          const x = this.x+this.r*Math.cos((i+gap)*Math.PI/180),y = this.y+this.r*Math.sin((i+gap)*Math.PI/180)
+          const x = (this.x+offset)+this.r*Math.cos((i+gap)*Math.PI/180),y = this.y+this.r*Math.sin((i+gap)*Math.PI/180)
           if(i == 0 && start == true){
-              context.move(x,y)
+              context.moveTo(x,y)
           }
           else {
               context.lineTo(x,y)
@@ -91,7 +100,7 @@ class Switch {
         return this.dir == 0
     }
     startAnimating() {
-        if(this.l >= this.w) {
+        if(this.l >= (this.w+2*this.r)) {
             this.dir = -1
         }
         if(this.l <= 0) {
@@ -99,19 +108,22 @@ class Switch {
         }
     }
     update() {
-        this.l += this.dir * this.w/5
-        if(this.l >= this.w) {
+        this.l += (this.dir * (this.w+2*this.r)/5)
+        if(this.l > (this.w+2*this.r)) {
             this.dir = 0
+            this.l = this.w+2*this.r
         }
-        if(this.l <= 0) {
+        if(this.l < -this.r) {
             this.dir = 0
+            this.l = -this.r
         }
     }
     handleTap(x,y) {
-        const condtion = x>=this.x-this.r && x<=this.x+this.w && y>=this.y-this.r && y<=this.y+this.r && this.dir == 0
+        const condtion = x>=this.x-1.25*this.r && x<=this.x+1.25*this.w && y>=this.y-1.25*this.r && y<=this.y+1.25*this.r && this.dir == 0
         if(condtion == true) {
-            startAnimating
+            this.startAnimating()
         }
         return condtion
     }
 }
+customElements.define('custom-switch',SwitchComponent)
