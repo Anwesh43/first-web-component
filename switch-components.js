@@ -7,8 +7,25 @@ class SwitchComponent extends HTMLElement{
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
     }
+    animate() {
+        const interval = setInterval(()=>{
+            this.render()
+            if(this.switch) {
+                this.switch.update()
+                if(this.switch.stopped()  == true) {
+                    clearInterval(interval)
+                }
+            }
+        },100)
+    }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            const x = event.offsetX,y = event.offsetY
+            if(this.switch && this.switch.handleTap(x,y) == true) {
+                this.animate()
+            }
+        }
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -26,6 +43,8 @@ class SwitchComponent extends HTMLElement{
         if(!this.switch) {
             this.switch = new Switch(1.3*w,r,r,2.5*r)
         }
+        this.switch.draw()
+        this.img.src = canvas.toDataURL()
     }
 }
 class Switch {
@@ -87,5 +106,12 @@ class Switch {
         if(this.l <= 0) {
             this.dir = 0
         }
+    }
+    handleTap(x,y) {
+        const condtion = x>=this.x-this.r && x<=this.x+this.w && y>=this.y-this.r && y<=this.y+this.r && this.dir == 0
+        if(condtion == true) {
+            startAnimating
+        }
+        return condtion
     }
 }
