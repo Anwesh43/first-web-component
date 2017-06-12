@@ -11,6 +11,19 @@ class RippleButtonLinkComponent extends HTMLElement{
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) =>{
+            const x = event.offsetX, y = event.offsetY
+            if(this.rippleButton.handleTap(x,y) == true && this.shouldUpdate() == true) {
+                const interval =  setInterval(function () {
+                    this.render()
+                    this.rippleButton.update()
+                    if(this.stopped() == true) {
+                        clearInterval(interval)
+                        this.render()
+                    }
+                }, 100);
+            }
+        }
     }
     render() {
         const fontSize = maxDimension/30
@@ -59,3 +72,4 @@ class RippleButton {
         this.scale += 0.2
     }
 }
+customElements.define('ripple-button',RippleButtonLinkComponent)
