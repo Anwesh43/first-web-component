@@ -13,11 +13,11 @@ class RippleButtonLinkComponent extends HTMLElement{
         this.render()
         this.img.onmousedown = (event) =>{
             const x = event.offsetX, y = event.offsetY
-            if(this.rippleButton.handleTap(x,y) == true && this.shouldUpdate() == true) {
-                const interval =  setInterval(function () {
+            if(this.rippleButton.handleTap(x,y) == true && this.rippleButton.shouldUpdate() == true) {
+                const interval =  setInterval( () => {
                     this.render()
                     this.rippleButton.update()
-                    if(this.stopped() == true) {
+                    if(this.rippleButton.stopped() == true) {
                         clearInterval(interval)
                         this.render()
                     }
@@ -39,7 +39,7 @@ class RippleButtonLinkComponent extends HTMLElement{
         context.font = context.font.replace(/\d{2}/, `${fontSize}`)
         this.rippleButton.draw(context,tw,fontSize,canvas.width,canvas.height,this.color)
         context.fillStyle = 'white'
-        context.fillText(this.text,tw/2,fontSize)
+        context.fillText(this.text,tw/2,fontSize*1.25)
         this.img.src = canvas.toDataURL()
     }
 }
