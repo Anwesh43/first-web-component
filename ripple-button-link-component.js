@@ -34,6 +34,8 @@ class RippleButtonLinkComponent extends HTMLElement{
         canvas.width = 2*tw
         canvas.height = fontSize*2
         context = canvas.getContext('2d')
+        context.fillStyle = 'gray'
+        context.fillRect(0,0,canvas.width,canvas.height)
         context.font = context.font.replace(/\d{2}/, `${fontSize}`)
         this.rippleButton.draw(context,tw,fontSize,canvas.width,canvas.height,this.color)
         context.fillStyle = 'white'
