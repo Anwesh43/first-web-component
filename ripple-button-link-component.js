@@ -7,6 +7,7 @@ class RippleButtonLinkComponent extends HTMLElement{
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.rippleButton = new RippleButton()
     }
     connectedCallback() {
         this.render()
@@ -21,7 +22,40 @@ class RippleButtonLinkComponent extends HTMLElement{
         canvas.height = fontSize*2
         context = canvas.getContext('2d')
         context.font = context.font.replace(/\d{2}/, `${fontSize}`)
+        this.rippleButton.draw(context,tw,fontSize,canvas.width,canvas.height,this.color)
         context.fillStyle = 'white'
         context.fillText(this.text,tw/2,fontSize)
+        this.img.src = canvas.toDataURL()
+    }
+}
+class RippleButton {
+    constructor() {
+        this.scale = 0
+    }
+    draw(context,x,y,w,h,color) {
+        if(!this.handleTap) {
+            this.handleTap = (mx,my) => {
+                return mx >= x-w/2 && mx <= x+w/2 && my >= y-h/2 && my <= y+h/2
+            }
+        }
+        context.save()
+        context.translate(x,y)
+        context.scale(this.scale,this.scale)
+        context.fillStyle = color
+        context.fillRect(-w/2,-h/2,w,h)
+        context.restore()
+    }
+    shouldUpdate() {
+        return this.scale == 0
+    }
+    stopped() {
+        const condition =  this.scale > 1
+        if(condition == true) {
+            this.scale = 1
+        }
+        return condition
+    }
+    update() {
+        this.scale += 0.2
     }
 }
