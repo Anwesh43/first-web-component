@@ -11,6 +11,7 @@ class CollapsibleListComponent  extends HTMLElement {
               const child = this.children[index]
               this.elements.push(child.innerHTML)
         }
+        this.listContainer = new ListContainer()
         this.collapButton = new CollapsibleButton()
     }
     connectedCallback() {
@@ -25,6 +26,7 @@ class CollapsibleListComponent  extends HTMLElement {
         context.fillStyle = '#E0E0E0'
         context.fillRect(0,0,canvas.width,2*fontSize)
         this.collapButton.draw(context,0.8*canvas.width,fontSize,fontSize/2)
+        this.listContainer.draw(context,fontSize*2,canvas.width,fontSize,this.elements)
         this.img.src = canvas.toDataURL()
     }
 }
@@ -66,6 +68,27 @@ class CollapsibleButton {
     }
     handleTap(x,y) {
        return x >= this.x -this.r && x <= this.x + this.r && y>= this.y - this.r && y <= this.y + this.r
+    }
+}
+class ListContainer {
+    constructor() {
+        this.scale = 1
+    }
+    draw(context,y,w,fontSize,elements) {
+        context.save()
+        context.translate(0,y)
+        context.scale(1,this.scale)
+        context.fillRect(0,0,w,fontSize*2*elements.length)
+        context.restore()
+    }
+    setEdgeValue(dir) {
+        this.scale = 0
+        if(dir == 1) {
+            this.scale = 1
+        }
+    }
+    update(dir) {
+        this.scale += 0.2*dir
     }
 }
 customElements.define('collap-list',CollapsibleListComponent)
