@@ -25,7 +25,7 @@ class CollapsibleListComponent  extends HTMLElement {
         }
     }
     update(dir) {
-        this.collapButton(dir)
+        this.collapButton.update(dir)
         this.listContainer.update(dir)
     }
     setEdgeValue(dir) {
@@ -76,11 +76,11 @@ class CollapsibleButton {
     setEdgeValue(dir) {
         this.rot = 0
         if(dir == 1) {
-            this.rot = 90
+            this.rot = 45
         }
     }
     update(dir) {
-        this.rot += 18*dir
+        this.rot += 9*dir
     }
     handleTap(x,y) {
        return x >= this.x -this.r && x <= this.x + this.r && y>= this.y - this.r && y <= this.y + this.r
@@ -97,10 +97,12 @@ class ListContainer {
         }
         context.save()
         context.translate(0,y)
-        context.scale(1,this.scale)
+        context.beginPath()
+        context.rect(0,0,w,fontSize*2*elements.length*this.scale)
+        context.clip()
         context.fillRect(0,0,w,fontSize*2*elements.length)
         this.listItems.forEach((listItem,index)=>{
-            listItem.draw(context,w/2,(2*fontSize)*index+2*fontSize+fontSize)
+            listItem.draw(context,w/2,(2*fontSize)*index+fontSize)
         })
         context.restore()
     }
@@ -132,8 +134,10 @@ class AnimationHandler {
         this.component = component
     }
     start() {
+        console.log(this.dir)
         if(this.dir == 0) {
             this.dir = -1*this.prevDir
+            console.log("coming here"+this.dir)
             const interval = setInterval(()=>{
                 this.component.render()
                 this.component.update(this.dir)
@@ -142,9 +146,10 @@ class AnimationHandler {
                     clearInterval(interval)
                     this.component.setEdgeValue(this.dir)
                     this.prevDir = this.dir
-                    this.dir == 0
+                    this.dir = 0
+                    this.time = 0
                 }
-          },100)
+          },60)
         }
     }
 }
