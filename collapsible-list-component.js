@@ -23,6 +23,7 @@ class CollapsibleListComponent  extends HTMLElement {
         const fontSize = h/20
         canvas.height = (fontSize*2)*(this.elements.length+1)
         const context = canvas.getContext('2d')
+        context.font = context.font.replace(/\d{2}/,`${fontSize}`)
         context.fillStyle = '#E0E0E0'
         context.fillRect(0,0,canvas.width,2*fontSize)
         this.collapButton.draw(context,0.8*canvas.width,fontSize,fontSize/2)
@@ -72,13 +73,20 @@ class CollapsibleButton {
 }
 class ListContainer {
     constructor() {
-        this.scale = 1
+        this.scale = 0
+        this.listItems = []
     }
     draw(context,y,w,fontSize,elements) {
+        if(this.listItems.length == 0) {
+            this.listItems = elements.map((element)=>new ListItem(element))
+        }
         context.save()
         context.translate(0,y)
         context.scale(1,this.scale)
         context.fillRect(0,0,w,fontSize*2*elements.length)
+        this.listItems.forEach((listItem,index)=>{
+            listItem.draw(context,w/2,(2*fontSize)*index+2*fontSize+fontSize)
+        })
         context.restore()
     }
     setEdgeValue(dir) {
@@ -89,6 +97,16 @@ class ListContainer {
     }
     update(dir) {
         this.scale += 0.2*dir
+    }
+}
+class ListItem {
+    constructor(text) {
+        this.text = text
+    }
+    draw(context,x,y) {
+        const tw = context.measureText(this.text).width
+        context.fillStyle = 'black'
+        context.fillText(this.text,x-tw/2,y)
     }
 }
 customElements.define('collap-list',CollapsibleListComponent)
