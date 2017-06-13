@@ -17,6 +17,14 @@ class CollapsibleListComponent  extends HTMLElement {
     connectedCallback() {
         this.render()
     }
+    update(dir) {
+        this.collapButton(dir)
+        this.listContainer.update(dir)
+    }
+    setEdgeValue(dir) {
+        this.collapButton.setEdgeValue(dir)
+        this.listContainer.setEdgeValue(dir)
+    }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = window.innerWidth/3
@@ -107,6 +115,26 @@ class ListItem {
         const tw = context.measureText(this.text).width
         context.fillStyle = 'black'
         context.fillText(this.text,x-tw/2,y)
+    }
+}
+class AnimationHandler {
+    constructor(component) {
+        this.time = 0
+        this.dir = 0
+        this.prevDir = -1
+    }
+    start() {
+        this.dir = -1*this.prevDir
+        const interval = setInterval(()=>{
+            this.component.render()
+            this.component.update(this.dir)
+            this.time++
+            if(this.time == 6) {
+                clearInterval(interval)
+                this.component.setEdgeValue(this.dir)
+                this.prevDir = this.dir
+            }
+        },100)
     }
 }
 customElements.define('collap-list',CollapsibleListComponent)
