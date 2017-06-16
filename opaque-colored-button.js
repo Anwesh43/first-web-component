@@ -1,0 +1,46 @@
+const size = Math.max(window.innerWidth,window.innerHeight)/20
+class OpaqueColoredButton extends HTMLElement {
+    constructor() {
+        super()
+        const shadow = this.attachShadow({mode:'open'})
+        this.img = document.createElement('img')
+        this.color = this.getAttribute('color')||'blue'
+        shadow.appendChild(this.img)
+        this.scale = 0
+    }
+    render() {
+        const canvas = document.createElement('canvas')
+        canvas.width = size
+        canvas.height = size
+        const context = canvas.getContext('2d')
+        context.save()
+        context.translate(size/2,size/2)
+        context.globalAlpha = 0.5
+        context.fillStyle = 'black'
+        context.beginPath()
+        context.arc(0,0,size/2,0,2*Math.PI)
+        context.fill()
+        context.fillStyle =
+        context.save()
+        context.scale(this.scale,this.scale)
+        context.beginPath()
+        context.arc(0,0,size/2,0,2*Math.PI)
+        context.fill()
+        context.restore()
+        context.restore()
+    }
+    setEdgeValue(dir) {
+        if(dir == 1) {
+            this.scale = 1
+        }
+        else if(dir == -1){
+            this.scale = 0
+        }
+    }
+    update(dir) {
+        this.scale += dir*0.2
+    }
+    connectedCallback() {
+        this.render()
+    }
+}
