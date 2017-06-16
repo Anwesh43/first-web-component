@@ -7,6 +7,7 @@ class OpaqueColoredButton extends HTMLElement {
         this.color = this.getAttribute('color')||'blue'
         shadow.appendChild(this.img)
         this.scale = 0
+        this.animationHandler = new AnimationHandler(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -42,5 +43,23 @@ class OpaqueColoredButton extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+    }
+}
+class AnimationHandler {
+    constructor(component) {
+        this.component = component
+    }
+    start(dir) {
+        var count = 0
+        const interval = setInterval(()=>{
+            this.component.render()
+            this.component.update(dir)
+            count++
+            if(count == 6) {
+                this.component.setEdgeValue(dir)
+                clearInterval(interval)
+                this.component.render()
+            }
+        },50)
     }
 }
