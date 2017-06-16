@@ -1,4 +1,4 @@
-const size = Math.max(window.innerWidth,window.innerHeight)/20
+const size = Math.max(window.innerWidth,window.innerHeight)/16
 class OpaqueColoredButton extends HTMLElement {
     constructor() {
         super()
@@ -19,13 +19,13 @@ class OpaqueColoredButton extends HTMLElement {
         context.globalAlpha = 0.5
         context.fillStyle = 'black'
         context.beginPath()
-        context.arc(0,0,size/2,0,2*Math.PI)
+        context.arc(0,0,size/3,0,2*Math.PI)
         context.fill()
-        context.fillStyle =
+        context.fillStyle = this.color
         context.save()
         context.scale(this.scale,this.scale)
         context.beginPath()
-        context.arc(0,0,size/2,0,2*Math.PI)
+        context.arc(0,0,size/3,0,2*Math.PI)
         context.fill()
         context.restore()
         context.restore()
