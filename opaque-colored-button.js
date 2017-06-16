@@ -29,6 +29,7 @@ class OpaqueColoredButton extends HTMLElement {
         context.fill()
         context.restore()
         context.restore()
+        this.img.src = canvas.toDataURL()
     }
     setEdgeValue(dir) {
         if(dir == 1) {
@@ -43,6 +44,22 @@ class OpaqueColoredButton extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        var out = false,over = false
+        this.img.onmouseout = () => {
+            if(out == false) {
+                out = true
+                over = false
+                this.animationHandler.start(-1)
+            }
+        }
+        this.img.onmouseover = () => {
+            if(over == false) {
+                out = false
+                over = true
+                this.animationHandler.start(1)
+            }
+
+        }
     }
 }
 class AnimationHandler {
@@ -63,3 +80,4 @@ class AnimationHandler {
         },50)
     }
 }
+customElements.define('opaque-button',OpaqueColoredButton)
