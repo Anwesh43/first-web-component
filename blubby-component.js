@@ -10,11 +10,13 @@ class BlubbyComponent extends HTMLElement {
         const canvas = document.createElement('canvas')
         canvas.width = w/5
         canvas.height = w/5
-        context = canvas.getContext('2d')
+        const context = canvas.getContext('2d')
         context.fillStyle = 'orange'
+        context.save()
+        context.translate(w/10,w/10)
         context.beginPath()
-        for(var i=0;i<360;i++) {
-            var r = Math.random()*(w/5)
+        for(var i=0;i<360;i+=30) {
+            var r = w/20+Math.random()*(w/20)
             const x = r*Math.cos(i*Math.PI/180),y = r*Math.sin(i*Math.PI/180)
             if(i == 0) {
                 context.moveTo(x,y)
@@ -24,13 +26,14 @@ class BlubbyComponent extends HTMLElement {
             }
         }
         context.fill()
+        context.restore()
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
         setInterval(()=>{
             this.render()
-        },100)
+        },200)
     }
 }
-customElements.define('blubby',BlubbyComponent)
+customElements.define('blubby-comp',BlubbyComponent)
