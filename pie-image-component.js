@@ -34,6 +34,9 @@ class PieImageCompoent extends HTMLElement {
             this.animationHandler = new AnimationHandler(this)
             this.render()
         }
+        this.img.onmousedown = (event) => {
+            this.animationHandler.startAnimation()
+        }
     }
 }
 class PieImage {
