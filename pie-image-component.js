@@ -6,6 +6,7 @@ class PieImageCompoent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.src = this.getAttribute('src')
+        this.color = this.getAttribute('color')
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -26,5 +27,47 @@ class PieImageCompoent extends HTMLElement {
         this.image.onload = () => {
             this.render()
         }
+    }
+}
+class PieImage {
+    constructor(index) {
+        this.index = index
+        this.dir = 0
+        this.deg = 0
+    }
+    draw(context,color,r) {
+        context.save()
+        context.fillStyle = color
+        context.globalAlpha = 0.5
+        context.beginPath()
+        for(var i=0;i<this.deg;i++) {
+            const angle = i+this.index*90
+            const x = r*Math.cos(angle*Math.PI/180),y = r*Math.sin(angle*Math.PI/180)
+            if(i == 0) {
+                context.moveTo(x,y)
+            }
+            else {
+                context.lineTo(x,y)
+            }
+        }
+        context.fill()
+        context.restore()
+    }
+    update() {
+        this.deg = 18*this.dir
+        if(this.deg > 90) {
+            this.dir = 0
+            this.deg = 90
+        }
+        if(this.deg < 0) {
+            this.dir = 0
+            this.deg = 0
+        }
+    }
+    stopped() {
+        return this.dir == 0
+    }
+    startUpdating(dir) {
+        this.dir = dir
     }
 }
