@@ -71,3 +71,18 @@ class PieImage {
         this.dir = dir
     }
 }
+class AnimationHandler {
+    startAnimation() {
+        if(this.animating == false) {
+            this.animating = true
+            if(this.prev) {
+                this.prev.startUpdating(-1)
+            }
+        }
+    }
+    constructor(component) {
+        this.component = component
+        this.animating = false
+        this.index = 0
+    }
+}
