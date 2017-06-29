@@ -25,6 +25,13 @@ class PieImageCompoent extends HTMLElement {
         this.image = new Image()
         this.image.src = this.src
         this.image.onload = () => {
+            if(!this.pies) {
+                this.pies = []
+                for(var i=0;i<4;i++) {
+                    this.pies.push(new PieImage(i))
+                }
+            }
+            this.animationHandler = new AnimationHandler(this)
             this.render()
         }
     }
@@ -73,11 +80,28 @@ class PieImage {
 }
 class AnimationHandler {
     startAnimation() {
-        if(this.animating == false) {
+        if(this.animating == false && this.index < this.component.pies.length) {
             this.animating = true
             if(this.prev) {
                 this.prev.startUpdating(-1)
             }
+            var curr = this.component.pies[this.index]
+            const interval = setInterval(()=>{
+                if(this.prev) {
+                    this.prev.update()
+                }
+                if(curr) {
+                    curr.update()
+                    if(curr.stopped() == true) {
+                        clearInterval(interval)
+                        this.index++
+                        this.index %= this.component.pies.length
+                        this.animating = false
+                        this.prev = curr
+                        this.render()
+                    }
+                }
+            },50)
         }
     }
     constructor(component) {
