@@ -6,7 +6,7 @@ class PieImageCompoent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.src = this.getAttribute('src')
-        this.color = this.getAttribute('color')
+        this.color = this.getAttribute('color') || 'orange'
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -18,6 +18,12 @@ class PieImageCompoent extends HTMLElement {
         context.arc(canvas.width/2,canvas.height/2,Math.min(canvas.width,canvas.height)/2,0,2*Math.PI)
         context.clip()
         context.drawImage(this.image,0,0,canvas.width,canvas.height)
+        context.restore()
+        context.save()
+        context.translate(canvas.width/2,canvas.height/2)
+        this.pies.forEach((pie)=>{
+            pie.draw(context,this.color,Math.min(canvas.width,canvas.height)/2)
+        })
         context.restore()
         this.img.src = canvas.toDataURL()
     }
@@ -50,21 +56,17 @@ class PieImage {
         context.fillStyle = color
         context.globalAlpha = 0.5
         context.beginPath()
+        context.moveTo(0,0)
         for(var i=0;i<this.deg;i++) {
             const angle = i+this.index*90
             const x = r*Math.cos(angle*Math.PI/180),y = r*Math.sin(angle*Math.PI/180)
-            if(i == 0) {
-                context.moveTo(x,y)
-            }
-            else {
-                context.lineTo(x,y)
-            }
+            context.lineTo(x,y)
         }
         context.fill()
         context.restore()
     }
     update() {
-        this.deg = 18*this.dir
+        this.deg += 18*this.dir
         if(this.deg > 90) {
             this.dir = 0
             this.deg = 90
@@ -89,7 +91,9 @@ class AnimationHandler {
                 this.prev.startUpdating(-1)
             }
             var curr = this.component.pies[this.index]
+            curr.startUpdating(1)
             const interval = setInterval(()=>{
+                this.component.render()
                 if(this.prev) {
                     this.prev.update()
                 }
@@ -101,7 +105,7 @@ class AnimationHandler {
                         this.index %= this.component.pies.length
                         this.animating = false
                         this.prev = curr
-                        this.render()
+                        this.component.render()
                     }
                 }
             },50)
@@ -113,3 +117,4 @@ class AnimationHandler {
         this.index = 0
     }
 }
+customElements.define('pie-image',PieImageCompoent)
