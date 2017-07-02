@@ -29,7 +29,7 @@ class BoundaryFillShapeComponent extends HTMLElement {
 
     }
     stopped() {
-        return this.boundaryPoints && this.boundaryPoints.length == this.state.index
+        return (this.boundaryPoints.length == this.state.index)
     }
     animate() {
         if(this.boundaryPoints) {
@@ -38,6 +38,10 @@ class BoundaryFillShapeComponent extends HTMLElement {
             if(this.state.curr > currSize) {
                 this.state.index++
                 this.state.curr = 0
+                console.log("coming here")
+                console.log(this.stopped())
+                console.log(this.boundaryPoints!=undefined)
+                console.log(this.boundaryPoints.length == this.state.index)
             }
         }
     }
@@ -65,6 +69,7 @@ class AnimationHandler {
             this.animated = true
             const interval = setInterval(()=>{
                 this.component.render()
+                // console.log(this.component.stopped())
                 if(this.component.stopped() == true) {
                     this.animated = false
                     console.log("stopped")
@@ -86,6 +91,11 @@ class CircleShapeComponent extends BoundaryFillShapeComponent {
         context.arc(x,y,size/2,0,2*Math.PI)
         context.fill()
         context.strokeStyle = this.strokeColor
+        for(var i=0;i<this.state.index;i++) {
+            context.beginPath()
+            context.arc(x,y,size/2,0,2*Math.PI)
+            context.stroke()
+        }
         context.beginPath()
         context.moveTo(x,y-size/2)
         for(var i=0;i<this.state.curr;i+=10) {
