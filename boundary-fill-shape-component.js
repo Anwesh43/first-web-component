@@ -60,7 +60,32 @@ class AnimationHandler {
             this.animated = true
             const interval = setInterval(()=>{
                 this.component.render()
+                if(this.component.stopped() == true) {
+                    this.animated = false
+                }
             },50)
         }
+    }
+}
+class CircleShapeComponent extends BoundaryFillShapeComponent {
+    constructor() {
+        super()
+    }
+    getBoundaryPoints(size) {
+        return [360]
+    }
+    draw(context,size) {
+        context.fillStyle = this.fillColor
+        context.beginPath()
+        context.arc(size/2,size/2,size/2,0,2*Math.PI)
+        context.fill()
+        context.strokeStyle = this.strokeColor
+        context.beginPath()
+        context.moveTo(size/2,0)
+        for(var i=0;i<this.state.curr;i+=10) {
+            const x = size/2 + (size/2)*Math.cos((i-90)*Math.PI/180),y = (size/2)*(Math.sin((i-90)*Math.PI/180))
+            context.lineTo(x,y)
+        }
+        context.stroke()
     }
 }
