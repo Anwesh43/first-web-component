@@ -7,6 +7,7 @@ class BoundaryFillShapeComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.state = {}
         this.state.index = 0
         this.state.curr = 0
     }
@@ -15,11 +16,9 @@ class BoundaryFillShapeComponent extends HTMLElement {
         canvas.width = w/10
         canvas.height = w/10
         const context = canvas.getContext('2d')
-        drawShape(context,canvas.width)
+        this.drawShape(context,canvas.width)
         if(!this.boundaryPoints) {
-            this.boundaryPoints = []
-            this.
-            this.boundaryPoints = getBoundaryPoints(canvas.width)
+            this.boundaryPoints = this.getBoundaryPoints(canvas.width)
         }
         this.animate()
         this.img.src = canvas.toDataURL()
@@ -74,7 +73,7 @@ class CircleShapeComponent extends BoundaryFillShapeComponent {
     getBoundaryPoints(size) {
         return [360]
     }
-    draw(context,size) {
+    drawShape(context,size) {
         context.fillStyle = this.fillColor
         context.beginPath()
         context.arc(size/2,size/2,size/2,0,2*Math.PI)
