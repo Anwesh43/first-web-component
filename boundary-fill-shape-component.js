@@ -7,6 +7,8 @@ class BoundaryFillShapeComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.state.index = 0
+        this.state.curr = 0
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -14,14 +16,29 @@ class BoundaryFillShapeComponent extends HTMLElement {
         canvas.height = w/10
         const context = canvas.getContext('2d')
         drawShape(context,canvas.width)
-        this.animate(getBoundaryPoints(canvas.width))
+        if(!this.boundaryPoints) {
+            this.boundaryPoints = []
+            this.
+            this.boundaryPoints = getBoundaryPoints(canvas.width)
+        }
+        this.animate()
         this.img.src = canvas.toDataURL()
     }
     drawShape(context,size) {
 
     }
-    animate(boundaryPoints) {
-
+    stopped() {
+        return this.boundaryPoints && this.boundaryPoints.length == this.state.index
+    }
+    animate() {
+        if(this.boundaryPoints) {
+            const currSize = this.boundaryPoints[this.state.index]
+            this.state.curr+=currSize/5
+            if(this.state.curr > currSize) {
+                this.index++
+                this.state.index = 0
+            }
+        }
     }
     getBoundaryPoints(size) {
         return []
