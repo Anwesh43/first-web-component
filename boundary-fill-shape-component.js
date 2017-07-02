@@ -89,3 +89,5 @@ class CircleShapeComponent extends BoundaryFillShapeComponent {
         context.stroke()
     }
 }
+customElements.define('boundary-fill',BoundaryFillShapeComponent)
+customElements.define('circle-boundary-fill',CircleShapeComponent)
