@@ -16,14 +16,16 @@ class BoundaryFillShapeComponent extends HTMLElement {
         canvas.width = w/10
         canvas.height = w/10
         const context = canvas.getContext('2d')
-        this.drawShape(context,canvas.width)
+        context.lineWidth = 5
+        const size = canvas.width * 0.9
+        this.drawShape(context,canvas.width/2,canvas.height/2,size)
         if(!this.boundaryPoints) {
-            this.boundaryPoints = this.getBoundaryPoints(canvas.width)
+            this.boundaryPoints = this.getBoundaryPoints(size)
         }
         this.animate()
         this.img.src = canvas.toDataURL()
     }
-    drawShape(context,size) {
+    drawShape(context,x,y,size) {
 
     }
     stopped() {
@@ -34,8 +36,8 @@ class BoundaryFillShapeComponent extends HTMLElement {
             const currSize = this.boundaryPoints[this.state.index]
             this.state.curr+=currSize/5
             if(this.state.curr > currSize) {
-                this.index++
-                this.state.index = 0
+                this.state.index++
+                this.state.curr = 0
             }
         }
     }
@@ -47,6 +49,10 @@ class BoundaryFillShapeComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.animationHandler = new AnimationHandler(this)
+        this.img.onmousedown = (event)=>{
+            this.animationHandler.startAnimating()
+        }
     }
 }
 class AnimationHandler {
@@ -61,8 +67,9 @@ class AnimationHandler {
                 this.component.render()
                 if(this.component.stopped() == true) {
                     this.animated = false
+                    console.log("stopped")
                 }
-            },50)
+            },100)
         }
     }
 }
@@ -73,17 +80,17 @@ class CircleShapeComponent extends BoundaryFillShapeComponent {
     getBoundaryPoints(size) {
         return [360]
     }
-    drawShape(context,size) {
+    drawShape(context,x,y,size) {
         context.fillStyle = this.fillColor
         context.beginPath()
-        context.arc(size/2,size/2,size/2,0,2*Math.PI)
+        context.arc(x,y,size/2,0,2*Math.PI)
         context.fill()
         context.strokeStyle = this.strokeColor
         context.beginPath()
-        context.moveTo(size/2,0)
+        context.moveTo(x,y-size/2)
         for(var i=0;i<this.state.curr;i+=10) {
-            const x = size/2 + (size/2)*Math.cos((i-90)*Math.PI/180),y = (size/2)*(Math.sin((i-90)*Math.PI/180))
-            context.lineTo(x,y)
+            const px = x + (size/2)*Math.cos((i-90)*Math.PI/180),py = y+(size/2)*(Math.sin((i-90)*Math.PI/180))
+            context.lineTo(px,py)
         }
         context.stroke()
     }
