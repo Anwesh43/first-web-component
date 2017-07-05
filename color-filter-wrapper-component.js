@@ -7,51 +7,61 @@ class ColorFilterWrapperComponent extends HTMLElement {
         for(var i=0;i<children.length;i++) {
             const tag = children[i].tagName
             if(tag && tag == "IMG") {
-                this.imgs.push(new ColorFilterImage(children[i]))
+                this.imgs.push(new ColorFilterImage(children[i],(this.getAttribute('color') || 'red')))
                 shadow.appendChild(children[i])
             }
         }
     }
     render() {
         this.imgs.forEach((img)=>{
-            img.draw(this.getAttribute('color') || 'red')
+            img.draw()
         })
     }
     connectedCallback() {
         this.render()
-        this.animationHandler = new AnimationHanlder(this)
+        this.animationHandler = new AnimationHandler(this)
         this.imgs.forEach((img)=>{
             img.handleTap(()=>{
-                this.animationHandler(img)
+                this.animationHandler.startAnimation(img)
             })
         })
     }
 }
 class ColorFilterImage {
-    constructor(img) {
+    constructor(img,color) {
         this.img = img
         this.scale = 0
         this.dir = 0
+        this.color = color
+        this.image = new Image()
+        this.image.src = this.img.src
+        this.image.onload = () => {
+            this.imgLoaded = true
+            this.draw()
+        }
+    }
+    draw() {
+        if(this.imgLoaded) {
+            const canvas =  document.createElement('canvas')
+            canvas.width = this.img.width
+            canvas.height = this.img.height
+            const context = canvas.getContext('2d')
+            context.drawImage(this.image,0,0)
+            context.save()
+            context.translate(canvas.width/2,canvas.height/2)
+            context.scale(this.scale,this.scale)
+            context.fillStyle = this.color
+            context.globalAlpha = 0.6
+            context.fillRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height)
+            context.restore()
+            this.img.src = canvas.toDataURL()
+        }
 
     }
-    draw(color) {
-        const canvas =  document.createElement('canvas')
-        canvas.width = this.img.width
-        canvas.height = this.img.height
-        const context = canvas.getContext('2d')
-        context.drawImage(this.img,0,0)
-        context.save()
-        context.translate(canvas.width/2,canvas.height/2)
-        context.fillStyle = color
-        context.globalAlpha = 0.6
-        context.fillRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height)
-        context.restore()
-        this.img,src = canvas.toDataURL()
-    }
     update() {
-        this.scale += 0.2
+        this.scale += 0.2 * this.dir
         if(this.scale >1) {
-            this.scale = 0
+            this.scale = 1
             this.dir = 0
         }
     }
@@ -61,6 +71,7 @@ class ColorFilterImage {
     handleTap(cb) {
         this.img.onmousedown = ()=> {
             if(this.scale == 0 && this.dir == 0) {
+                this.dir = 1
                 cb()
             }
         }
