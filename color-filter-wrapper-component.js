@@ -2,22 +2,24 @@ class ColorFilterWrapperComponent extends HTMLElement {
     constructor() {
         super()
         const shadow = this.attachShadow({mode:'open'})
-        const color = this.getAttribute('color') || 'red'
         const children = this.children
         this.imgs = []
         for(var i=0;i<children.length;i++) {
             const tag = children[i].tagName
             if(tag && tag == "IMG") {
-                this.imgs.push(children[i])
+                this.imgs.push(new ColorFilterImage(children[i]))
                 shadow.appendChild(children[i])
             }
         }
     }
     render() {
-
+        this.imgs.forEach((img)=>{
+            img.draw(this.getAttribute('color') || 'red')
+        })
     }
     connectedCallback() {
         this.render()
+        this.animationHandler = new AnimationHanlder(this)
     }
 }
 class ColorFilterImage {
