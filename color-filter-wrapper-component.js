@@ -52,4 +52,29 @@ class ColorFilterImage {
         return this.dir == 0
     }
 }
+class AnimationHandler {
+    constructor(component) {
+        this.component = component
+        this.images = []
+        this.animated = false
+    }
+    startAnimation(image) {
+        this.images.push(image)
+        if(this.animated == false) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.images.forEach((image,index)=>{
+                    image.update()
+                    if(image.stopped() == true) {
+                        this.images.splice(index,1)
+                        if(this.images.length == 0) {
+                            this.animated = false
+                        }
+                    }
+                })
+            },50)
+        }
+    }
+}
 customElements.define('color-filter-wrapper',ColorFilterWrapperComponent)
