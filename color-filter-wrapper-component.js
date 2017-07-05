@@ -20,6 +20,11 @@ class ColorFilterWrapperComponent extends HTMLElement {
     connectedCallback() {
         this.render()
         this.animationHandler = new AnimationHanlder(this)
+        this.imgs.forEach((img)=>{
+            img.handleTap(()=>{
+                this.animationHandler(img)
+            })
+        })
     }
 }
 class ColorFilterImage {
@@ -52,6 +57,13 @@ class ColorFilterImage {
     }
     stopped() {
         return this.dir == 0
+    }
+    handleTap(cb) {
+        this.img.onmousedown = ()=> {
+            if(this.scale == 0 && this.dir == 0) {
+                cb()
+            }
+        }
     }
 }
 class AnimationHandler {
