@@ -34,3 +34,34 @@ class HighlightTextLinkComponent extends HTMLElement {
         this.div.style.background = `url(${canvas.toDataURL()})`
     }
 }
+class HighlightText {
+    constructor(text,x,y) {
+        this.text = text
+        this.x = x
+        this.y = y
+        this.scale = 0
+        this.dir = 0
+    }
+    draw(context) {
+        const tw = context.measureText(this.text).width
+        context.fillStyle = '#212121'
+        context.fillText(this.text,this.x-tw/2,this.y)
+        context.fillStyle = 'teal'
+        context.lineWidth = 8
+        context.beginPath()
+        context.moveTo(this.x,this.y)
+        context.lineTo(this.x+(tw/2)*this.scale,this.y)
+        context.stroke()
+    }
+    update() {
+        this.scale+=this.dir *0.2
+        if(this.scale > 1) {
+            this.dir = 0
+        }
+    }
+    startUpdating() {
+        if(this.scale == 0 && this.dir == 0) {
+            this.dir = 1
+        }
+    }
+}
