@@ -1,10 +1,10 @@
-const w = window.innerWidth,h = window.innerHeoght
+const w = window.innerWidth,h = window.innerHeight
 class HighlightTextLinkComponent extends HTMLElement {
     constructor() {
         super()
-        this.div = document.createElement('canvas')
+        this.div = document.createElement('div')
         const shadow = this.attachShadow({mode:'open'})
-        shadow.appenChild(this.div)
+        shadow.appendChild(this.div)
         this.initTextElements()
     }
     initTextElements() {
@@ -12,7 +12,7 @@ class HighlightTextLinkComponent extends HTMLElement {
         this.textElems = []
         for(var i=0;i<children.length;i++) {
             const child = children[i]
-            this.textElems.push({text:child.innerHTML})
+            this.textElems.push({text:child.getAttribute('href')})
         }
     }
     connectedCallback() {
@@ -23,18 +23,22 @@ class HighlightTextLinkComponent extends HTMLElement {
         const canvas = document.createElement('canvas')
         var context = canvas.getContext('2d')
         context.font = context.font.replace(/\d{2}/,h/20)
-        const tw = this.textElems.reduce((l1,l2)=>{
-            if(l1.length > l2.length) {
-                return l1.length
+        const tw = this.textElems.reduce((l1,elem)=>{
+            const l2 = context.measureText(elem.text).width
+            if(l1 > l2) {
+                return l1
             }
-            return l2.length
-        })
+            return l2
+        },0)
         canvas.width = 2*tw
         canvas.height = h/10*(this.textElems.length)
+        this.div.style.width = canvas.width
+        this.div.style.height = canvas.height
         if(!this.highlightTextElems) {
             this.highlightTextElems = this.textElems.map((textElem,index)=>new HighlightText(textElem.text,tw/2,h/20+index*(h/10)))
         }
         context = canvas.getContext('2d')
+        context.font = context.font.replace(/\d{2}/,h/20)
         this.highlightTextElems.forEach((textElem)=>{
             textElem.draw(context)
         })
@@ -60,12 +64,14 @@ class HighlightText {
         const tw = context.measureText(this.text).width
         context.fillStyle = '#212121'
         context.fillText(this.text,this.x-tw/2,this.y)
-        context.fillStyle = 'teal'
-        context.lineWidth = 8
-        context.beginPath()
-        context.moveTo(this.x,this.y)
-        context.lineTo(this.x+(tw/2)*this.scale,this.y)
-        context.stroke()
+        context.strokeStyle = 'teal'
+        context.lineWidth = 5
+        for(var i=0;i<2;i++) {
+            context.beginPath()
+            context.moveTo(this.x,this.y+h/40)
+            context.lineTo(this.x+(tw/2)*(1-2*i)*this.scale,this.y+h/40)
+            context.stroke()
+        }
     }
     update() {
         this.scale+=this.dir *0.2
@@ -99,6 +105,7 @@ class AnimationHandler {
             this.animated = true
             const interval = setInterval(()=>{
                 this.component.render()
+                textElem.update()
                 if(textElem.stopped() == true) {
                     clearInterval(interval)
                 }
