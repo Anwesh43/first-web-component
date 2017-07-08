@@ -12,7 +12,7 @@ class HighlightTextLinkComponent extends HTMLElement {
         this.textElems = []
         for(var i=0;i<children.length;i++) {
             const child = children[i]
-            this.textElems.push({text:child.getAttribute('href')})
+            this.textElems.push({text:child.getAttribute('text'),href:child.getAttribute('href')})
         }
     }
     connectedCallback() {
@@ -35,7 +35,7 @@ class HighlightTextLinkComponent extends HTMLElement {
         this.div.style.width = canvas.width
         this.div.style.height = canvas.height
         if(!this.highlightTextElems) {
-            this.highlightTextElems = this.textElems.map((textElem,index)=>new HighlightText(textElem.text,tw/2,h/20+index*(h/10)))
+            this.highlightTextElems = this.textElems.map((textElem,index)=>new HighlightText(textElem,tw/2,h/20+index*(h/10)))
         }
         context = canvas.getContext('2d')
         context.font = context.font.replace(/\d{2}/,h/20)
@@ -53,17 +53,17 @@ class HighlightTextLinkComponent extends HTMLElement {
     }
 }
 class HighlightText {
-    constructor(text,x,y) {
-        this.text = text
+    constructor(textElem,x,y) {
+        this.textElem = textElem
         this.x = x
         this.y = y
         this.scale = 0
         this.dir = 0
     }
     draw(context) {
-        const tw = context.measureText(this.text).width
+        const tw = context.measureText(this.textElem.text).width
         context.fillStyle = '#212121'
-        context.fillText(this.text,this.x-tw/2,this.y)
+        context.fillText(this.textElem.text,this.x-tw/2,this.y)
         context.strokeStyle = 'teal'
         context.lineWidth = 5
         for(var i=0;i<2;i++) {
