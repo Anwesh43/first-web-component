@@ -17,6 +17,7 @@ class HighlightTextLinkComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.animationHandler = new AnimationHandler(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -30,7 +31,13 @@ class HighlightTextLinkComponent extends HTMLElement {
         })
         canvas.width = 2*tw
         canvas.height = h/10*(this.textElems.length)
+        if(!this.highlightTextElems) {
+            this.highlightTextElems = this.textElems.map((textElem,index)=>new HighlightText(textElem.text,tw/2,h/20+index*(h/10)))
+        }
         context = canvas.getContext('2d')
+        this.highlightTextElems.forEach((textElem)=>{
+            textElem.draw(context)
+        })
         this.div.style.background = `url(${canvas.toDataURL()})`
     }
 }
