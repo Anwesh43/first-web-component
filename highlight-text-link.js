@@ -106,3 +106,4 @@ class AnimationHandler {
         }
     }
 }
+customElements.define('highlight-text-elem',HighlightTextLinkComponent)
