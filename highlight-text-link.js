@@ -39,6 +39,13 @@ class HighlightTextLinkComponent extends HTMLElement {
             textElem.draw(context)
         })
         this.div.style.background = `url(${canvas.toDataURL()})`
+        this.div.onmousedown = (event) => {
+            this.highlightTextElems.forEach((textElem)=>{
+                if(textElem.handleTap(event.offsetY)) {
+                    this.animationHandler.startAnimation(textElem)
+                }
+            })
+        }
     }
 }
 class HighlightText {
