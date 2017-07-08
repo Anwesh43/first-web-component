@@ -77,6 +77,7 @@ class HighlightText {
         this.scale+=this.dir *0.2
         if(this.scale > 1) {
             this.dir = 0
+            window.location = this.textElem.href 
         }
     }
     startUpdating() {
