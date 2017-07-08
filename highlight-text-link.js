@@ -64,4 +64,31 @@ class HighlightText {
             this.dir = 1
         }
     }
+    stopped() {
+        return this.dir == 0
+    }
+    handleTap(y) {
+        const condition = y>=this.y-h/20 && y<=this.y+h/20
+        if(condition) {
+            this.startUpdating()
+        }
+        return condition
+    }
+}
+class AnimationHandler {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startAnimation(textElem) {
+        if(this.animated == false) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                if(textElem.stopped() == true) {
+                    clearInterval(interval)
+                }
+            },75)
+        }
+    }
 }
