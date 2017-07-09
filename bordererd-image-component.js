@@ -6,8 +6,8 @@ class BorderedImageComponent extends HTMLElement {
         shadow.appendChild(this.img)
         this.src = this.getAttribute('src')
         this.color = this.getAttribute('color') || 'red'
-        this.selectCB = this.getAttribute('onselect') || (()=>{console.log("selected")})
-        this.unSelectCB = this.getAttribute('onunselect') || (()=>{console.log("unselected")})
+        this.selectCB = eval(this.getAttribute('onselect') || '(()=>{console.log("selected")})')
+        this.unSelectCB = eval(this.getAttribute('onunselect') || '(()=>{console.log("unselected")})')
     }
     update() {
         this.borderedImage.update()
@@ -81,6 +81,7 @@ class BorderedImage {
             this.dir = 0
             this.scale = 1
             if(this.selectCB) {
+                console.log(typeof(this.selectCB))
                 this.selectCB()
             }
         }
