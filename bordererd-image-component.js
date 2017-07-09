@@ -3,7 +3,7 @@ class BorderedImageComponent extends HTMLElement {
         super()
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
-        shadow.appendChild(img)
+        shadow.appendChild(this.img)
         this.src = this.getAttribute('src')
         this.color = this.getAttribute('color') || 'red'
     }
@@ -21,7 +21,8 @@ class BorderedImageComponent extends HTMLElement {
         canvas.width = this.image.width*1.1
         canvas.height = this.image.height*1.1
         const context = canvas.getContext('2d')
-        this.borderedImage.draw(context,cavas.width/2,canvas.height/2,this.color)
+        context.lineCap = "round"
+        this.borderedImage.draw(context,canvas.width/2,canvas.height/2,this.color)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
@@ -44,25 +45,25 @@ class BorderedImage {
         this.dir = 0
     }
     draw(context,x,y,color) {
-        const imw = this.image.width,imw = this.image.height
+        const imw = this.image.width,imh = this.image.height
         context.strokeStyle = color
         context.lineWidth = Math.min(imw,imh)/50
-        context.drawImage(image,x-imw/2,y-imh/2)
+        context.drawImage(this.image,x-imw/2,y-imh/2)
         for(var i=0;i<2;i++) {
             context.save()
             context.translate(x,y)
-            context.rotate(i*180)
+            context.rotate(i*Math.PI)
             for(var j=0;j<2;j++) {
                 context.save()
                 context.beginPath()
                 context.moveTo(imw/2,0)
-                context.lineTo(imw/2,imh/2*this.scale*j)
+                context.lineTo(imw/2,imh/2*this.scale*(2*j-1))
                 context.stroke()
                 context.restore()
                 context.save()
                 context.beginPath()
                 context.moveTo(0,imh/2)
-                context.lineTo(imw/2*this.scale*j,imh/2)
+                context.lineTo(imw/2*this.scale*(2*j-1),imh/2)
                 context.stroke()
                 context.restore()
             }
@@ -77,7 +78,7 @@ class BorderedImage {
         }
         if(this.scale < 0) {
             this.dir = 0
-            this.scale = 1
+            this.scale = 0
         }
     }
     startUpdating() {
