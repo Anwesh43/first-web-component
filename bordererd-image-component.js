@@ -5,19 +5,30 @@ class BorderedImageComponent extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(img)
         this.src = this.getAttribute('src')
-        this.color =
+        this.color = this.getAttribute('color') || 'red'
+    }
+    update() {
+        this.borderedImage.update()
+    }
+    startUpdating() {
+        this.borderedImage.startUpdating()
+    }
+    stopped() {
+        return this.borderedImage.stopped()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = this.image.width*1.1
         canvas.height = this.image.height*1.1
         const context = canvas.getContext('2d')
+        this.borderedImage.draw(context,cavas.width/2,canvas.height/2,this.color)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.image = new Image()
         this.image.src = this.src
         this.image.onload = ()=>{
+            this.borderedImage = new BorderedImage(this.image)
             this.render()
         }
     }
