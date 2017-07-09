@@ -77,3 +77,17 @@ class BorderedImage {
         return this.dir == 0
     }
 }
+class AnimationHandler {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startAnimation() {
+        if(this.animated == false) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+            },50)
+        }
+    }
+}
