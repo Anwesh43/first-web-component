@@ -6,6 +6,8 @@ class BorderedImageComponent extends HTMLElement {
         shadow.appendChild(this.img)
         this.src = this.getAttribute('src')
         this.color = this.getAttribute('color') || 'red'
+        this.selectCB = this.getAttribute('onselect') || (()=>{console.log("selected")})
+        this.unSelectCB = this.getAttribute('onunselect') || (()=>{console.log("unselected")})
     }
     update() {
         this.borderedImage.update()
@@ -14,6 +16,7 @@ class BorderedImageComponent extends HTMLElement {
         this.borderedImage.startUpdating()
     }
     stopped() {
+
         return this.borderedImage.stopped()
     }
     render() {
@@ -30,7 +33,7 @@ class BorderedImageComponent extends HTMLElement {
         this.image = new Image()
         this.image.src = this.src
         this.image.onload = ()=>{
-            this.borderedImage = new BorderedImage(this.image)
+            this.borderedImage = new BorderedImage(this.image,this.selectCB,this.unSelectCB)
             this.render()
         }
         this.img.onmousedown = () => {
@@ -39,8 +42,10 @@ class BorderedImageComponent extends HTMLElement {
     }
 }
 class BorderedImage {
-    constructor(image) {
+    constructor(image,selectCB,unSelectCB) {
         this.image = image
+        this.selectCB = selectCB
+        this.unSelectCB = unSelectCB
         this.scale = 0
         this.dir = 0
     }
@@ -75,10 +80,16 @@ class BorderedImage {
         if(this.scale > 1) {
             this.dir = 0
             this.scale = 1
+            if(this.selectCB) {
+                this.selectCB()
+            }
         }
         if(this.scale < 0) {
             this.dir = 0
             this.scale = 0
+            if(this.unSelectCB) {
+                this.unSelectCB()
+            }
         }
     }
     startUpdating() {
