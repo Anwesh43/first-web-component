@@ -25,11 +25,15 @@ class BorderedImageComponent extends HTMLElement {
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
+        this.animationHandler = new AnimationHandler(this)
         this.image = new Image()
         this.image.src = this.src
         this.image.onload = ()=>{
             this.borderedImage = new BorderedImage(this.image)
             this.render()
+        }
+        this.img.onmousedown = () => {
+            this.animationHandler.startAnimation()
         }
     }
 }
