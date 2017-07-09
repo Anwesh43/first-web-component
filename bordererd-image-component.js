@@ -96,8 +96,14 @@ class AnimationHandler {
     startAnimation() {
         if(this.animated == false) {
             this.animated = true
+            this.component.startUpdating()
             const interval = setInterval(()=>{
                 this.component.render()
+                this.component.update()
+                if(this.component.stopped() == true) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
             },50)
         }
     }
