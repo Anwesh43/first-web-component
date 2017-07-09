@@ -108,3 +108,4 @@ class AnimationHandler {
         }
     }
 }
+customElements.define('bordered-image-comp',BorderedImageComponent)
