@@ -5,6 +5,7 @@ class ColorPlateListComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.animationHandler = new AnimationHandler(this)
         this.initColors()
     }
     initColors() {
@@ -29,6 +30,11 @@ class ColorPlateListComponent extends HTMLElement {
             colorPlate.draw(context)
         })
         this.img.src = canvas.toDataURL()
+        this.img.onmousedown = (event) => {
+            if(this.colorPlates && this.colorPlates.length > 0) {
+                this.animationHandler.startAnimation()
+            }
+        }
     }
     update() {
         if(this.colorPlates.length > 0) {
