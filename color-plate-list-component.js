@@ -1,6 +1,7 @@
 const w = window.innerWidth,h = window.innerWidth,size = Math.min(w,h)/2
 class ColorPlateListComponent extends HTMLElement {
     constructor() {
+        super()
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
@@ -11,11 +12,8 @@ class ColorPlateListComponent extends HTMLElement {
         const children = this.children
         for(var i=0;i<children.length;i++) {
             const child = children[i]
-            if(child.tag == "COLOR") {
+            if(child.tagName == "COLOR") {
                 this.colors.push(child.innerHTML)
-            }
-            else {
-                console.log(child.tag)
             }
         }
     }
