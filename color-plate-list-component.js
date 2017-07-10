@@ -83,4 +83,24 @@ class ColorPlate {
         this.dir = 1
     }
 }
+class AnimationHandler {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(this.animated == false) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update()
+                if(this.component.stopped() == true) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },50)
+        }
+    }
+}
 customElements.define('color-plate-list',ColorPlateListComponent)
