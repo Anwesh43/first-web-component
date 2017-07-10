@@ -22,7 +22,30 @@ class ColorPlateListComponent extends HTMLElement {
         canvas.width = size/2
         canvas.height = size/2
         const context = canvas.getContext('2d')
+        if(!this.colorPlates) {
+            this.colorPlates = this.colors.map((color)=>new ColorPlate(color))
+        }
+        this.colorPlates.forEach((colorPlate)=>{
+            colorPlate.draw(context)
+        })
         this.img.src = canvas.toDataURL()
+    }
+    update() {
+        if(this.colorPlates.length > 0) {
+            this.colorPlates[this.colorPlates.length-1].update()
+        }
+    }
+    stopped() {
+        const condition = this.colorPlates[this.colorPlates.length-1].stopped()
+        if(condition == true) {
+            this.colorPlates.splice(this.colorPlates.length-1,1)
+        }
+        return condition
+    }
+    startUpdating() {
+        if(this.colorPlates.length > 0) {
+            this.colorPlates[this.colorPlates.length-1].startUpdating()
+        }
     }
     connectedCallbac() {
         this.render()
