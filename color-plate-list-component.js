@@ -28,4 +28,36 @@ class ColorPlateListComponent extends HTMLElement {
         this.render()
     }
 }
+class ColorPlate {
+    constructor(color) {
+        this.color = color
+        this.dir = 0
+        this.deg = 360
+    }
+    draw(context) {
+        context.fillStyle = this.color
+        context.save()
+        context.translate(size/2,size/2)
+        context.beginPath()
+        context.moveTo(0,0)
+        for(var i=0;i<this.deg;i+=10) {
+            context.lineTo((size/2)*Math.cos(i*Math.PI/180),(size/2)*Math.sin(i*Math.PI/180))
+        }
+        context.fill()
+        context.restore()
+    }
+    update() {
+        this.deg -= this.dir*20
+        if(this.deg < 0) {
+            this.deg = 0
+            this.dir = 0
+        }
+    }
+    stopped() {
+        return this.dir == 0
+    }
+    startUpdating() {
+        this.dir = 1
+    }
+}
 customElements.define('color-plate-list',ColorPlateListComponent)
