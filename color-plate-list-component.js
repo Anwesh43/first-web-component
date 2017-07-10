@@ -20,8 +20,8 @@ class ColorPlateListComponent extends HTMLElement {
     }
     render() {
         const canvas = document.createElement('canvas')
-        canvas.width = size/2
-        canvas.height = size/2
+        canvas.width = size
+        canvas.height = size
         const context = canvas.getContext('2d')
         if(!this.colorPlates) {
             this.colorPlates = this.colors.map((color)=>new ColorPlate(color))
@@ -30,11 +30,6 @@ class ColorPlateListComponent extends HTMLElement {
             colorPlate.draw(context)
         })
         this.img.src = canvas.toDataURL()
-        this.img.onmousedown = (event) => {
-            if(this.colorPlates && this.colorPlates.length > 0) {
-                this.animationHandler.startAnimation()
-            }
-        }
     }
     update() {
         if(this.colorPlates.length > 0) {
@@ -53,8 +48,13 @@ class ColorPlateListComponent extends HTMLElement {
             this.colorPlates[this.colorPlates.length-1].startUpdating()
         }
     }
-    connectedCallbac() {
+    connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            if(this.colorPlates && this.colorPlates.length > 0) {
+                this.animationHandler.startAnimation()
+            }
+        }
     }
 }
 class ColorPlate {
@@ -69,8 +69,8 @@ class ColorPlate {
         context.translate(size/2,size/2)
         context.beginPath()
         context.moveTo(0,0)
-        for(var i=0;i<this.deg;i+=10) {
-            context.lineTo((size/2)*Math.cos(i*Math.PI/180),(size/2)*Math.sin(i*Math.PI/180))
+        for(var i=0;i<=this.deg;i+=10) {
+            context.lineTo((size/4)*Math.cos(i*Math.PI/180),(size/4)*Math.sin(i*Math.PI/180))
         }
         context.fill()
         context.restore()
