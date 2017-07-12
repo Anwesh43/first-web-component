@@ -90,3 +90,31 @@ class CircularColor {
         this.deg = 360*scale
     }
 }
+class Collapser {
+    constructor() {
+        this.deg = 0
+    }
+    draw(context,size) {
+        context.save()
+        context.translate(size/2,size/2)
+        context.rotate(this.deg*Math.PI/180)
+        context.beginPath()
+        context.arc(0,0,size/2,0,2*Math.PI)
+        context.fill()
+        context.strokeStyle = 'black'
+        context.lineWidth = 5
+        fot(var i=0;i<2;i++) {
+            context.save()
+            context.rotate(i*Math.PI/2)
+            context.beginPath()
+            context.moveTo(0,size/3)
+            context.lineTo(0,-size/3)
+            context.stroke()
+            context.restore()
+        }
+        context.restore()
+    }
+    update(scale) {
+        this.deg = 360*scale
+    }
+}
