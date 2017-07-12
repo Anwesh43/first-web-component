@@ -154,3 +154,4 @@ class AnimationHandler  {
         }
     }
 }
+customElements.define('circular-collap-div',CircularCollapseDiv)
