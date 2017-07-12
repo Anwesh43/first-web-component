@@ -5,6 +5,9 @@ class CircularCollapseDiv extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.div = document.createElement('div')
         this.img = document.createElement('img')
+        shadow.appendChild(this.img)
+        shadow.appendChild(this.div)
+
         this.color = this.getAttribute('color') || '#3F51B5'
     }
     renderDiv() {
@@ -44,8 +47,8 @@ class CircularCollapseDiv extends HTMLElement {
         this.render()
         this.stateContainer = new StateContainer()
         this.animationHandler = new AnimationHandler(this)
-        this.stateContainer.addUpdateCB(this.collapser.update)
-        this.stateContainer.addUpdateCB(this.circularColor.update)
+        this.stateContainer.addElement(this.collapser)
+        this.stateContainer.addElement(this.circularColor)
         this.img.onmousedown = (event) => {
             this.animationHandler.startAnimation()
         }
@@ -55,22 +58,25 @@ class StateContainer {
     constructor() {
         this.scale = 0
         this.dir = 0
-        this.updateCbs= []
+        this.elements= []
     }
-    addUpdateCB(cb) {
-        this.updateCbs.push(cb)
+    addElement(cb) {
+        this.elements.push(cb)
     }
     update() {
-        this.updateCbs.forEach((cb)=>{
-            cb(this.scale)
-        })
-        this.scale += 0.15*this.dir
+
+        this.scale += 0.1*this.dir
         if(this.scale > 1) {
             this.dir = 0
+            this.scale = 1
         }
         if(this.scale < 0) {
             this.dir = 0
+            this.scale = 0
         }
+        this.elements.forEach((element)=>{
+            element.update(this.scale)
+        })
     }
     stopped() {
         return this.dir == 0
@@ -87,7 +93,7 @@ class StateContainer {
 class CircularColor {
     constructor(color) {
         this.deg = 0
-        this.color = this.color
+        this.color = color
     }
     draw(context,size) {
         context.fillStyle = this.color
@@ -109,8 +115,10 @@ class CircularColor {
 class Collapser {
     constructor() {
         this.deg = 0
+        console.log(this.deg)
     }
     draw(context,size) {
+        context.fillStyle = '#9E9E9E'
         context.save()
         context.translate(size/2,size/2)
         context.rotate(this.deg*Math.PI/180)
@@ -119,7 +127,7 @@ class Collapser {
         context.fill()
         context.strokeStyle = 'black'
         context.lineWidth = 5
-        fot(var i=0;i<2;i++) {
+        for(var i=0;i<2;i++) {
             context.save()
             context.rotate(i*Math.PI/2)
             context.beginPath()
@@ -131,7 +139,7 @@ class Collapser {
         context.restore()
     }
     update(scale) {
-        this.deg = 360*scale
+        this.deg = 45*scale
     }
 }
 class AnimationHandler  {
@@ -150,7 +158,7 @@ class AnimationHandler  {
                     this.animated = false
                     clearInterval(interval)
                 }
-            },50)
+            },40)
         }
     }
 }
