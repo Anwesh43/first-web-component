@@ -46,6 +46,9 @@ class CircularCollapseDiv extends HTMLElement {
         this.animationHandler = new AnimationHandler(this)
         this.stateContainer.addUpdateCB(this.collapser.update)
         this.stateContainer.addUpdateCB(this.circularColor.update)
+        this.img.onmousedown = (event) => {
+            this.animationHandler.startAnimation()
+        }
     }
 }
 class StateContainer {
