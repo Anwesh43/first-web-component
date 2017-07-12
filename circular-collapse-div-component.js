@@ -68,3 +68,25 @@ class StateContainer {
         }
     }
 }
+class CircularColor {
+    constructor(color) {
+        this.deg = 0
+        this.color = this.color
+    }
+    draw(context,size) {
+        context.fillStyle = this.color
+        context.save()
+        context.translate(size/2,size/2)
+        context.beginPath()
+        context.moveTo(0,0)
+        for(var i=0;i<=this.deg;i+=10) {
+            const x = (size/2)*(Math.cos(i*Math.PI/180)),y = (size/2)*(Math.sin(i*Math.PI/180))
+            context.lineTo(x,y)
+        }
+        context.fill()
+        context.restore()
+    }
+    update(scale) {
+        this.deg = 360*scale
+    }
+}
