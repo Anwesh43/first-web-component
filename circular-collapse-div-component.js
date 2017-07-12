@@ -11,7 +11,10 @@ class CircularCollapseDiv extends HTMLElement {
         const canvas = document.createElement('canvas')
         canvas.width = w/5
         canvas.height = w/5
+        this.div.style.width = w/5
+        this.div.style.height = w/5
         const context = canvas.getContext('2d')
+        this.circularColor.draw(context,w/5)
         this.div.style.background = `url(${canvas.toDataURL()})`
     }
     renderImg() {
@@ -19,6 +22,7 @@ class CircularCollapseDiv extends HTMLElement {
         canvas.width = w/15
         canvas.height = w/15
         const context = canvas.getContext('2d')
+        this.collapser.draw(context,w/15)
         this.img.src = canvas.toDataURL()
     }
     render() {
@@ -26,16 +30,22 @@ class CircularCollapseDiv extends HTMLElement {
         this.renderDiv()
     }
     update() {
-
+        this.stateContainer.update()
     }
     stopped() {
-        return true
+        return this.stateContainer.stopped()
     }
     startUpdating() {
-
+        this.stateContainer.startUpdating()
     }
     connectedCallback() {
+        this.circularColor = new CircularColor(this.color)
+        this.collapser = new Collapser()
         this.render()
+        this.stateContainer = new StateContainer()
+        this.animationHandler = new AnimationHandler(this)
+        this.stateContainer.addUpdateCB(this.collapser.update)
+        this.stateContainer.addUpdateCB(this.circularColor.update)
     }
 }
 class StateContainer {
@@ -43,6 +53,9 @@ class StateContainer {
         this.scale = 0
         this.dir = 0
         this.updateCbs= []
+    }
+    addUpdateCB(cb) {
+        this.updateCbs.push(cb)
     }
     update() {
         this.updateCbs.forEach((cb)=>{
