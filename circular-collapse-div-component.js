@@ -38,3 +38,33 @@ class CircularCollapseDiv extends HTMLElement {
         this.render()
     }
 }
+class StateContainer {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+        this.updateCbs= []
+    }
+    update() {
+        this.updateCbs.forEach((cb)=>{
+            cb(this.scale)
+        })
+        this.scale += 0.15*this.dir
+        if(this.scale > 1) {
+            this.dir = 0
+        }
+        if(this.scale < 0) {
+            this.dir = 0
+        }
+    }
+    stopped() {
+        return this.dir == 0
+    }
+    startUpdating() {
+        if(this.scale <= 0) {
+            this.dir = 1
+        }
+        if(this.scale >= 1) {
+            this.dir = -1
+        }
+    }
+}
