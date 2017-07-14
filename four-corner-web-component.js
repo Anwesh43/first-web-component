@@ -23,3 +23,28 @@ class FourCornerWebComponent extends HTMLElement {
         this.render()
     }
 }
+class StateHandler {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+    }
+    update() {
+        this.scale += this.dir *0.2
+        if(this.scale > 1) {
+            this.scale = 1
+            this.dir = 0
+        }
+        if(this.scale < 0) {
+            this.scale = 0
+            this.dir = 0
+        }
+    }
+    startUpdating() {
+        if(this.scale <= 0) {
+            this.dir = 1
+        }
+    }
+    stopped() {
+        return dir == 0
+    }
+}
