@@ -5,6 +5,7 @@ class FourCornerWebComponent extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
         this.color = this.getAttribute('color')||'#01579B'
+        this.stateHandler = new StateHandler()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -14,10 +15,10 @@ class FourCornerWebComponent extends HTMLElement {
         this.img.src = canvas.toDataURL()
     }
     update() {
-
+        this.stateHandler.update()
     }
     stopped() {
-
+        return this.stateHandler.stopped()
     }
     connectedCallback() {
         this.render()
