@@ -27,6 +27,9 @@ class FourCornerWebComponent extends HTMLElement {
     connectedCallback() {
         this.animationHandler = new AnimationHandler(this)
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animationHandler.startAnimation()
+        }
     }
 }
 class StateHandler {
