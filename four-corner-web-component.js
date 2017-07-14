@@ -48,3 +48,50 @@ class StateHandler {
         return dir == 0
     }
 }
+class FourCorner {
+    constructor(x,y,size) {
+        this.x = x
+        this.y = y
+        this.size = size
+    }
+    draw(context,color,scale) {
+        context.fillStyle = color
+        context.strokeStyle = color
+        context.lineWidth = 5
+        context.save()
+        context.translate(this.x,this.y)
+        context.save()
+        context.beginPath()
+        context.arc(0,0,size/10,0,2*Math.PI)
+        context.stroke()
+        context.save()
+        context.scale(scale,scale)
+        context.beginPath()
+        context.arc(0,0,size/10,0,2*Math.PI)
+        context.fill()
+        context.restore()
+        context.restore()
+        for(var i=0;i<4;i++) {
+            context.save()
+            context.rotate(i*Math.PI/2+45)
+            context.beginPath()
+            context.moveTo(0,0)
+            context.lineTo(0,(this.size/2)*scale)
+            context.stroke()
+            context.save()
+            context.translate(0,this.size/2)
+            context.beginPath()
+            context.arc(0,0,size/10,0,2*Math.PI)
+            context.stroke()
+            context.save()
+            context.scale(scale,scale)
+            context.beginPath()
+            context.arc(0,0,size/10,0,2*Math.PI)
+            context.fill()
+            context.restore()
+            context.restore()
+            context.restore()
+        }
+        context.restore()
+    }
+}
