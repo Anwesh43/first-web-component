@@ -12,6 +12,10 @@ class FourCornerWebComponent extends HTMLElement {
         canvas.width = w/4
         canvas.height = w/4
         const context = canvas.getContext('2d')
+        if(!this.fourCorner) {
+            this.fourCorner = new FourCorner(w/8,w/8,w/6)
+        }
+        this.fourCorner.draw(context,this.color,this.stateHandler.scale)
         this.img.src = canvas.toDataURL()
     }
     update() {
