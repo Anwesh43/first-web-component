@@ -25,6 +25,7 @@ class FourCornerWebComponent extends HTMLElement {
         return this.stateHandler.stopped()
     }
     connectedCallback() {
+        this.animationHandler = new AnimationHandler(this)
         this.render()
     }
 }
@@ -98,5 +99,25 @@ class FourCorner {
             context.restore()
         }
         context.restore()
+    }
+}
+class AnimationHandler {
+    constructor(component) {
+        this.animated = fasle
+        this.component = component
+    }
+    startAnimation() {
+        if(this.animated == false) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update()
+                if(this.component.stopped() == true) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },50)
+        }
     }
 }
