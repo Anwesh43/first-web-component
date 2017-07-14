@@ -1,11 +1,15 @@
 const w = window.innerWidth,h = window.innerHeight
 class FourCornerWebComponent extends HTMLElement {
     constructor() {
+        super()
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
         this.color = this.getAttribute('color')||'#01579B'
         this.stateHandler = new StateHandler()
+    }
+    startUpdating() {
+        this.stateHandler.startUpdating()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -52,9 +56,12 @@ class StateHandler {
         if(this.scale <= 0) {
             this.dir = 1
         }
+        if(this.scale >= 1) {
+            this.dir = -1
+        }
     }
     stopped() {
-        return dir == 0
+        return this.dir == 0
     }
 }
 class FourCorner {
@@ -64,6 +71,7 @@ class FourCorner {
         this.size = size
     }
     draw(context,color,scale) {
+        const size = this.size
         context.fillStyle = color
         context.strokeStyle = color
         context.lineWidth = 5
@@ -82,7 +90,7 @@ class FourCorner {
         context.restore()
         for(var i=0;i<4;i++) {
             context.save()
-            context.rotate(i*Math.PI/2+45)
+            context.rotate(i*Math.PI/2+Math.PI/4)
             context.beginPath()
             context.moveTo(0,0)
             context.lineTo(0,(this.size/2)*scale)
@@ -106,7 +114,7 @@ class FourCorner {
 }
 class AnimationHandler {
     constructor(component) {
-        this.animated = fasle
+        this.animated = false
         this.component = component
     }
     startAnimation() {
@@ -124,3 +132,4 @@ class AnimationHandler {
         }
     }
 }
+customElements.define('four-corner-web-comp',FourCornerWebComponent)
