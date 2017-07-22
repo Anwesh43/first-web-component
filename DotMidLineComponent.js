@@ -20,6 +20,10 @@ class DotMidLineComponent extends HTMLElement {
     }
     connectedCallback(){
         this.render()
+        this.animationHandler = new AnimationHandler(this)
+        this.img.onmousedown = (event) => {
+            this.animationHandler.startAnimation()
+        }
     }
 }
 class DotMidLine {
