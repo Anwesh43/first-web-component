@@ -6,7 +6,7 @@ class DotMidLineComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
     }
-    render() {
+    render(scale) {
         const canvas = document.createElement('canvas')
         const wc = w/5
         canvas.width = wc
@@ -15,11 +15,11 @@ class DotMidLineComponent extends HTMLElement {
         if(!this.dotMidLine) {
             this.dotMidLine = new DotMidLine()
         }
-        this.dotMidLine.draw(context,wc/2,wc/2,wc/2,1)
+        this.dotMidLine.draw(context,wc/2,wc/2,wc/3,scale)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback(){
-        this.render()
+        this.render(0)
         this.animationHandler = new AnimationHandler(this)
         this.img.onmousedown = (event) => {
             this.animationHandler.startAnimation()
@@ -33,9 +33,9 @@ class DotMidLine {
             context.translate(x,y)
             context.scale(2*i-1,1)
             context.lineWidth = size/60
-            this.drawCircle(4*size/5,0,size/5,1)
+            this.drawCircle(context,4*size/5,0,size/5,1)
             context.stroke()
-            this.drawCircle(4*size/5,0,size/5,scale)
+            this.drawCircle(context,4*size/5,0,size/5,scale)
             context.fill()
             context.beginPath()
             context.moveTo(0,0)
@@ -44,7 +44,7 @@ class DotMidLine {
             context.restore()
         }
     }
-    drawCircle(x,y,r,scale) {
+    drawCircle(context,x,y,r,scale) {
         context.beginPath()
         context.arc(x,y,r*scale,0,2*Math.PI)
     }
@@ -85,13 +85,14 @@ class AnimationHandler {
             this.animated = true
             this.stateContainer.startUpdating()
             const interval = setInterval(()=>{
-                this.component.render()
+                this.component.render(this.stateContainer.scale)
                 this.stateContainer.update()
                 if(this.stateContainer.stopped() == true) {
-                    this.animated = true
+                    this.animated = false
                     clearInterval(interval)
                 }
             },75)
         }
     }
 }
+customElements.define('dot-mid-line',DotMidLineComponent)
