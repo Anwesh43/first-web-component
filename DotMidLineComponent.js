@@ -66,4 +66,28 @@ class StateContainer {
             this.dir = 1-2*this.scale
         }
     }
+    stopped() {
+        return this.dir == 0
+    }
+}
+class AnimationHandler {
+    constructor(component) {
+        this.stateContainer = new StateContainer()
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(this.animated == false) {
+            this.animated = true
+            this.stateContainer.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.stateContainer.update()
+                if(this.stateContainer.stopped() == true) {
+                    this.animated = true
+                    clearInterval(interval)
+                }
+            },75)
+        }
+    }
 }
