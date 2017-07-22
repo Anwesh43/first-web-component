@@ -45,3 +45,25 @@ class DotMidLine {
         context.arc(x,y,r*scale,0,2*Math.PI)
     }
 }
+class StateContainer {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+    }
+    update() {
+        this.scale += this.dir * 0.2
+        if(this.scale > 1) {
+            this.dir = 0
+            this.scale = 1
+        }
+        if(this.scale < 0) {
+            this.dir = 0
+            this.scale = 0
+        }
+    }
+    startUpdating() {
+        if(this.dir == 0){
+            this.dir = 1-2*this.scale
+        }
+    }
+}
