@@ -7,7 +7,16 @@ class DotMidLineComponent extends HTMLElement {
         shadow.appendChild(this.img)
     }
     render() {
-
+        const canvas = document.createElement('canvas')
+        const wc = w/5
+        canvas.width = wc
+        canvas.height = wc
+        const context = canvas.getContext('2d')
+        if(!this.dotMidLine) {
+            this.dotMidLine = new DotMidLine()
+        }
+        this.dotMidLine.draw(context,wc/2,wc/2,wc/2,1)
+        this.img.src = canvas.toDataURL()
     }
     connectedCallback(){
         this.render()
