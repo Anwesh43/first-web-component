@@ -1,5 +1,6 @@
 class ScaleUpImageComponent extends HTMLElement {
     constructor() {
+        super()
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
@@ -19,6 +20,22 @@ class ScaleUpImageComponent extends HTMLElement {
     }
     connectedCallback() {
         this.image = new Image()
+        this.animationHandler = new AnimationHandler(this)
+        console.log(this.src)
+        this.image.src = this.src
+        var mouseover = false
+        this.img.onmouseover = () => {
+            if(mouseover == false) {
+                mouseover = true
+                this.animationHandler.startAnimation()
+            }
+        }
+        this.img.onmouseout = () => {
+            if(mouseover == true) {
+                this.animationHandler.startAnimation()
+                mouseover = false
+            }
+        }
         this.image.onload = () => {
             this.render(0)
         }
@@ -33,10 +50,10 @@ class StateContainer {
         this.dir = 1-2*this.scale
     }
     stopped() {
-        return dir == 0
+        return this.dir == 0
     }
     update() {
-        this.scale += 0.2*dir
+        this.scale += 0.2*this.dir
         if(this.scale > 1 || this.scale < 0) {
             this.dir = 0
             if(this.scale > 1) {
@@ -73,13 +90,13 @@ class ScaleUpImage {
         context.save()
         context.beginPath()
         context.rect(0,0,w,h)
-        context.clipPath()
+        context.clip()
         context.save()
         context.translate(w/2,h/2)
         context.scale(1+0.5*scale,1+0.5*scale)
         context.drawImage(image,-image.width/2,-image.height/2)
         context.restore()
-        context.globalAlpha = 0.7
+        context.globalAlpha = 0.4
         context.fillStyle = 'red'
         context.fillRect(0,0,w,h)
         context.restore()
