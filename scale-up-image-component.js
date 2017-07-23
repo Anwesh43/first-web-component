@@ -19,3 +19,27 @@ class ScaleUpImageComponent extends HTMLElement {
         }
     }
 }
+class StateContainer {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+    }
+    startUpdating() {
+        this.dir = 1-2*this.scale
+    }
+    stopped() {
+        return dir == 0
+    }
+    update() {
+        this.scale += 0.2*dir
+        if(this.scale > 1 || this.scale < 0) {
+            this.dir = 0
+            if(this.scale > 1) {
+                this.scale = 1
+            }
+            else {
+                this.scale = 0
+            }
+        }
+    }
+}
