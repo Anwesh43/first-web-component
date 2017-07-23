@@ -5,7 +5,7 @@ class ScaleUpImageComponent extends HTMLElement {
         shadow.appendChild(this.img)
         this.src = this.getAttribute('src')
     }
-    render() {
+    render(scale) {
         const canvas = document.createElement('canvas')
         canvas.width = this.image.width
         canvas.height = this.image.height
@@ -15,7 +15,7 @@ class ScaleUpImageComponent extends HTMLElement {
     connectedCallback() {
         this.image = new Image()
         this.image.onload = () => {
-            this.render()
+            this.render(0)
         }
     }
 }
@@ -40,6 +40,26 @@ class StateContainer {
             else {
                 this.scale = 0
             }
+        }
+    }
+}
+class AnimationHandler {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+        this.stateContainer = new StateContainer()
+    }
+    startAnimation() {
+        if(this.animated == false) {
+            this.stateContainer.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render(this.stateContainer.scale)
+                this.stateContainer.update()
+                if(this.stateContainer.stopped() == true) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },75)
         }
     }
 }
