@@ -7,9 +7,14 @@ class ScaleUpImageComponent extends HTMLElement {
     }
     render(scale) {
         const canvas = document.createElement('canvas')
-        canvas.width = this.image.width
-        canvas.height = this.image.height
+        const imw = this.image.width,imh = this.image.height
+        canvas.width = imw
+        canvas.height = imh
+        if(!this.scaleUpImage) {
+            this.scaleUpImage = new ScaleUpImage()
+        }
         const context = canvas.getContext('2d')
+        this.scaleUpImage.draw(context,this.image,imw,imh,scale)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
@@ -80,3 +85,4 @@ class ScaleUpImage {
         context.restore()
     }
 }
+customElements.define('scale-up-image',ScaleUpImageComponent)
