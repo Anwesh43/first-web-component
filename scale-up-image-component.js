@@ -63,3 +63,20 @@ class AnimationHandler {
         }
     }
 }
+class ScaleUpImage {
+    draw(context,image,w,h,scale) {
+        context.save()
+        context.beginPath()
+        context.rect(0,0,w,h)
+        context.clipPath()
+        context.save()
+        context.translate(w/2,h/2)
+        context.scale(1+0.5*scale,1+0.5*scale)
+        context.drawImage(image,-image.width/2,-image.height/2)
+        context.restore()
+        context.globalAlpha = 0.7
+        context.fillStyle = 'red'
+        context.fillRect(0,0,w,h)
+        context.restore()
+    }
+}
