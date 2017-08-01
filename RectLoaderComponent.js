@@ -16,25 +16,25 @@ class RectLoaderComponent extends HTMLElement {
     }
     render(scale) {
         const canvas = document.createElement('canvas')
-        const imw = canvas.width,imh = canvas.height
-        canvas.height = imw
-        canvas.width = imh
+        const imw = 3*w/5,imh = h/10
+        canvas.height = imh
+        canvas.width = imw
         const context = canvas.getContext('2d')
         if(!this.rectLoader) {
             this.rectLoader = new RectLoader()
         }
-        this.rectLoader.draw(w,h,this.color,scale)
+        this.rectLoader.draw(context,imw*0.05,imh*0.05,imw*0.9,imh*0.9,this.color,scale)
         this.img.src = canvas.toDataURL()
     }
 }
 class RectLoader {
-    draw(w,h,color,scale) {
+    draw(context,x,y,bw,bh,color,scale) {
         context.fillStyle = color
         context.strokeStyle = color
-        context.lineWidth = w/50
+        context.lineWidth = 5
         context.lineCap = 'round'
-        context.fillRect(0,0,w*scale,h)
-        context.strokeRect(0,0,w,h)
+        context.fillRect(x,y,bw*scale,bh)
+        context.strokeRect(x,y,bw,bh)
     }
 }
 class StateContainer {
@@ -69,8 +69,10 @@ class AnimHandler {
                 if(this.stateContainer.stopped() == true) {
                     clearInterval(interval)
                     this.animated = false
+                    this.component.render(0)
+                    console.log("stopped")
                 }
-            },75)
+            },50)
         }
     }
 }
