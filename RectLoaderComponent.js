@@ -24,6 +24,7 @@ class RectLoaderComponent extends HTMLElement {
             this.rectLoader = new RectLoader()
         }
         this.rectLoader.draw(w,h,this.color,scale)
+        this.img.src = canvas.toDataURL()
     }
 }
 class RectLoader {
@@ -73,3 +74,4 @@ class AnimHandler {
         }
     }
 }
+customElements.define('rect-loader-comp',RectLoaderComponent)
