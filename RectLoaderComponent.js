@@ -2,16 +2,28 @@ const w = window.innerWidth,h = window.innerHeight
 class RectLoaderComponent extends HTMLElement {
     constructor() {
         super()
+        const shadow = this.attachShadow({mode:'open'})
+        this.img = document.createElement('img')
+        this.color = this.getAttribute('color') || '#e53935'
+        shadow.appendChild(this.img)
     }
     connectedCallback() {
-        this.render()
+        this.render(0)
+        this.animHandler = new AnimHandler(this)
+        this.img.onmousedown = (event) => {
+            this.animHandler.startAnimation()
+        }
     }
-    render() {
+    render(scale) {
         const canvas = document.createElement('canvas')
-        canvas.height = h/10
-        canvas.width = 3*w/5
+        const imw = canvas.width,imh = canvas.height
+        canvas.height = imw
+        canvas.width = imh
         const context = canvas.getContext('2d')
-        document.body.appendChild(canvas)
+        if(!this.rectLoader) {
+            this.rectLoader = new RectLoader()
+        }
+        this.rectLoader.draw(w,h,this.color,scale)
     }
 }
 class RectLoader {
