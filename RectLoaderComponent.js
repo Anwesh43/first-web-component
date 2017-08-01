@@ -41,3 +41,23 @@ class StateContainer {
         return condition
     }
 }
+class AnimHandler {
+    constructor(component) {
+        this.component = component
+        this.stateContainer = new StateContainer()
+        this.animated = false
+    }
+    startAnimation() {
+        if(this.animated == false) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render(this.stateContainer.scale)
+                this.stateContainer.update()
+                if(this.stateContainer.stopped() == true) {
+                    clearInterval(interval)
+                    this.animated = false
+                }
+            },75)
+        }
+    }
+}
