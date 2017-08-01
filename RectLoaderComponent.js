@@ -14,3 +14,13 @@ class RectLoaderComponent extends HTMLElement {
         document.body.appendChild(canvas)
     }
 }
+class RectLoader {
+    draw(w,h,color,scale) {
+        context.fillStyle = color
+        context.strokeStyle = color
+        context.lineWidth = w/50
+        context.lineCap = 'round'
+        context.fillRect(0,0,w*scale,h)
+        context.strokeRect(0,0,w,h)
+    }
+}
