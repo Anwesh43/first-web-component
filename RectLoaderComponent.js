@@ -24,3 +24,20 @@ class RectLoader {
         context.strokeRect(0,0,w,h)
     }
 }
+class StateContainer {
+    constructor() {
+        this.scale = 0
+        this.deg = 0
+    }
+    update() {
+        this.scale = Math.sin(this.deg*Math.PI/180)
+        this.deg += 4.5
+    }
+    stopped() {
+        const condition = this.deg > 180
+        if(condition) {
+            this.deg = 0
+        }
+        return condition
+    }
+}
