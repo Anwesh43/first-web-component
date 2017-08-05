@@ -6,7 +6,7 @@ class SpringLineButton extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
     }
-    render() {
+    render(scale) {
         var canvas = document.createElement('canvas')
         canvas.width = w/6
         canvas.height = h/10
@@ -14,7 +14,7 @@ class SpringLineButton extends HTMLElement {
         this.img.src = canvas.toDataURL()
     }
     componentDidMount() {
-        this.render()
+        this.render(0)
     }
 }
 class SpringLine {
@@ -69,5 +69,26 @@ class State {
     }
     stopped() {
         return this.dir == 0
+    }
+}
+class AninHandler {
+    constructor(component) {
+        this.animated = false
+        this.state = new State()
+        this.component = component
+    }
+    startAnimation() {
+        if(this.animated == false) {
+            this.animated = true
+            this.state.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render(this.state.scale)
+                this.state.update()
+                if(this.state.stopped() == true) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },75)
+        }
     }
 }
