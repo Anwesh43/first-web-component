@@ -48,3 +48,26 @@ class SpringLine {
         context.restore()
     }
 }
+class State {
+    constructor() {
+        this.scale = 0
+        this.deg = 0
+        this.dir = 0
+    }
+    update() {
+        this.deg += 20
+        this.scale = Math.abs(Math.sin(this.deg*Math.PI/180))
+        if(this.deg > 180) {
+            this.deg = 0
+            this.dir = 0
+        }
+    }
+    startUpdating() {
+        if(this.dir == 0) {
+            this.dir = 1
+        }
+    }
+    stopped() {
+        return this.dir == 0
+    }
+}
