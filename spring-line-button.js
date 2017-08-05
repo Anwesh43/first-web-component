@@ -12,12 +12,12 @@ class SpringLineButton extends HTMLElement {
         canvas.height = h/10
         const context = canvas.getContext('2d')
         if(!this.springLine) {
-            this.sringLine = new SpringLine()
+            this.springLine = new SpringLine()
         }
-        this.springLine.draw(context,w,h,scale)
+        this.springLine.draw(context,canvas.width,canvas.height,scale)
         this.img.src = canvas.toDataURL()
     }
-    componentDidMount() {
+    connectedCallback() {
         this.render(0)
         this.animHandler = new AnimHandler(this)
         this.img.onmousedown = ()=>{
@@ -33,22 +33,22 @@ class SpringLine {
         context.strokeStyle = context.fillStyle
         context.lineWidth = h/5
         context.beginPath()
-        context.arc(0,0,h/2,0,2*Math.PI)
+        context.arc(0,0,h/3,0,2*Math.PI)
         context.stroke()
         context.save()
         context.scale(scale,scale)
         context.beginPath()
-        context.arc(0,0,h,0,2*Math.PI)
+        context.arc(0,0,h/3,0,2*Math.PI)
         context.fill()
         context.restore()
         for(var i=0;i<2;i++) {
             context.beginPath()
             context.moveTo(0,0)
-            context.lineTo((1-2*i)*scale*w/3),0
+            context.lineTo((1-2*i)*scale*w/3,0)
             context.stroke()
             context.save()
             context.translate((1-2*i)*w/3,0)
-            context.arc(0,0,(h/2)*scale,0,2*Math.PI)
+            context.arc(0,0,(h/3)*scale,0,2*Math.PI)
             context.fill()
             context.restore()
         }
@@ -79,7 +79,7 @@ class State {
         return this.dir == 0
     }
 }
-class AninHandler {
+class AnimHandler {
     constructor(component) {
         this.animated = false
         this.state = new State()
@@ -100,3 +100,4 @@ class AninHandler {
         }
     }
 }
+customElements.define('spring-line-button-component',SpringLineButton)
