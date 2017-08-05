@@ -11,10 +11,18 @@ class SpringLineButton extends HTMLElement {
         canvas.width = w/6
         canvas.height = h/10
         const context = canvas.getContext('2d')
+        if(!this.springLine) {
+            this.sringLine = new SpringLine()
+        }
+        this.springLine.draw(context,w,h,scale)
         this.img.src = canvas.toDataURL()
     }
     componentDidMount() {
         this.render(0)
+        this.animHandler = new AnimHandler(this)
+        this.img.onmousedown = ()=>{
+            this.animHandler.startAnimation()
+        }
     }
 }
 class SpringLine {
