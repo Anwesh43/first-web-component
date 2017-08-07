@@ -17,3 +17,30 @@ class JumpRotateButtonComponent extends HTMLElement {
         this.render()
     }
 }
+class JumpRotateShape {
+    constructor(x,y,r) {
+        this.x = x
+        this.y = y
+        this.r = r
+        this.deg = 0
+    }
+    draw(context) {
+        context.strokeStyle = '#01579B'
+        context.lineWidth = this.r/10
+        context.lineCap = "round"
+        context.save()
+        context.translate(this.x,this.y)
+        context.rotate(this.deg*Math.PI/180)
+        context.beginPath()
+        context.arc(0,0,this.r,0,2*Math.PI)
+        context.stroke()
+        context.beginPath()
+        context.moveTo(0,0)
+        context.lineTo(0,-2*this.r/3)
+        context.stroke()
+        context.restore()
+    }
+    update(scale) {
+        this.deg = 360*scale
+    }
+}
