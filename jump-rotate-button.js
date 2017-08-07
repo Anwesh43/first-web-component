@@ -28,6 +28,10 @@ class JumpRotateButtonComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.animController = new AnimController(this)
+        this.div.onmousedown = () => {
+            this.animController.startAnimation()
+        }
     }
 }
 class JumpRotateShape {
