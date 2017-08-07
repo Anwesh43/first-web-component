@@ -4,6 +4,9 @@ class JumpRotateButtonComponent extends HTMLElement {
         super()
         const shadow = this.attachShadow({mode:'open'})
         this.div = document.createElement('div')
+        this.div.style.position = 'absolute'
+        this.div.style.top = parseInt(this.getAttribute('y') || `${h/2}`)
+        this.div.style.left = parseInt(this.getAttribute('x') || `${w/2}`)
         shadow.appendChild(this.div)
     }
     render() {
@@ -12,6 +15,9 @@ class JumpRotateButtonComponent extends HTMLElement {
         canvas.height = w/3
         const context = canvas.getContext('2d')
         this.div.style.background = `url(${canvas.toDataURL()})`
+    }
+    update(scale) {
+        this.div.style.top = parseInt(this.div.style.top) - h/2*scale
     }
     connectedCallback() {
         this.render()
@@ -59,4 +65,26 @@ class State {
     stopped() {
         return this.deg == 0
     }
+}
+class AnimController {
+    constructor(component) {
+        this.component = component
+        this.state = new State()
+        this.animated = false
+    }
+    startAnimation() {
+        if(this.animated == false) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.state.update()
+                this.component.update(this.state.scale)
+                if(this.state.stopped() == true) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },50)
+        }
+    }
+
 }
