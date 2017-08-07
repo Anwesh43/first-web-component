@@ -44,3 +44,19 @@ class JumpRotateShape {
         this.deg = 360*scale
     }
 }
+class State {
+    constructor() {
+        this.scale = 0
+        this.deg = 0
+    }
+    update() {
+        this.deg += 4.5
+        if(this.deg > 180) {
+            this.deg = 0
+        }
+        this.scale = Math.abs(Math.sin(this.deg*Math.PI/180))
+    }
+    stopped() {
+        return this.deg == 0
+    }
+}
