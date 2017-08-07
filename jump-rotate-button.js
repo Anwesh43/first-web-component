@@ -14,10 +14,17 @@ class JumpRotateButtonComponent extends HTMLElement {
         canvas.width = w/3
         canvas.height = w/3
         const context = canvas.getContext('2d')
+        if(!this.jrs) {
+            this.jrs = new JumpRotateShape(w/6,w/6,w/8)
+        }
+        this.jrs.draw(context)
         this.div.style.background = `url(${canvas.toDataURL()})`
     }
     update(scale) {
         this.div.style.top = parseInt(this.div.style.top) - h/2*scale
+        if(this.jrs) {
+            this.jrs.update(scale)
+        }
     }
     connectedCallback() {
         this.render()
