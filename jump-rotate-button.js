@@ -4,24 +4,27 @@ class JumpRotateButtonComponent extends HTMLElement {
         super()
         const shadow = this.attachShadow({mode:'open'})
         this.div = document.createElement('div')
+        this.div.style.width = w/10
+        this.div.style.height = w/10
         this.div.style.position = 'absolute'
         this.div.style.top = parseInt(this.getAttribute('y') || `${h/2}`)
+        this.origY = this.div.style.top
         this.div.style.left = parseInt(this.getAttribute('x') || `${w/2}`)
         shadow.appendChild(this.div)
     }
     render() {
         const canvas = document.createElement('canvas')
-        canvas.width = w/3
-        canvas.height = w/3
+        canvas.width = w/10
+        canvas.height = w/10
         const context = canvas.getContext('2d')
         if(!this.jrs) {
-            this.jrs = new JumpRotateShape(w/6,w/6,w/8)
+            this.jrs = new JumpRotateShape(w/20,w/20,w/30)
         }
         this.jrs.draw(context)
         this.div.style.background = `url(${canvas.toDataURL()})`
     }
     update(scale) {
-        this.div.style.top = parseInt(this.div.style.top) - h/2*scale
+        this.div.style.top = parseInt(this.origY) - h/6*scale
         if(this.jrs) {
             this.jrs.update(scale)
         }
@@ -99,3 +102,4 @@ class AnimController {
     }
 
 }
+customElements.define('jump-rotate-button-comp',JumpRotateButtonComponent)
