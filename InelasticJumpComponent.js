@@ -16,7 +16,7 @@ class InelasticJumpComponent extends HTMLElement {
         this.div.style.top = h-w/12
     }
     initRenderer() {
-        this.renderer = new InelasticRenderer(parseInt(this.div.style.top),h/3)
+        this.renderer = new InelasticRenderer(parseInt(this.div.style.top),h/2)
     }
     update() {
         this.renderer.update()
@@ -38,12 +38,12 @@ class InelasticRenderer {
         this.initY = y
         this.y = y
         this.a = a
-        this.afact = a/10
+        this.afact = a/6
         this.deg = 0
     }
     update() {
         this.y = this.initY - this.a*Math.abs(Math.sin(this.deg*Math.PI/180))
-        this.deg += 20
+        this.deg += 4.5
         if(this.deg %180 == 0) {
             this.a -= this.afact
         }
@@ -71,3 +71,4 @@ class Animator {
         }
     }
 }
+customElements.define('inelastic-jump-comp',InelasticJumpComponent)
