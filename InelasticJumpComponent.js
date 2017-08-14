@@ -14,11 +14,16 @@ class InelasticJumpComponent extends HTMLElement {
         this.div.style.position = "absolute"
         this.div.style.left = w/2-w/24
         this.div.style.top = h-w/12
-        this.renderer = new InelasticRenderer()
+    }
+    initRenderer() {
+        this.renderer = new InelasticRenderer(parseInt(this.div.style.top),h/3)
     }
     update() {
         this.renderer.update()
         this.div.style.top = this.renderer.y
+    }
+    stopped() {
+        return this.renderer.stopped()
     }
     connectedCallback() {
         this.initDiv()
@@ -37,6 +42,28 @@ class InelasticRenderer {
         this.deg += 20
         if(this.deg %180 == 0) {
             this.a -= this.afact
+        }
+    }
+    stopped() {
+        return this.a <= 0
+    }
+}
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            this.component.initRenderer()
+            const interval = setInterval(()=>{
+                this.component.update()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },50)
         }
     }
 }
