@@ -27,6 +27,10 @@ class InelasticJumpComponent extends HTMLElement {
     }
     connectedCallback() {
         this.initDiv()
+        this.animator = new Animator(this)
+        this.div.onmousedown = () =>{
+            this.animator.startAnimation()
+        }
     }
 }
 class InelasticRenderer {
