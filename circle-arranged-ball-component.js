@@ -22,12 +22,26 @@ class CircleArrangedBall {
         this.n = n
         this.w = w
         this.h = h
+        this.initBalls()
+    }
+    initBalls() {
+        this.balls = []
+        for(var i=0;i<this.n;i++) {
+            this.balls.push(new Ball(this.w/2,this.h/2,Math.min(this.w,this.h)/3))
+        }
     }
     draw(context) {
         var r = Math.min(w,h)/3
-        for(var i=0;i<this.n;i++) {
-
-        }
+        this.balls.forEach((ball)=>{
+            ball.draw(context)
+        })
+    }
+    handleTap(x,y) {
+        this.balls.forEach((ball)=>{
+            if(ball.handleTap(x,y)) {
+                ball.startUpdating()
+            }
+        })
     }
 }
 class Ball {
@@ -35,6 +49,17 @@ class Ball {
         this.x = x
         this.y = y
         this.r = r
+        this.scale = 0
+        this.dir = 0
+    }
+    startUpdating() {
+        this.dir = 1
+    }
+    update() {
+        this.scale += 0.2*this.dir
+    }
+    stopped() {
+        return dir == 0
     }
     draw(context) {
         context.fillStyle = "#f44336"
