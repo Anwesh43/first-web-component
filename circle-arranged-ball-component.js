@@ -22,6 +22,12 @@ class CircleArrangedBallComponent extrnds HTMLElement {
     connectedCallback() {
         this.animController = new AnimController(this)
         this.render()
+        this.img.onmousedown = (event) => {
+            const x = event.offsetX,y = event.offsetY
+            if(this.cab) {
+                this.cab.handleTap(x,y)
+            }
+        }
     }
 }
 class CircleArrangedBall {
