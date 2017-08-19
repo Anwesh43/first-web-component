@@ -17,3 +17,17 @@ class CircleArrangedBallComponent extrnds HTMLElement {
         this.render()
     }
 }
+class CircleArrangedBall {
+    constructor(n,w,h) {
+        this.n = n
+        this.w = w
+        this.h = h
+    }
+    draw(context) {
+        var r = Math.min(w,h)/3
+        context.fillStyle = "#f44336"
+        for(var i=0;i<this.n;i++) {
+
+        }
+    }
+}
