@@ -1,12 +1,18 @@
 const w = window.innerWidth,h = window.innerHeight
 
-class CircleArrangedBallComponent extrnds HTMLElement {
+class CircleArrangedBallComponent extends HTMLElement {
     constructor() {
         super()
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         this.n = this.getAttribute('n')||6
         shadow.appendChild(this.img)
+    }
+    removeBall(curr_ball) {
+        if(this.cab) {
+            this.cab.balls = this.cab.balls.filter((ball)=>ball.i != curr_ball.i)
+            console.log(this.cab.balls)
+        }
     }
     render() {
         const size = w/3
@@ -17,6 +23,7 @@ class CircleArrangedBallComponent extrnds HTMLElement {
         if(!this.cab) {
             this.cab = new CircleArrangedBall(this.n,size,size,this.animController)
         }
+        this.cab.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
@@ -40,8 +47,10 @@ class CircleArrangedBall {
     }
     initBalls() {
         this.balls = []
+        var r = Math.min(this.w,this.h)
+        var deg = (2*Math.PI)/this.n
         for(var i=0;i<this.n;i++) {
-            this.balls.push(new Ball(this.w/2,this.h/2,Math.min(this.w,this.h)/3))
+            this.balls.push(new Ball(this.w/2,this.h/2,r/6,2*r/3,deg*i,r/20,i))
         }
     }
     draw(context) {
@@ -60,33 +69,49 @@ class CircleArrangedBall {
     }
 }
 class Ball {
-    constructor(x,y,r) {
-        this.x = x
-        this.y = y
+    constructor(cx,cy,r,rmax,deg,size,i) {
+        this.cx = cx
+        this.cy = cy
+        this.deg = deg
+        this.rmax = rmax
         this.r = r
+        this.rinit = this.r
+        this.size = size
         this.scale = 0
+        this.rmax = rmax
         this.dir = 0
+        this.updateXY()
+        this.i = i
+    }
+    updateXY() {
+        this.x = this.cx+this.r*Math.cos(this.deg)
+        this.y = this.cy+this.r*Math.sin(this.deg)
     }
     startUpdating() {
         this.dir = 1
     }
     update() {
         this.scale += 0.2*this.dir
+        this.r = this.rinit+(this.rmax-this.rinit)*this.scale
+        this.updateXY()
+        if(this.scale > 1) {
+            this.dir = 0
+        }
     }
     stopped() {
-        return dir == 0
+        return this.dir == 0
     }
     draw(context) {
         context.fillStyle = "#f44336"
         context.save()
         context.translate(this.x,this.y)
         context.beginPath()
-        context.arc(0,0,this.r,0,2*Math.PI)
+        context.arc(0,0,this.size/2,0,2*Math.PI)
         context.fill()
         context.restore()
     }
     handleTap(x,y) {
-        return x>=this.x-this.r && x<=this.x+r && y>=this.y -r && y<=this.y+this.r
+        return x>=this.x-this.size/2 && x<=this.x+this.size/2 && y>=this.y -this.size/2 && y<=this.y+this.size/2
     }
 }
 class AnimController {
@@ -105,6 +130,7 @@ class AnimController {
                     tappedBall.update()
                     if(tappedBall.stopped()) {
                         this.tappedBalls.splice(index,1)
+                        this.component.removeBall(tappedBall)
                         if(this.tappedBalls.length == 0) {
                             clearInterval(interval)
                             this.animated = false
@@ -115,3 +141,4 @@ class AnimController {
         }
     }
 }
+customElements.define('circle-arrange-ball',CircleArrangedBallComponent)
