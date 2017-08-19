@@ -25,9 +25,27 @@ class CircleArrangedBall {
     }
     draw(context) {
         var r = Math.min(w,h)/3
-        context.fillStyle = "#f44336"
         for(var i=0;i<this.n;i++) {
 
         }
+    }
+}
+class Ball {
+    constructor(x,y,r) {
+        this.x = x
+        this.y = y
+        this.r = r
+    }
+    draw(context) {
+        context.fillStyle = "#f44336"
+        context.save()
+        context.translate(this.x,this.y)
+        context.beginPath()
+        context.arc(0,0,this.r,0,2*Math.PI)
+        context.fill()
+        context.restore()
+    }
+    handleTap(x,y) {
+        return x>=this.x-this.r && x<=this.x+r && y>=this.y -r && y<=this.y+this.r
     }
 }
