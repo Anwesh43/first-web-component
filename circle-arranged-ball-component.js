@@ -74,3 +74,29 @@ class Ball {
         return x>=this.x-this.r && x<=this.x+r && y>=this.y -r && y<=this.y+this.r
     }
 }
+class AnimController {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+        this.tappedBalls = []
+    }
+    startAnimation(ball) {
+        this.tappedBalls.push(ball)
+        if(this.tappedBalls.length == 1) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.tappedBalls.forEach((tappedBall,index)=>{
+                    tappedBall.update()
+                    if(tappedBall.stopped()) {
+                        this.tappedBalls.splice(index,1)
+                        if(this.tappedBalls.length == 0) {
+                            clearInterval(interval)
+                            this.animated = false
+                        }
+                    }
+                })
+            },50)
+        }
+    }
+}
