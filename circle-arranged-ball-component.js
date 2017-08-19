@@ -1,27 +1,35 @@
 const w = window.innerWidth,h = window.innerHeight
+
 class CircleArrangedBallComponent extrnds HTMLElement {
     constructor() {
         super()
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
+        this.n = this.getAttribute('n')||6
         shadow.appendChild(this.img)
     }
     render() {
+        const size = w/3
         const canvas = document.createElement('canvas')
-        canvas.width = w/3
-        canvas.height = w/3
+        canvas.width = size
+        canvas.height = size
         const context = canvas.getContext('2d')
+        if(!this.cab) {
+            this.cab = new CircleArrangedBall(this.n,size,size,this.animController)
+        }
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
+        this.animController = new AnimController(this)
         this.render()
     }
 }
 class CircleArrangedBall {
-    constructor(n,w,h) {
+    constructor(n,w,h,controller) {
         this.n = n
         this.w = w
         this.h = h
+        this.controller = controller
         this.initBalls()
     }
     initBalls() {
@@ -40,6 +48,7 @@ class CircleArrangedBall {
         this.balls.forEach((ball)=>{
             if(ball.handleTap(x,y)) {
                 ball.startUpdating()
+                this.controller.startAnimation(ball)
             }
         })
     }
