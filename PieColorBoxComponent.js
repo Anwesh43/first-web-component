@@ -10,19 +10,23 @@ class PieColorBoxComponent extends HTMLElement {
         this.render()
     }
     startUpdating() {
-
+        this.pieColorBox.startUpdating()
     }
     update() {
-
+        this.pieColorBox.update()
     }
     stopped() {
-
+        return this.pieColorBox.stopped()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w/5
         canvas.height = w/5
         const context = canvas.getContext('2d')
+        if(!this.pieColorBox) {
+            this.pieColorBox = new PieColorBox(canvas.width,canvas.height)
+        }
+        this.pieColorBox.draw(context)
         this.img.src = canvas.toDataURL()
     }
 }
