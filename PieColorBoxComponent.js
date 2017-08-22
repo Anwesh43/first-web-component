@@ -8,6 +8,10 @@ class PieColorBoxComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.animator = new Animator()
+        this.img.onmousedown = (event)=>{
+            this.animator.start()
+        }
     }
     startUpdating() {
         this.pieColorBox.startUpdating()
