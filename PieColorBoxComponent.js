@@ -9,6 +9,15 @@ class PieColorBoxComponent extends HTMLElement {
     connectedCallback() {
         this.render()
     }
+    startUpdating() {
+
+    }
+    update() {
+
+    }
+    stopped() {
+
+    }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w/5
@@ -60,8 +69,36 @@ class PieColorBox {
             this.scale = 0
         }
     }
+    stopped() {
+        return this.dir == 0
+    }
+    startAnimating() {
+        if(this.dir == 0) {
+            this.dir = 1 - 2*this.scale
+        }
+    }
     handleTap(x,y) {
         const r = Math.min(this.w,this.h)/5
-        return x>=this.w/2-r && x<=this.w/2+r && y>=this.h/2 - r && y<=this.h/2 +r
+        return x>=this.w/2-r && x<=this.w/2+r && y>=this.h/2 - r && y<=this.h/2 +r && this.dir == 0
+    }
+}
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    start() {
+        if(!this.animated) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },75)
+        }
     }
 }
