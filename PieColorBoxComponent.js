@@ -3,18 +3,18 @@ class PieColorBoxComponent extends HTMLElement {
     constructor() {
         super()
         const shadow = this.attachShadow({mode:'open'})
-        this.img = document.createElement('div')
+        this.img = document.createElement('img')
         shadow.appendChild(this.img)
     }
     connectedCallback() {
         this.render()
-        this.animator = new Animator()
+        this.animator = new Animator(this)
         this.img.onmousedown = (event)=>{
             this.animator.start()
         }
     }
     startUpdating() {
-        this.pieColorBox.startUpdating()
+        this.pieColorBox.startAnimating()
     }
     update() {
         this.pieColorBox.update()
@@ -45,13 +45,14 @@ class PieColorBox {
         context.save()
         context.translate(this.w/2,this.h/2)
         context.save()
+        context.translate(-this.w/2,0)
         context.scale(this.scale,1)
         context.fillStyle = '#1565C0'
-        context.fillRect(-this.w/2,-this.h/2,this.w,this.h)
+        context.fillRect(0,-this.h/2,this.w,this.h)
         context.restore()
         context.strokeStyle = '#d32f2f'
         context.fillStyle = '#d32f2f'
-        context.strokeWidth = Math.min(this.w,this.h)/40
+        context.lineWidth = Math.min(this.w,this.h)/40
         const r = Math.min(this.w,this.h)/5
         context.beginPath()
         context.arc(0,0,r,0,2*Math.PI)
@@ -59,7 +60,7 @@ class PieColorBox {
         context.beginPath()
         const finalDeg = Math.floor(360*this.scale)
         context.moveTo(0,0)
-        for(var i=0;i<Math.floor(360*this.scale);i++) {
+        for(var i=0;i<=finalDeg;i++) {
             const x = r*Math.cos(i*Math.PI/180), y = r*Math.sin(i*Math.PI/180)
             context.lineTo(x,y)
         }
@@ -110,3 +111,4 @@ class Animator {
         }
     }
 }
+customElements.define('pie-color-box',PieColorBoxComponent)
