@@ -8,6 +8,7 @@ class ClickableColorFilterImageComponent extends HTMLElement {
         this.color = this.getAttribute('color') || '#00838F'
         this.image = new Image()
         this.state = new State()
+        this.animationHandler = new AnimationHandler(this)
     }
     update() {
         this.state.update()
@@ -28,6 +29,9 @@ class ClickableColorFilterImageComponent extends HTMLElement {
         this.image.src = this.src
         this.image.onload = ()=>{
             this.render()
+        }
+        this.img.onclick = ()=>{
+            this.animationHandler.startAnimation()
         }
     }
 }
@@ -76,6 +80,7 @@ class AnimationHandler {
         if(!this.animated) {
             this.animated = true
             const interval = setInterval(()=>{
+                this.component.render()
                 this.component.update()
                 if(this.component.stopped()) {
                     clearInterval(interval)
