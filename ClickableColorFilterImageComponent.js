@@ -23,3 +23,23 @@ class ClickableColorFilterImageComponent extends HTMLElement {
         }
     }
 }
+class ClickableColorFilterImage {
+    static draw(context,image,color,w,h,scale) {
+        context.globalAlpha = 1
+        context.save()
+        context.translate(w/2,h/2)
+        context.beginPath()
+        context.arc(0,0,Math.min(w,h)/2,0,2*Math.PI)
+        context.clipPath()
+        context.drawImage(image,-w/2,-h/2)
+        context.globalAlpha = 0.7
+        context.fillStyle = color
+        context.save()
+        context.scale(scale,scale)
+        context.beginPath()
+        context.arc(0,0,Math.min(w,h)/2,0,2*Math.PI)
+        context.fill()
+        context.restore()
+        context.restore()
+    }
+}
