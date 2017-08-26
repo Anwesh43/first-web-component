@@ -7,6 +7,13 @@ class ClickableColorFilterImageComponent extends HTMLElement {
         shadow.appendChild(this.img)
         this.color = this.getAttribute('color') || '#00838F'
         this.image = new Image()
+        this.state = new State()
+    }
+    update() {
+        this.state.update()
+    }
+    stopped() {
+        return this.state.stopped()
     }
     render() {
         var w = this.image.width,h = this.image.height
@@ -14,6 +21,7 @@ class ClickableColorFilterImageComponent extends HTMLElement {
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
+        ClickableColorFilterImage.draw(context,this.image,this.color,w,h,this.state.scale)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
