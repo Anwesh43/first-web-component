@@ -1,3 +1,4 @@
+const speed = 4.5
 class ClickableColorFilterImageComponent extends HTMLElement {
     constructor() {
         super()
@@ -8,7 +9,9 @@ class ClickableColorFilterImageComponent extends HTMLElement {
         this.color = this.getAttribute('color') || '#00838F'
         this.image = new Image()
         this.state = new State()
-        this.animationHandler = new AnimationHandler(this)
+        const delay = parseFloat(this.getAttribute('delay')) || 500
+        this.animationHandler = new AnimationHandler(this,delay)
+
     }
     update() {
         this.state.update()
@@ -61,7 +64,7 @@ class State {
         this.deg = 0
     }
     update() {
-        this.deg += 3
+        this.deg += speed
         this.scale = Math.abs(Math.sin(this.deg*Math.PI/180))
         if(this.deg > 180) {
             this.deg = 0
@@ -72,9 +75,13 @@ class State {
     }
 }
 class AnimationHandler {
-    constructor(component) {
+    constructor(component,delay) {
         this.component = component
         this.animated = false
+        this.interval = 20
+        if(delay != 0) {
+            this.interval = delay/(180/speed)
+        }
     }
     startAnimation() {
         if(!this.animated) {
@@ -86,7 +93,7 @@ class AnimationHandler {
                     clearInterval(interval)
                     this.animated = false
                 }
-            },30)
+            },this.interval)
         }
     }
 }
