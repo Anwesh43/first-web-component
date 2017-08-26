@@ -42,7 +42,7 @@ class ClickableColorFilterImage {
         context.translate(w/2,h/2)
         context.beginPath()
         context.arc(0,0,Math.min(w,h)/2,0,2*Math.PI)
-        context.clipPath()
+        context.clip()
         context.drawImage(image,-w/2,-h/2)
         context.globalAlpha = 0.7
         context.fillStyle = color
@@ -84,9 +84,10 @@ class AnimationHandler {
                 this.component.update()
                 if(this.component.stopped()) {
                     clearInterval(interval)
-                    animated = false
+                    this.animated = false
                 }
-            },50)
+            },30)
         }
     }
 }
+customElements.define('clickable-color-filter-image',ClickableColorFilterImageComponent)
