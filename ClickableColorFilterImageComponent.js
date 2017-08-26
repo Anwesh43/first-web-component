@@ -67,3 +67,21 @@ class State {
         return this.deg == 0
     }
 }
+class AnimationHandler {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.update()
+                if(this.component.stopped()) {
+                    clearInterval(interval)
+                    animated = false
+                }
+            },50)
+        }
+    }
+}
