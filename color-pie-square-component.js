@@ -1,4 +1,5 @@
 const w = window.innerWidth
+const n = 4
 class ColorPieSquareComponent extends HTMLElement {
     constructor() {
         super()
@@ -9,7 +10,7 @@ class ColorPieSquareComponent extends HTMLElement {
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w/3
-        canvas.height = w/3
+        canvas.height = w/3+canvas.width/4
         const context = canvas.getContext('2d')
         this.img.src = canvas.toDataURL()
     }
@@ -58,5 +59,32 @@ class ColorSquare {
         context.scale(-scale,-scale)
         context.fillRect(-this.w/2,-this.h/2,this.w,this.h)
         context.restore()
+    }
+}
+class ColorPieSquare  {
+    constructor(i,w) {
+        this.init(i,w)
+    }
+    init(i,w) {
+        var gap = w/(2*n+1)
+        this.colorPie = new ColorPie((2*gap*i)+3*gap/2,w+w/8,gap/2)
+        this.colorSquare = new ColorSquare((i%2)*w/2,Math.floor(i/2)*w/2,w/2,w/2)
+        this.scale = 0
+    }
+    draw(context) {
+        this.colorPie.draw(context,this.scale)
+        this.colorSquare.draw(context,this.scale)
+    }
+    startUpdating() {
+
+    }
+    stopped() {
+
+    }
+    update() {
+
+    }
+    handleTap(x,y) {
+        return this.colorPie.handleTap(x,y)
     }
 }
