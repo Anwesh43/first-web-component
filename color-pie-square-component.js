@@ -4,7 +4,7 @@ class ColorPieSquareComponent extends HTMLElement {
     constructor() {
         super()
         const shadow = this.attachShadow({mode:'open'})
-        this.img = document.createElement(img)
+        this.img = document.createElement('img')
         shadow.appendChild(this.img)
     }
     render() {
@@ -12,6 +12,7 @@ class ColorPieSquareComponent extends HTMLElement {
         canvas.width = w/3
         canvas.height = w/3+canvas.width/4
         const context = canvas.getContext('2d')
+        this.colorPieSquareContainer.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
@@ -41,9 +42,12 @@ class ColorPie {
         context.translate(this.x,this.y)
         context.beginPath()
         context.arc(0,0,this.r,0,2*Math.PI)
+        context.stroke()
+        const deg = Math.floor(360*scale)
+        console.log(deg)
         context.beginPath()
         context.moveTo(0,0)
-        for(var i=0;i<Math.floor(360*this.scale);i+=10) {
+        for(var i=0;i<=Math.floor(360*scale);i+=10) {
             const x = this.r*Math.cos(i*Math.PI/180),y = this.r*Math.sin(i*Math.PI/180)
             context.lineTo(x,y)
         }
@@ -65,7 +69,7 @@ class ColorSquare {
         context.fillStyle = '#3949AB'
         context.save()
         context.translate(this.x+this.w/2,this.y+this.h/2)
-        context.scale(-scale,-scale)
+        context.scale(scale,scale)
         context.fillRect(-this.w/2,-this.h/2,this.w,this.h)
         context.restore()
     }
@@ -84,6 +88,7 @@ class ColorPieSquare  {
     draw(context) {
         this.colorPie.draw(context,this.state.scale)
         this.colorSquare.draw(context,this.state.scale)
+        console.log("drawn")
     }
     startUpdating() {
         this.state.startUpdating()
@@ -92,6 +97,7 @@ class ColorPieSquare  {
         return this.state.stopped()
     }
     update() {
+        console.log("updating")
         this.state.update()
     }
     handleTap(x,y) {
@@ -101,7 +107,7 @@ class ColorPieSquare  {
 class State {
     constructor() {
         this.scale = 0
-        thsi.dir = 0
+        this.dir = 0
     }
     startUpdating() {
         this.dir = 1-2*this.scale
@@ -110,7 +116,7 @@ class State {
         return this.dir == 0
     }
     update() {
-        this.scale += this.dir*0.2
+        this.scale += this.dir*0.1
         if(this.scale > 1) {
             this.dir = 0
             this.scale = 1
@@ -126,7 +132,7 @@ class ColorPieSquareContainer {
         this.init(w)
     }
     init(w) {
-        this.colorPieSqaures = []
+        this.colorPieSquares = []
         for(var i=0;i<4;i++) {
             this.colorPieSquares.push(new ColorPieSquare(i,w))
         }
@@ -138,6 +144,7 @@ class ColorPieSquareContainer {
     }
     handleTap(x,y) {
         const tappedColorPies = this.colorPieSquares.filter((colorPieSquare)=>colorPieSquare.handleTap(x,y))
+        console.log(tappedColorPies)
         if(tappedColorPies.length == 1) {
             return tappedColorPies[0]
         }
@@ -150,11 +157,13 @@ class CPSAnimator {
         this.tappedSquares = []
     }
     startAnimation(colorPieSquare) {
-        this.tappedSquares.push(colorPieSquare)
         colorPieSquare.startUpdating()
+        this.tappedSquares.push(colorPieSquare)
+
         if(!this.animated) {
             this.animated = true
             const interval = setInterval(()=>{
+                this.component.render()
                 this.tappedSquares.forEach((tappedSquare,i)=>{
                     tappedSquare.update()
                     if(tappedSquare.stopped()) {
@@ -168,3 +177,5 @@ class CPSAnimator {
             },50)
         }
     }
+}
+customElements.define('color-pie-square-comp',ColorPieSquareComponent)
