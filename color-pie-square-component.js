@@ -25,8 +25,12 @@ class ColorPie {
     }
     draw(context,scale) {
         context.fillStyle = '#E65100'
+        context.strokeStyle = context.fillStyle
+        context.strokeWidth = this.r/10
         context.save()
         context.translate(this.x,this.y)
+        context.beginPath()
+        context.arc(0,0,this.r,0,2*Math.PI)
         context.beginPath()
         context.moveTo(0,0)
         for(var i=0;i<Math.floor(360*this.scale);i+=10) {
@@ -38,5 +42,21 @@ class ColorPie {
     }
     handleTap(x,y) {
         return x>=this.x-this.r && x<=this.x+this.r && y>=this.y-this.r && y<=this.y+this.r
+    }
+}
+class ColorSquare {
+    constructor(x,y,w,h) {
+        this.x = x
+        this.y = y
+        this.w = w
+        this.h = h
+    }
+    draw(context,scale) {
+        context.fillStyle = '#3949AB'
+        context.save()
+        context.translate(this.x+this.w/2,this.y+this.h/2)
+        context.scale(-scale,-scale)
+        context.fillRect(-this.w/2,-this.h/2,this.w,this.h)
+        context.restore()
     }
 }
