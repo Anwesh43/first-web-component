@@ -69,22 +69,45 @@ class ColorPieSquare  {
         var gap = w/(2*n+1)
         this.colorPie = new ColorPie((2*gap*i)+3*gap/2,w+w/8,gap/2)
         this.colorSquare = new ColorSquare((i%2)*w/2,Math.floor(i/2)*w/2,w/2,w/2)
-        this.scale = 0
+        this.state = new State()
     }
     draw(context) {
-        this.colorPie.draw(context,this.scale)
-        this.colorSquare.draw(context,this.scale)
+        this.colorPie.draw(context,this.state.scale)
+        this.colorSquare.draw(context,this.state.scale)
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-
+        return this.state.stopped()
     }
     update() {
-
+        this.state.update()
     }
     handleTap(x,y) {
         return this.colorPie.handleTap(x,y)
+    }
+}
+class State {
+    constructor() {
+        this.scale = 0
+        thsi.dir = 0
+    }
+    startUpdating() {
+        this.dir = 1-2*this.scale
+    }
+    stopped() {
+        return this.dir == 0
+    }
+    update() {
+        this.scale += this.dir*0.2
+        if(this.scale > 1) {
+            this.dir = 0
+            this.scale = 1
+        }
+        if(this.scale < 0) {
+            this.dir = 0
+            this.scale = 0
+        }
     }
 }
