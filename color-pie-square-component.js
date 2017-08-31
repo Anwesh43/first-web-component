@@ -15,7 +15,16 @@ class ColorPieSquareComponent extends HTMLElement {
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
+        this.animator = new CPSAnimator(this)
+        this.colorPieSquareContainer = new ColorPieSquareContainer(w/3)
         this.render()
+        this.cpsAnimator = new CPSAnimator(this)
+        this.img.onmousedown = (event) => {
+            const colorPieSquare = this.colorPieSquareContainer.handleTap(event.offsetX,event.offsetY)
+            if(colorPieSquare) {
+                this.cpsAnimator.startAnimation(colorPieSquare)
+            }
+        }
     }
 }
 class ColorPie {
@@ -66,6 +75,7 @@ class ColorPieSquare  {
         this.init(i,w)
     }
     init(i,w) {
+        this.i = i
         var gap = w/(2*n+1)
         this.colorPie = new ColorPie((2*gap*i)+3*gap/2,w+w/8,gap/2)
         this.colorSquare = new ColorSquare((i%2)*w/2,Math.floor(i/2)*w/2,w/2,w/2)
@@ -129,7 +139,32 @@ class ColorPieSquareContainer {
     handleTap(x,y) {
         const tappedColorPies = this.colorPieSquares.filter((colorPieSquare)=>colorPieSquare.handleTap(x,y))
         if(tappedColorPies.length == 1) {
-            
+            return tappedColorPies[0]
         }
     }
 }
+class CPSAnimator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+        this.tappedSquares = []
+    }
+    startAnimation(colorPieSquare) {
+        this.tappedSquares.push(colorPieSquare)
+        colorPieSquare.startUpdating()
+        if(!this.animated) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.tappedSquares.forEach((tappedSquare,i)=>{
+                    tappedSquare.update()
+                    if(tappedSquare.stopped()) {
+                        this.tappedSquares.splice(i,1)
+                        if(this.tappedSquares.size == 0) {
+                            clearInterval(interval)
+                            this.animated = false
+                        }
+                    }
+                })
+            },50)
+        }
+    }
