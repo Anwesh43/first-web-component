@@ -111,3 +111,25 @@ class State {
         }
     }
 }
+class ColorPieSquareContainer {
+    constructor(w) {
+        this.init(w)
+    }
+    init(w) {
+        this.colorPieSqaures = []
+        for(var i=0;i<4;i++) {
+            this.colorPieSquares.push(new ColorPieSquare(i,w))
+        }
+    }
+    draw(context) {
+        this.colorPieSquares.forEach((colorPieSquare)=>{
+            colorPieSquare.draw(context)
+        })
+    }
+    handleTap(x,y) {
+        const tappedColorPies = this.colorPieSquares.filter((colorPieSquare)=>colorPieSquare.handleTap(x,y))
+        if(tappedColorPies.length == 1) {
+            
+        }
+    }
+}
