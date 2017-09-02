@@ -1,5 +1,5 @@
 var w = window.innerWidth, h = window.innerHeight,size = Math.min(w,h)/3
-class WifiPieComponent extends Component {
+class WifiPieComponent extends HTMLElement {
     constructor() {
         super()
         const shadow = this.attachShadow({mode:'open'})
@@ -43,7 +43,7 @@ class WifiPie {
     draw(context) {
         context.save()
         context.translate(this.x,this.y)
-        context,beginPath()
+        context.beginPath()
         context.arc(0,0,this.r,0,2*Math.PI)
         context.stroke()
         context.beginPath()
@@ -129,3 +129,4 @@ class WifiPieAnimator {
         }
     }
 }
+customElements.define('wifi-pie-comp',WifiPieComponent)
