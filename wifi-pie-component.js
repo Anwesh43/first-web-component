@@ -33,8 +33,7 @@ class WifiPie {
         this.x = size/2
         this.y = 0.9*size
         this.r = 0.1*size
-        this.scale = 0
-        this.dir = 0
+        this.state = new State()
     }
     draw(context) {
         context.save()
@@ -65,6 +64,21 @@ class WifiPie {
             context.restore()
         }
         context.restore()
+    }
+    update() {
+        this.state.update()
+    }
+    startUpdating() {
+        this.state.startUpdating()
+    }
+    stopped() {
+        return this.state.stopped()
+    }
+}
+class State {
+    constructor() {
+        this.dir = 0
+        this.state = 0
     }
     update() {
         this.scale += 0.2*this.dir
