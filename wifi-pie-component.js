@@ -1,4 +1,4 @@
-var w = window.innerWidth, h = window.innerHeight,size = Math.min(w,h)/3
+var w = window.innerWidth, h = window.innerHeight,size = Math.min(w,h)/3,gapDeg = 30
 class WifiPieComponent extends HTMLElement {
     constructor() {
         super()
@@ -12,6 +12,9 @@ class WifiPieComponent extends HTMLElement {
         canvas.height = size
         canvas.width = size
         const context = canvas.getContext('2d')
+        context.fillStyle = '#0277BD'
+        context.strokeStyle = context.fillStyle
+        context.lineWidth = size/30
         this.wifiPie.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -26,9 +29,10 @@ class WifiPieComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        const animator = new WifiPieAnimator(this)
         this.img.onmousedown = (event) => {
-            if(this.wifiPie.handleTap(event.offsetY,event.offsetY)) {
-                this.wifiPie.startUpdating()
+            if(this.wifiPie.handleTap(event.offsetX,event.offsetY)) {
+                animator.startAnimating()
             }
         }
     }
@@ -37,7 +41,7 @@ class WifiPie {
     constructor() {
         this.x = size/2
         this.y = 0.9*size
-        this.r = 0.1*size
+        this.r = 0.08*size
         this.state = new State()
     }
     draw(context) {
@@ -48,28 +52,29 @@ class WifiPie {
         context.stroke()
         context.beginPath()
         context.moveTo(0,0)
-        for(var i=0;i<Math.floor(360*this.scale);i+=10) {
+        for(var i=0;i<=Math.floor(360*this.state.scale);i+=10) {
             const x = this.r*Math.cos(i*Math.PI/180),y = this.r*Math.sin(i*Math.PI/180)
             context.lineTo(x,y)
         }
         context.fill()
-        var radius = 0
-        for(var i=0;i<Math.floor(5*this.scale);i++) {
-            context.save()
-            context.translate(this.x,this.y-this.r)
+        context.restore()
+        var radius = 0.02*size
+        context.save()
+        context.translate(this.x,this.y-0.1*size)
+        const midDeg = -90,startDeg = midDeg - gapDeg*this.state.scale,endDeg = midDeg + gapDeg*this.state.scale
+        for(var i=1;i<=5;i++) {
             context.beginPath()
-            for(var j=-120;j<=60;j+=5) {
+            for(var j=startDeg;j<=endDeg;j+=5) {
                 const x = radius*Math.cos(j*Math.PI/180),y = radius*Math.sin(j*Math.PI/180)
-                if(j == -120) {
+                if(j == 0) {
                     context.moveTo(x,y)
                 }
                 else {
                     context.lineTo(x,y)
                 }
-                radius += 0.12*h
             }
             context.stroke()
-            context.restore()
+            radius += 0.12*size
         }
         context.restore()
     }
@@ -83,13 +88,13 @@ class WifiPie {
         return this.state.stopped()
     }
     handleTap(x,y) {
-        return this.x>=x -this.r && x<=this.x+this.r && y>=this.y-this.r && y<=this.y+this.r
+        return x>=this.x -this.r && x<=this.x+this.r && y>=this.y-this.r && y<=this.y+this.r
     }
 }
 class State {
     constructor() {
         this.dir = 0
-        this.state = 0
+        this.scale = 0
     }
     update() {
         this.scale += 0.2*this.dir
