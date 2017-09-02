@@ -98,3 +98,24 @@ class State {
         return this.dir == 0
     }
 }
+class WifiPieAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimating() {
+        if(!this.animated) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },75)
+        }
+    }
+
+}
