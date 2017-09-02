@@ -26,6 +26,11 @@ class WifiPieComponent extends Component {
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            if(this.wifiPie.handleTap(event.offsetY,event.offsetY)) {
+                this.wifiPie.startUpdating()
+            }
+        }
     }
 }
 class WifiPie {
@@ -38,6 +43,9 @@ class WifiPie {
     draw(context) {
         context.save()
         context.translate(this.x,this.y)
+        context,beginPath()
+        context.arc(0,0,this.r,0,2*Math.PI)
+        context.stroke()
         context.beginPath()
         context.moveTo(0,0)
         for(var i=0;i<Math.floor(360*this.scale);i+=10) {
@@ -73,6 +81,9 @@ class WifiPie {
     }
     stopped() {
         return this.state.stopped()
+    }
+    handleTap(x,y) {
+        return this.x>=x -this.r && x<=this.x+this.r && y>=this.y-this.r && y<=this.y+this.r
     }
 }
 class State {
@@ -117,5 +128,4 @@ class WifiPieAnimator {
             },75)
         }
     }
-
 }
