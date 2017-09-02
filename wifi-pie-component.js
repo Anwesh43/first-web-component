@@ -1,21 +1,38 @@
+var w = window.innerWidth, h = window.innerHeight,size = Math.min(w,h)/3
 class WifiPieComponent extends Component {
     constructor() {
-
+        super()
+        const shadow = this.attachShadow({mode:'open'})
+        this.img = document.createElement('img')
+        this.wifiPie = new WifiPie()
+        shadow.appendChild(this.img)
     }
     render() {
-
+        const canvas = document.createElement('canvas')
+        canvas.height = size
+        canvas.width = size
+        const context = canvas.getContext('2d')
+        this.wifiPie.draw(context)
+        this.img.src = canvas.toDataURL()
+    }
+    update() {
+        this.wifiPie.update()
+    }
+    stopped() {
+        return this.wifiPie.stopped()
+    }
+    startUpdating() {
+        this.wifiPie.startUpdating()
     }
     connectedCallback() {
-
+        this.render()
     }
 }
-class WfiPie {
-    constructor(w,h) {
-        this.w = w
-        this.h = h
-        this.x = w/2
-        this.y = 0.9*h
-        this.r = 0.1*h
+class WifiPie {
+    constructor() {
+        this.x = size/2
+        this.y = 0.9*size
+        this.r = 0.1*size
         this.scale = 0
         this.dir = 0
     }
@@ -42,6 +59,7 @@ class WfiPie {
                 else {
                     context.lineTo(x,y)
                 }
+                radius += 0.12*h
             }
             context.stroke()
             context.restore()
