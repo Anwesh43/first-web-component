@@ -5,25 +5,27 @@ class RedToGreenBoxComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.redToGreenBox = new RedToGreenBox()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.redToGreenBox.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
     }
     update() {
-
+        this.redToGreenBox.update()
     }
     startUpdating() {
-
+        this.redToGreenBox.startUpdating()
     }
     stopped() {
-
+        return this.redToGreenBox.stopped()
     }
 }
 class RedToGreenBox {
