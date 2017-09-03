@@ -12,6 +12,8 @@ class RedToGreenBoxComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        context.lineWidth = size/30
+        context.lineCap = "round"
         this.redToGreenBox.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -34,8 +36,8 @@ class RedToGreenBoxComponent extends HTMLElement {
 }
 class RedToGreenBox {
     constructor() {
-        this.x = w/2
-        this.y = h/2
+        this.x = size/2
+        this.y = size/2
         this.r = size/5
         this.state = new State()
     }
@@ -61,19 +63,15 @@ class RedToGreenBox {
             context.rotate(i*Math.PI/2)
             context.strokeStyle = 'red'
             context.beginPath()
-            context.moveTo(-2*w/5,-2*h/5)
-            context.lineTo(2*w/5,-2*h/5)
+            context.moveTo(-2*size/5,-2*size/5)
+            context.lineTo(2*size/5,-2*size/5)
             context.stroke()
-            context.strokeStyle = 'blue'
-            context.beginPath()
-            context.moveTo((-2*w/5)*this.state.scale,-2*h/5)
-            context.lineTo((2*w/5)*this.state.scale,-2*h/5)
-            context.stroke()
+            context.strokeStyle = 'green'
             for(var j=0;j<2;j++) {
-                const x1 = (4*w/5)*j,gap = (2*w/5)*(1-2*j)*this.state.scale
+                const x1 = -2*size/5+(4*size/5)*j,gap = (2*size/5)*(1-2*j)*this.state.scale
                 context.beginPath()
-                context.moveTo(x1,-2*h/5)
-                context.lineTo(x1+gap,-2*h/5)
+                context.moveTo(x1,-2*size/5)
+                context.lineTo(x1+gap,-2*size/5)
                 context.stroke()
             }
             context.restore()
@@ -110,7 +108,7 @@ class State {
         this.dir = 1 - 2*this.scale
     }
     stopped() {
-        return dir == 0
+        return this.dir == 0
     }
 }
 class Animator  {
@@ -133,3 +131,4 @@ class Animator  {
         }
     }
 }
+customElements.define('red-to-green-comp',RedToGreenBoxComponent)
