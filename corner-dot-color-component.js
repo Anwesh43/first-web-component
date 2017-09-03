@@ -135,3 +135,4 @@ class Animator {
     }
 }
 // This about the webcomponent
+customElements.defin('corner-dot-color-comp',CornerDotColorComponent)
