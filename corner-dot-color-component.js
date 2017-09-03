@@ -110,4 +110,24 @@ class State  {
         return this.dir == 0
     }
 }
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update()
+                if(this.component.stopped()){
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },75)
+        }
+    }
+}
 // This about the webcomponent
