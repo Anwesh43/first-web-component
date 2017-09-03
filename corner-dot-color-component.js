@@ -5,7 +5,7 @@ class CornerDotColorComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         this.cornerDotColor = new CornerDotColor()
-        this.animator = new Animator()
+        this.animator = new Animator(this)
         shadow.appendChild(this.img)
     }
     render() {
@@ -13,6 +13,8 @@ class CornerDotColorComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        context.fillStyle = '#AD1457'
+        context.strokeStyle = context.fillStyle
         this.cornerDotColor.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -66,7 +68,6 @@ class CornerDotColor {
         context.save()
         context.translate(this.x,this.y)
         context.lineWidth = size/40
-        context.strokeStyle = 'blue'
         this.drawStrokeCircle(context)
         this.drawFillCircle(context)
         for(var i=0;i<4;i++) {
@@ -135,4 +136,4 @@ class Animator {
     }
 }
 // This about the webcomponent
-customElements.defin('corner-dot-color-comp',CornerDotColorComponent)
+customElements.define('corner-dot-color-comp',CornerDotColorComponent)
