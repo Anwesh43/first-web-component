@@ -17,6 +17,10 @@ class RedToGreenBoxComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.animator = new Animator(this)
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimation()
+        }
     }
     update() {
         this.redToGreenBox.update()
