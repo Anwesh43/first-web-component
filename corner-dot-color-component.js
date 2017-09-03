@@ -5,6 +5,7 @@ class CornerDotColorComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         this.cornerDotColor = new CornerDotColor()
+        this.animator = new Animator()
         shadow.appendChild(this.img)
     }
     render() {
@@ -17,6 +18,9 @@ class CornerDotColorComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimation()
+        }
     }
     update() {
         this.cornerDotColor.update()
