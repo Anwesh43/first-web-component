@@ -31,11 +31,12 @@ class RedToGreenBox {
         this.x = w/2
         this.y = h/2
         this.r = size/5
+        this.state = new State()
     }
-    drawPie(context,scale) {
+    drawPie(context,a,b) {
         context.beginPath()
         context.moveTo(0,0)
-        for(var i=0;i<Math.floor(360);i++) {
+        for(var i=a;i<=b;i++) {
             const x = this.r*Math.cos(i*Math.PI/180), y = this.r*Math.sin(i*Math.PI/180)
             context.lineTo(x,y)
         }
@@ -45,9 +46,9 @@ class RedToGreenBox {
         context.save()
         context.translate(this.x,this.y)
         context.fillStyle = 'red'
-        this.drawPie(context,1)
+        this.drawPie(context,360*(this.state.scale),360)
         context.fillStyle = 'green'
-        this.drawPie(context,0)
+        this.drawPie(context,0,360*(this.state.scale))
 
         for(var i = 0;i<4;i++) {
             context.save()
@@ -59,11 +60,11 @@ class RedToGreenBox {
             context.stroke()
             context.strokeStyle = 'blue'
             context.beginPath()
-            context.moveTo(-2*w/5,-2*h/5)
-            context.lineTo(2*w/5,-2*h/5)
+            context.moveTo((-2*w/5)*this.state.scale,-2*h/5)
+            context.lineTo((2*w/5)*this.state.scale,-2*h/5)
             context.stroke()
             for(var j=0;j<2;j++) {
-                const x1 = (4*w/5)*j,gap = (2*w/5)*(1-2*j)
+                const x1 = (4*w/5)*j,gap = (2*w/5)*(1-2*j)*this.state.scale
                 context.beginPath()
                 context.moveTo(x1,-2*h/5)
                 context.lineTo(x1+gap,-2*h/5)
@@ -74,13 +75,13 @@ class RedToGreenBox {
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-
+        return this.state.stopped()
     }
 }
 class State {
