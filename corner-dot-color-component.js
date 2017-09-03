@@ -4,6 +4,7 @@ class CornerDotColorComponent extends HTMLElement {
         super()
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
+        this.cornerDotColor = new CornerDotColor()
         shadow.appendChild(this.img)
     }
     render() {
@@ -11,10 +12,20 @@ class CornerDotColorComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.cornerDotColor.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+    }
+    update() {
+        this.cornerDotColor.update()
+    }
+    startUpdating() {
+        this.cornerDotColor.startUpdating()
+    }
+    stopped() {
+        return this.cornerDotColor.stopped()
     }
 }
 //This the logic to create that four circles
