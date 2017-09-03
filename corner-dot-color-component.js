@@ -23,6 +23,7 @@ class CornerDotColor {
         this.x = size/2
         this.y = size/2
         this.r = size/10
+        this.state = new State()
     }
     drawStrokeCircle(context) {
         context.beginPath()
@@ -31,7 +32,7 @@ class CornerDotColor {
     }
     drawFillCircle(context) {
         context.save()
-        context.scale(0,0)
+        context.scale(this.state.scale,this.state.scale)
         context.beginPath()
         context.arc(0,0,this.r,0,2*Math.PI)
         context.fill()
@@ -40,7 +41,7 @@ class CornerDotColor {
     drawArc(context) {
         context.beginPath()
         context.moveTo(0,0)
-        for(var deg=0;deg<=360;deg+=5) {
+        for(var deg=0;deg<=Math.floor(360*this.state.scale);deg+=5) {
             const x = this.r*Math.cos(deg*Math.PI/180),y = this.r*Math.sin(deg*Math.PI/180)
             context.lineTo(x,y)
         }
@@ -66,13 +67,13 @@ class CornerDotColor {
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
-    stopUpdating() {
-
+    stopped() {
+        return this.state.stopped()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
 }
 class State  {
