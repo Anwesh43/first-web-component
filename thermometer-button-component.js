@@ -10,12 +10,16 @@ class ThermometerButtonComponent extends HTMLElement {
 	}
 	connectedCallback() {
 		this.render()
+		this.img.onmousedown = (event)=>{
+				this.animator.startAnimation()
+		}
 	}
 	render() {
 		const canvas = document.createElement('canvas')
 		canvas.width = size
-		canvas.height = size 
+		canvas.height = size
 		const context = canvas.getContext('2d')
+		this.thermo.draw(context)
 		this.img.src = canvas.toDataURL()
 	}
 	update() {
@@ -31,10 +35,13 @@ class ThermometerButtonComponent extends HTMLElement {
 
 }
 class ThermometerButton {
-	state = new ThermometerState()
+	constructor() {
+			this.state = new ThermometerState()
+	}
 	draw(context){
+		context.fillStyle = '#FFD600'
 		context.beginPath()
-		context.rect(0,0,size/5,size)
+		context.rect(0,size*(1-this.state.scale),size/5,size*this.state.scale)
 		context.clip()
 		context.beginPath()
 		context.moveTo(size/5,0.9*size)
@@ -55,22 +62,32 @@ class ThermometerButton {
 	}
 }
 class ThermometerState {
-	scale = 0
-	dir = 0
+	constructor() {
+			this.scale = 0
+			this.dir = 0
+	}
 	update() {
 		this.scale += this.dir * 0.1
+		if(this.scale > 1) {
+				this.dir = 0
+				this.scale = 1
+		}
+		if(this.scale < 0) {
+				this.scale =0
+				this.dir = 0
+		}
 	}
 	startUpdating(){
-		
+			this.dir = 1-2*this.scale
 	}
 	stopped() {
 		return this.dir == 0
 	}
 }
 class Animator {
-	animated = false
 	constructor(component){
-		this.component = component
+			this.component = component
+			this.animated = false
 	}
 	startAnimation() {
 		if(!this.animated){
@@ -84,7 +101,7 @@ class Animator {
 					clearInterval(interval)
 				}
 			},50)
-		}		
+		}
 	}
 }
-
+customElements.define('thermo-meter-button-comp',ThermometerButtonComponent)
