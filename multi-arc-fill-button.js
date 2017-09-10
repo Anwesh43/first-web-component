@@ -19,7 +19,7 @@ class MultiArcFillButtonComponent extends HTMLElement {
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
-        this.multiArcFillButton.render()
+        this.render()
         this.img.onmousedown = (event) => {
             const x = event.offsetX,y = event.offsetY
             if(this.multiArcFillButton.handleTap(x,y)) {
@@ -41,7 +41,7 @@ class MultiArcFillButton {
     constructor() {
         this.x = size/2
         this.y = size/2
-        this.r = size/6
+        this.r = size/3
         this.state = new State()
     }
     draw(context) {
@@ -87,7 +87,7 @@ class State {
         this.dir = 0
     }
     update() {
-        this.scale = this.dir * 0.1
+        this.scale += this.dir * 0.1
         if(this.scale > 1) {
             this.dir = 0
             this.scale = 1
@@ -124,3 +124,4 @@ class MultiArcFillAnimator {
         }
     }
 }
+customElements.define('multi-arc-fill-button',MultiArcFillButtonComponent)
