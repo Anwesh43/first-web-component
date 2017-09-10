@@ -5,25 +5,28 @@ class MultiArcFillButtonComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.multiArcFillButton = new MultiArcFillButton()
+        this.animator = new MultiArcFillAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.multiArcFillButton.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
-        this.render()
+        this.multiArcFillButton.render()
     }
     startUpdating() {
-
+        this.multiArcFillButton.startUpdating()
     }
     update() {
-
+        this.multiArcFillButton.update()
     }
     stopped() {
-
+        return this.multiArcFillButton.stopped()
     }
 }
 class MultiArcFillButton {
