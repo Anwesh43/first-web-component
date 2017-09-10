@@ -16,6 +16,15 @@ class MultiArcFillButtonComponent extends HTMLElement {
     connectedCallback() {
         this.render()
     }
+    startUpdating() {
+
+    }
+    update() {
+
+    }
+    stopped() {
+
+    }
 }
 class MultiArcFillButton {
     constructor() {
@@ -82,5 +91,25 @@ class State {
     }
     startUpdating() {
         this.dir = 1 - 2*this.scale
+    }
+}
+class MultiArcFillAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },50)
+        }
     }
 }
