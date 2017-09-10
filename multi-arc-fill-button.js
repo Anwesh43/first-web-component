@@ -22,6 +22,7 @@ class MultiArcFillButton {
         this.x = size/2
         this.y = size/2
         this.r = size/6
+        this.state = new State()
     }
     draw(context) {
         const colors = ["#00BCD4","#303F9F","#512DA8","#AD1457","#004D40","#DD2C00"]
@@ -34,7 +35,8 @@ class MultiArcFillButton {
         context.arc(0,0,this.r,0,2*Math.PI)
         context.stroke()
         colors.forEach((color,index)=>{
-            const midDeg = deg*index+ deg/2,start = midDeg - deg/2 ,end = midDeg + deg/2
+            const gap = (deg/2)*this.state.scale
+            const midDeg = deg*index+ deg/2,start = midDeg - gap ,end = midDeg + gap
             context.fillStyle = color
             context.beginPath()
             context.moveTo(0,0)
@@ -50,13 +52,13 @@ class MultiArcFillButton {
         return x>= this.x - this.r && x<=this.x + this.r && y>=this.y - this.r && y<=this.y + this.r
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-        return false
+        return this.state.stopped()
     }
 }
 class State {
