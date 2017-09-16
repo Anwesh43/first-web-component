@@ -98,3 +98,22 @@ class State {
         this.scale = 1 - 2*this.dir
     }
 }
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation(filter) {
+        if(!this.animated) {
+            this.animated = true
+            filter.startUpdating()
+            const interval = setInterval(()=> {
+                this.component.render()
+                filter.update()
+                if(filter.stopped()) {
+                    this.animated = false
+                }
+            },50)
+        }
+    }
+}
