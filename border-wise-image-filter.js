@@ -13,6 +13,12 @@ class BorderWiseImageFilterComponent extends HTMLElement{
         const canvas = document.createElement('canvas')
         canvas.width = this.image.width
         canvas.height = this.image.height
+        if(!this.filters) {
+            this.filters = colors.map((color,index)=>new BorderWiseImageFilterRect(index))
+        }
+        this.filters.forEach((filter)=>{
+            filter.draw(context,w,h)
+        })
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
@@ -50,6 +56,14 @@ class BorderWiseImageFilterRect {
         }
         context.restore()
         context.restore()
+        if(!this.x && !this.y) {
+            this.x = x_factor*w + offset_x
+            this.y = y_factor*h + offset_y
+            this.r = r
+        }
+    }
+    handleTap(x,y) {
+        return x >= this.x - this.r && x <= this.x+this.r && y >= this.y - this.r && y <= this.y + this.r
     }
     update() {
         this.state.update()
