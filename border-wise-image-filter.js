@@ -8,6 +8,7 @@ class BorderWiseImageFilterComponent extends HTMLElement{
         shadow.appendChild(this.img)
         this.image = new Image()
         this.src = this.getAttribute('src')
+        this.animator = new Animator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -25,6 +26,16 @@ class BorderWiseImageFilterComponent extends HTMLElement{
         this.image.src = this.src
         this.image.onload = () => {
             this.render()
+        }
+        this.img.onmousedown = (event) => {
+            if(this.filters) {
+                for(let filter of filters) {
+                    if(filter.handleTap(event.offsetX,event.offsetY)) {
+                        this.animator.startAnimation(filter)
+                        break
+                    }
+                }
+            }
         }
     }
 }
