@@ -25,6 +25,7 @@ class BorderWiseImageFilterComponent extends HTMLElement{
 class BorderWiseImageFilterRect {
     constructor(index) {
         this.index = index
+        this.state = new State()
     }
     draw(context,w,h) {
         const x_factor = x_factors[this.index],y_factor = y_factors[this.index]
@@ -32,7 +33,7 @@ class BorderWiseImageFilterRect {
         context.globalAlpha = 0.55
         context.fillStyle = color
         context.translate(x_factor*w,y_factor*h)
-        context.scale(x_factor,y_factor)
+        context.scale(this.state.scale,this.state.scale)
         context.fillRect(-this.w*(x_factor),-this.h*(y_factor),this.w,this.h)
         const offset = (factor,r)=> (1 - 2*factor)*r
         const r = w/10,offset_x = offset(x_factor,r),offset_y = offset(y_factor,r)
@@ -51,13 +52,13 @@ class BorderWiseImageFilterRect {
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-
+        return this.state.stopped()
     }
 }
 class State {
