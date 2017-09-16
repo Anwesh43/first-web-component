@@ -128,3 +128,4 @@ class Animator {
         }
     }
 }
+customElements.define('border-wise-image-filter-comp',BorderWiseImageFilterComponent)
