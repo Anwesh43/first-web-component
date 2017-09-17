@@ -1,10 +1,12 @@
 const w = window.innerWidth,h = window.innerHeight
+const delay = 150
 class ContinuosLineGraphComponent extends HTMLElement {
     constructor() {
         super()
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.looper = new Looper()
     }
     render() {
         const cw = w/3,ch = h/2
@@ -14,17 +16,20 @@ class ContinuosLineGraphComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,cw,ch)
+        LineContainer.draw(context,cw,ch,100)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.looper.start(this.render.bind(this))
     }
 }
 class Line {
     static draw(context,yEnd,x,y) {
         context.beginPath()
         context.moveTo(x,y)
-        context.lineTo(maxY)
+        context.lineTo(x,yEnd)
+        context.stroke()
     }
 }
 class LineContainer {
@@ -44,7 +49,7 @@ class Looper {
     start(cb) {
         if(!this.animated) {
             this.animated = true
-            this.interval = setInterval(cb,300)
+            this.interval = setInterval(cb,delay)
         }
     }
     stop() {
