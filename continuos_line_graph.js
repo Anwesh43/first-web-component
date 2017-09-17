@@ -20,4 +20,13 @@ class ContinuosLineGraphComponent extends HTMLElement {
         this.render()
     }
 }
+class Line {
+    static draw(context,maxY,x,y) {
+        context.strokeStyle = '#0277BD'
+        context.lineWidth = w/30
+        context.beginPath()
+        context.moveTo(x,y)
+        context.lineTo(maxY)
+    }
+}
 customElements.define('continuos-line-graph-comp',ContinuosLineGraphComponent)
