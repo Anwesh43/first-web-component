@@ -40,4 +40,18 @@ class LineContainer {
       }
     }
 }
+class Looper {
+    start(cb) {
+        if(!this.animated) {
+            this.animated = true
+            this.interval = setInterval(cb,300)
+        }
+    }
+    stop() {
+        if(this.animated) {
+            this.animated = false
+            clearInterval(this.interval)
+        }
+    }
+}
 customElements.define('continuos-line-graph-comp',ContinuosLineGraphComponent)
