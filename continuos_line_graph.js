@@ -48,6 +48,7 @@ class LineContainer {
 class Looper {
     start(cb) {
         if(!this.animated) {
+            this.cb = cb
             this.animated = true
             this.interval = setInterval(cb,delay)
         }
@@ -56,6 +57,11 @@ class Looper {
         if(this.animated) {
             this.animated = false
             clearInterval(this.interval)
+        }
+    }
+    resume() {
+        if(!this.animated) {
+            this.start(cb)
         }
     }
 }
