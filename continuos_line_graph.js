@@ -7,6 +7,7 @@ class ContinuosLineGraphComponent extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
         this.looper = new Looper()
+        this.looperToggleTap = new LopperToogleTap(this.looper,this.img)
     }
     render() {
         const cw = w/3,ch = h/2
@@ -22,6 +23,7 @@ class ContinuosLineGraphComponent extends HTMLElement {
     connectedCallback() {
         this.render()
         this.looper.start(this.render.bind(this))
+        this.looperToggleTap.handleTap()
     }
 }
 class Line {
@@ -61,7 +63,25 @@ class Looper {
     }
     resume() {
         if(!this.animated) {
-            this.start(cb)
+            this.start(this.cb)
+        }
+    }
+}
+class LopperToogleTap {
+    constructor(looper,element) {
+        this.element = element
+        this.looper = looper
+        this.tap = 0
+    }
+    handleTap() {
+        this.element.onmousedown = (event) => {
+            if(this.tap %2 == 0) {
+                this.looper.stop()
+            }
+            else {
+                this.looper.resume()
+            }
+            this.tap++
         }
     }
 }
