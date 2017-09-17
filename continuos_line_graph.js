@@ -21,12 +21,23 @@ class ContinuosLineGraphComponent extends HTMLElement {
     }
 }
 class Line {
-    static draw(context,maxY,x,y) {
-        context.strokeStyle = '#0277BD'
-        context.lineWidth = w/30
+    static draw(context,yEnd,x,y) {
         context.beginPath()
         context.moveTo(x,y)
         context.lineTo(maxY)
+    }
+}
+class LineContainer {
+    static draw(context,w,h,n) {
+      context.strokeStyle = '#0277BD'
+      context.lineWidth = w/30
+      var x = 0
+      const y = h
+      for(var i=0;i<n;i++) {
+          var yEnd = y-(h*Math.random())
+          Line.draw(context,yEnd,x,y)
+          x += w/30
+      }
     }
 }
 customElements.define('continuos-line-graph-comp',ContinuosLineGraphComponent)
