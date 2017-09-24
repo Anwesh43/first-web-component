@@ -68,6 +68,9 @@ class ArcSwitchBar {
     stopped() {
         return this.state.stopped()
     }
+    handleTap(x,y) {
+        return x>=this.x-this.r && x<=this.x+this.r && y>=this.y - this.r && y<=this.y+this.r && this.state.dir == 0
+    }
 }
 class State {
     constructor() {
