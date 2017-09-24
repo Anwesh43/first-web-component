@@ -12,6 +12,15 @@ class ArcSwitchBarComponent extends HTMLElement {
         canvas.width = Math.min(w,h)/2
         canvas.height = Math.min(w,h)/2
         const context = canvas.getContext('2d')
+        if(!this.arcSwitchBars) {
+            this.arcSwitchBars = []
+            for(var i=0;i<2;i++) {
+                this.arcSwitchBars.push(new ArcSwitchBar(i,canvas.width,canvas.height))
+            }
+        }
+        this.arcSwitchBars.forEach((arcSwitchBar)=>{
+            arcSwitchBar.draw(context)
+        })
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
