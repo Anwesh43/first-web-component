@@ -29,17 +29,18 @@ class ArcSwitchBar {
         this.r = Math.min(w,h)/20
         this.cr = Math.min(w,h)/5
         this.maxH = 0.9*h
+        this.state = new State()
     }
     draw(context) {
         context.fillStyle = color
         context.strokeStyle = color
         context.lineWidth = this.r/6
-        this.y = this.oy - this.maxH
+        this.y = this.oy - this.maxH*this.state.scale
         const deg = this.index*180
         context.save()
         context.translate(this.cx,this.cy)
         context.beginPath()
-        for(var i=deg;i<deg+180;i+=5) {
+        for(var i=deg;i<deg+180*this.state.scale;i+=5) {
             const x = this.r*Math.cos(i*Math.PI/180),y = this.r*Math.sin(i*Math.PI/180)
             if(i == deg) {
                 context.moveTo(x,y)
@@ -59,13 +60,13 @@ class ArcSwitchBar {
         context.stroke()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-
+        return this.state.stopped()
     }
 }
 class State {
@@ -86,5 +87,8 @@ class State {
     }
     startUpdating() {
         this.dir = 1-2*this.scale
+    }
+    stopped() {
+        return this.dir == 0
     }
 }
