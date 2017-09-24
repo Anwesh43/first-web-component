@@ -37,8 +37,8 @@ class ArcSwitchBarComponent extends HTMLElement {
 }
 class ArcSwitchBar {
     constructor(i,w,h) {
-        this.index
-        this.x = w/10 + (this.w*9/10)*i
+        this.index = i
+        this.x = w/20 + (w*9/10)*i
         this.y = h*0.95
         this.oy = this.y
         this.cx = w/2
@@ -51,20 +51,17 @@ class ArcSwitchBar {
     draw(context) {
         context.fillStyle = color
         context.strokeStyle = color
+        context.lineCap = "round"
         context.lineWidth = this.r/6
         this.y = this.oy - this.maxH*this.state.scale
         const deg = this.index*180
         context.save()
         context.translate(this.cx,this.cy)
         context.beginPath()
-        for(var i=deg;i<deg+180*this.state.scale;i+=5) {
-            const x = this.r*Math.cos(i*Math.PI/180),y = this.r*Math.sin(i*Math.PI/180)
-            if(i == deg) {
-                context.moveTo(x,y)
-            }
-            else {
-                context.lineTo(x,y)
-            }
+        context.moveTo(0,0)
+        for(var i=deg;i<=deg+180*this.state.scale;i+=5) {
+            const x = this.cr*Math.cos(i*Math.PI/180),y = this.cr*Math.sin(i*Math.PI/180)
+            context.lineTo(x,y)
         }
         context.fill()
         context.restore()
