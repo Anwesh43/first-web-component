@@ -25,6 +25,14 @@ class ArcSwitchBarComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.animator = new ArcSwithBarAnimator(this)
+        this.img.onmousedown = (event) => {
+            this.arcSwitchBars.forEach((arcSwitchBar)=>{
+                if(arcSwitchBar.handleTap(event.offsetX,event.offsetY)){
+                    this.animator.startAnimation(arcSwitchBar)
+                }
+            })
+        }
     }
 }
 class ArcSwitchBar {
@@ -135,3 +143,4 @@ class ArcSwithBarAnimator {
         }
     }
 }
+customElements.define('arc-switch-bar-comp',ArcSwitchBarComponent)
