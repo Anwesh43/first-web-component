@@ -92,3 +92,34 @@ class State {
         return this.dir == 0
     }
 }
+class ArcSwithBarAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+        this.switchBars = []
+    }
+    startAnimation(arcSwitchBar) {
+        arcSwitchBar.startUpdating()
+        if(!this.animated) {
+            this.animated = true
+            this.switchBars.push(arcSwitchBar)
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.switchBars.forEach((switchBar,index)=>{
+                    switchBar.update()
+                    if(switchBar.stopped()) {
+                        this.animated = false
+                        this.switchBars.splice(index,1)
+                        if(this.switchBars.length == 0) {
+                            this.animated = false
+                            clearInterval(interval)
+                        }
+                    }
+                })
+            },50)
+        }
+        else {
+            this.switchBars.push(arcSwitchBar)
+        }
+    }
+}
