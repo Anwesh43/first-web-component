@@ -5,6 +5,7 @@ class DirectionArrowFillComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = document.createElement('shadow')
         shadow.appendChild(this.img)
+        this.animator = new DirectionFillAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -90,5 +91,25 @@ class DirectionFillState {
     }
     stopped() {
         return this.dir == 0
+    }
+}
+class DirectionFillAnimator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startAnimation(directionFill) {
+        if(!this.animated) {
+            this.animated = true
+            directionFill.startUpdating()
+            const interval = setInterval(()=>{
+                component.render()
+                directionFill.update()
+                if(directionFill.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },75)
+        }
     }
 }
