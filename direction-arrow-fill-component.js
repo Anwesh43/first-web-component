@@ -3,7 +3,7 @@ class DirectionArrowFillComponent extends HTMLElement {
     constructor() {
         super()
         this.img = document.createElement('img')
-        const shadow = document.createElement('shadow')
+        const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.animator = new DirectionFillAnimator(this)
         this.directionFill = new DirectionArrowFill()
@@ -31,24 +31,27 @@ class DirectionArrowFill {
     }
     draw(context) {
         context.beginPath()
-        context.rect(0,0,size,size)
+        context.rect(0,size-(size*this.state.scale),size,size*this.state.scale)
         context.clip()
         for(var i=0;i<2;i++) {
             context.save()
             context.translate(size/2,size/2)
             context.scale(1-2*i,1)
+            context.save()
+            context.translate(-size/2,-size/2)
             Point.drawPoints(context,this.points)
+            context.restore()
             context.restore()
         }
     }
     update() {
         this.state.update()
     }
-    stopUpdating() {
-        return this.state.stopUpdating()
+    stopped() {
+        return this.state.stopped()
     }
     startUpdating() {
-        this.startUpdating()
+        this.state.startUpdating()
     }
 }
 class Point {
@@ -64,7 +67,7 @@ class Point {
     }
     static drawPoints(context,points) {
         context.beginPath()
-        points.forEach((point,index){
+        points.forEach((point,index)=>{
             if(index == 0) {
                 Point.moveTo(context,point)
             }
@@ -88,7 +91,7 @@ class DirectionFillState {
         }
         if(this.scale < 0) {
             this.dir = 0
-            this.scale = 1
+            this.scale = 0
         }
     }
     startUpdating() {
@@ -108,7 +111,7 @@ class DirectionFillAnimator {
             this.animated = true
             directionFill.startUpdating()
             const interval = setInterval(()=>{
-                component.render()
+                this.component.render()
                 directionFill.update()
                 if(directionFill.stopped()) {
                     this.animated = false
