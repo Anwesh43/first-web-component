@@ -20,6 +20,7 @@ class DirectionArrowFillComponent extends HTMLElement {
 }
 class DirectionArrowFill {
     constructor() {
+        this.state = new DirectionFillState()
         this.points = [new Point(size/2,size-size/20),new Point(size/3,size-size/20),new Point(size/3,size/3),new Point(size/20,size/3),new Point(size/2,size/20)]
     }
     draw(context) {
@@ -35,13 +36,13 @@ class DirectionArrowFill {
         }
     }
     update() {
-
+        this.state.update()
     }
     stopUpdating() {
-
+        return this.state.stopUpdating()
     }
     startUpdating() {
-
+        this.startUpdating()
     }
 }
 class Point {
