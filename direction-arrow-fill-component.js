@@ -6,6 +6,7 @@ class DirectionArrowFillComponent extends HTMLElement {
         const shadow = document.createElement('shadow')
         shadow.appendChild(this.img)
         this.animator = new DirectionFillAnimator(this)
+        this.directionFill = new DirectionArrowFill()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +14,14 @@ class DirectionArrowFillComponent extends HTMLElement {
         canvas.height = size
         const context = canvas.getContext('2d')
         context.fillStyle = '#2122121'
+        this.directionFill.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = ()=>{
+            this.animator.startAnimation(this.directionFill)
+        }
     }
 }
 class DirectionArrowFill {
