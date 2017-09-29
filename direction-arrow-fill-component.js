@@ -14,6 +14,8 @@ class DirectionArrowFillComponent extends HTMLElement {
         canvas.height = size
         const context = canvas.getContext('2d')
         context.fillStyle = '#2122121'
+        context.fillRect(0,0,size,size)
+        context.fillStyle = '#009688'
         this.directionFill.draw(context)
         this.img.src = canvas.toDataURL()
     }
