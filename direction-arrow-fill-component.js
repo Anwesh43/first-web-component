@@ -18,3 +18,53 @@ class DirectionArrowFillComponent extends HTMLElement {
         this.render()
     }
 }
+class DirectionArrowFill {
+    constructor() {
+        this.points = [new Point(size/2,size-size/20),new Point(size/3,size-size/20),new Point(size/3,size/3),new Point(size/20,size/3),new Point(size/2,size/20)]
+    }
+    draw(context) {
+        context.beginPath()
+        context.rect(0,0,size,size)
+        context.clip()
+        for(var i=0;i<2;i++) {
+            context.save()
+            context.translate(size/2,size/2)
+            context.scale(1-2*i,1)
+            Point.drawPoints(context,this.points)
+            context.restore()
+        }
+    }
+    update() {
+
+    }
+    stopUpdating() {
+
+    }
+    startUpdating() {
+        
+    }
+    class Point {
+        constructor(x,y) {
+            this.x = x
+            this.y = y
+        }
+        static moveTo(context,point) {
+            context.moveTo(point.x,point.y)
+        }
+        static lineTo(context,point) {
+            context.lineTo(point.x,point.y)
+        }
+        static drawPoints(context,points) {
+            context.beginPath()
+            points.forEach((point,index){
+                if(index == 0) {
+                    Point.moveTo(context,point)
+                }
+                else {
+                    Point.lineTo(context,point)
+                }
+            })
+            context.fill()
+        }
+    }
+}
