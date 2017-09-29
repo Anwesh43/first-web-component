@@ -41,30 +41,53 @@ class DirectionArrowFill {
 
     }
     startUpdating() {
-        
+
     }
-    class Point {
-        constructor(x,y) {
-            this.x = x
-            this.y = y
+}
+class Point {
+    constructor(x,y) {
+        this.x = x
+        this.y = y
+    }
+    static moveTo(context,point) {
+        context.moveTo(point.x,point.y)
+    }
+    static lineTo(context,point) {
+        context.lineTo(point.x,point.y)
+    }
+    static drawPoints(context,points) {
+        context.beginPath()
+        points.forEach((point,index){
+            if(index == 0) {
+                Point.moveTo(context,point)
+            }
+            else {
+                Point.lineTo(context,point)
+            }
+        })
+        context.fill()
+    }
+}
+class DirectionFillState {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+    }
+    update() {
+        this.scale += this.dir * 0.1
+        if(this.scale > 1) {
+            this.dir = 0
+            this.scale = 1
         }
-        static moveTo(context,point) {
-            context.moveTo(point.x,point.y)
+        if(this.scale < 0) {
+            this.dir = 0
+            this.scale = 1
         }
-        static lineTo(context,point) {
-            context.lineTo(point.x,point.y)
-        }
-        static drawPoints(context,points) {
-            context.beginPath()
-            points.forEach((point,index){
-                if(index == 0) {
-                    Point.moveTo(context,point)
-                }
-                else {
-                    Point.lineTo(context,point)
-                }
-            })
-            context.fill()
-        }
+    }
+    startUpdating() {
+        this.dir = 1-2*this.scale
+    }
+    stopped() {
+        return this.dir == 0
     }
 }
