@@ -6,6 +6,8 @@ class DirectionArrowFillComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.animator = new DirectionFillAnimator(this)
+        this.direction  = this.getAttribute('direction')||0
+        console.log(this.direction)
         this.directionFill = new DirectionArrowFill()
     }
     render() {
@@ -16,7 +18,7 @@ class DirectionArrowFillComponent extends HTMLElement {
         context.fillStyle = '#2122121'
         context.fillRect(0,0,size,size)
         context.fillStyle = '#009688'
-        this.directionFill.draw(context)
+        this.directionFill.draw(context,this.direction)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
@@ -29,15 +31,17 @@ class DirectionArrowFillComponent extends HTMLElement {
 class DirectionArrowFill {
     constructor() {
         this.state = new DirectionFillState()
-        this.points = [new Point(size/2,size-size/20),new Point(size/3,size-size/20),new Point(size/3,size/3),new Point(size/20,size/3),new Point(size/2,size/20)]
+        this.points = [new Point(size/2,size-size/20),new Point(size/3,size-size/20),new Point(size/3,size/3),new Point(size/10+size/20,size/3),new Point(size/2,size/20)]
     }
-    draw(context) {
+    draw(context,direction) {
+        context.save()
+        context.translate(size/2,size/2)
+        context.rotate(direction*Math.PI/2)
         context.beginPath()
-        context.rect(0,size-(size*this.state.scale),size,size*this.state.scale)
+        context.rect(-size/2,-size/2+size-(size*this.state.scale),size,size*this.state.scale)
         context.clip()
         for(var i=0;i<2;i++) {
             context.save()
-            context.translate(size/2,size/2)
             context.scale(1-2*i,1)
             context.save()
             context.translate(-size/2,-size/2)
@@ -45,6 +49,7 @@ class DirectionArrowFill {
             context.restore()
             context.restore()
         }
+        context.restore()
     }
     update() {
         this.state.update()
