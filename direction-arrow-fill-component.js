@@ -118,3 +118,4 @@ class DirectionFillAnimator {
         }
     }
 }
+customElements.define('direction-arrow-fill',DirectionArrowFillComponent)
