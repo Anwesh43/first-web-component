@@ -17,3 +17,51 @@ class TickCircleBoxComponent extends HTMLElement {
         this.render()
     }
 }
+class TickCircleBox {
+    draw(context) {
+        context.save()
+        context.translate(size/2,size/2)
+        context.fillStyle = 'white'
+        context.beginPath()
+        context.strokeWidth = size/15
+        context.arc(0,0,2*size/5,0,2*Math.PI)
+        context.stroke()
+        context.strokeStyle = '#1DE9B6'
+        this.drawTickLines(context,size/6,-30)
+        this.drawTickLines(context,size/3,60)
+        this.drawCircleArc(context,2*size/5)
+        context.restore()
+    }
+    drawTickLines(context,h,rot) {
+        context.save()
+        context.rotate(rot*Math.PI/180)
+        context.beginPath()
+        context.moveTo(0,0)
+        context.lineTo(0,-h)
+        context.stroke()
+        context.restore()
+    }
+    drawCircleArc(context,r) {
+        context.beginPath()
+        for(var i=0;i<360;i+=10) {
+            const deg = -90 + i
+            const x =  r*Math.cos(i*Math.PI/180),y = r*Math.sin(i*Math.PI/180)
+            if(i == 0) {
+                context.moveTo(x,y)
+            }
+            else {
+                context.lineTo(x,y)
+            }
+        }
+        context.stroke()
+    }
+    update() {
+
+    }
+    startUpdating() {
+
+    }
+    stopped() {
+        return false
+    }
+}
