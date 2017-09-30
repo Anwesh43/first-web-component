@@ -5,16 +5,23 @@ class TickCircleBoxComponent extends HTMLElement {
         this.img = document.createElement('canvas')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.tickCircleBox = new TickCircleBox()
+        this.animator = new TickCircleBoxAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.tickCircleBox.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimation()
+        }
+
     }
 }
 class TickCircleBox {
@@ -96,14 +103,14 @@ class TickCircleBoxAnimator {
         this.component = component
         this.animated = false
     }
-    startAnimation(tickCircleBox) {
+    startAnimation() {
         if(!this.animated) {
             this.animated = true
-            tickCircleBox.startUpdating()
+            this.component.tickCircleBox.startUpdating()
             const interval = setInterval(()=>{
                 this.component.render()
-                this.tickCircleBox.update()
-                if(this.tickCircleBox.stopped()) {
+                this.component.tickCircleBox.update()
+                if(this.component.tickCircleBox.stopped()) {
                     this.animated = false
                     clearInterval(interval)
                 }
