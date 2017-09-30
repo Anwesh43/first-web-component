@@ -91,3 +91,23 @@ class TickCircleBoxState {
         return this.dir == 0
     }
 }
+class TickCircleBoxAnimator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startAnimation(tickCircleBox) {
+        if(!this.animated) {
+            this.animated = true
+            tickCircleBox.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.tickCircleBox.update()
+                if(this.tickCircleBox.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },100)
+        }
+    }
+}
