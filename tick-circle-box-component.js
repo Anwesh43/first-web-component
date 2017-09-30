@@ -65,3 +65,26 @@ class TickCircleBox {
         return false
     }
 }
+class TickCircleBoxState {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+    }
+    update() {
+        this.scale += this.dir * 0.1
+        if(this.scale > 1) {
+            this.scale = 1
+            this.dir = 0
+        }
+        if(this.scale < 0) {
+            this.scale = 0
+            this.dir = 0
+        }
+    }
+    startUpdating() {
+        this.dir = 1-2*this.scale
+    }
+    stopped() {
+        return this.dir == 0
+    }
+}
