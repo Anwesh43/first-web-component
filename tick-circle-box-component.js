@@ -18,6 +18,9 @@ class TickCircleBoxComponent extends HTMLElement {
     }
 }
 class TickCircleBox {
+    constructor() {
+        this.state = new TickCircleBoxState()
+    }
     draw(context) {
         context.save()
         context.translate(size/2,size/2)
@@ -27,8 +30,8 @@ class TickCircleBox {
         context.arc(0,0,2*size/5,0,2*Math.PI)
         context.stroke()
         context.strokeStyle = '#1DE9B6'
-        this.drawTickLines(context,size/6,-30)
-        this.drawTickLines(context,size/3,60)
+        this.drawTickLines(context,size/6,-30*this.state.scale)
+        this.drawTickLines(context,size/3,60*this.state.scale)
         this.drawCircleArc(context,2*size/5)
         context.restore()
     }
@@ -43,7 +46,7 @@ class TickCircleBox {
     }
     drawCircleArc(context,r) {
         context.beginPath()
-        for(var i=0;i<360;i+=10) {
+        for(var i=0;i<(360*this.state.scale);i+=10) {
             const deg = -90 + i
             const x =  r*Math.cos(i*Math.PI/180),y = r*Math.sin(i*Math.PI/180)
             if(i == 0) {
@@ -56,13 +59,13 @@ class TickCircleBox {
         context.stroke()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-        return false
+        return this.state.stopped()
     }
 }
 class TickCircleBoxState {
