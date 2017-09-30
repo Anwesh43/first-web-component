@@ -2,7 +2,7 @@ const w = window.innerWidth,h = window.innerHeight,size = Math.min(w,h)/5
 class TickCircleBoxComponent extends HTMLElement {
     constructor() {
         super()
-        this.img = document.createElement('canvas')
+        this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.tickCircleBox = new TickCircleBox()
@@ -13,6 +13,8 @@ class TickCircleBoxComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        context.fillStyle = '#212121'
+        context.fillRect(0,0,size,size)
         this.tickCircleBox.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -31,14 +33,18 @@ class TickCircleBox {
     draw(context) {
         context.save()
         context.translate(size/2,size/2)
-        context.fillStyle = 'white'
+        context.strokeStyle = 'white'
         context.beginPath()
-        context.strokeWidth = size/15
+        context.lineWidth = size/30
+        context.lineCap = 'round'
         context.arc(0,0,2*size/5,0,2*Math.PI)
         context.stroke()
         context.strokeStyle = '#1DE9B6'
+        context.save()
+        context.translate(-size/20,size/10)
         this.drawTickLines(context,size/6,-30*this.state.scale)
         this.drawTickLines(context,size/3,60*this.state.scale)
+        context.restore()
         this.drawCircleArc(context,2*size/5)
         context.restore()
     }
@@ -53,9 +59,9 @@ class TickCircleBox {
     }
     drawCircleArc(context,r) {
         context.beginPath()
-        for(var i=0;i<(360*this.state.scale);i+=10) {
+        for(var i=0;i<=(360*this.state.scale);i++) {
             const deg = -90 + i
-            const x =  r*Math.cos(i*Math.PI/180),y = r*Math.sin(i*Math.PI/180)
+            const x =  r*Math.cos(deg*Math.PI/180),y = r*Math.sin(deg*Math.PI/180)
             if(i == 0) {
                 context.moveTo(x,y)
             }
@@ -114,7 +120,8 @@ class TickCircleBoxAnimator {
                     this.animated = false
                     clearInterval(interval)
                 }
-            },100)
+            },50)
         }
     }
 }
+customElements.define('tick-circle-box',TickCircleBoxComponent)
