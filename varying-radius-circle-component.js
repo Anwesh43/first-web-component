@@ -1,4 +1,4 @@
-const lw = canvas.width,lh = canvas.height, size = Math.min(lw,lh)/4
+const lw = window.innerWidth,lh = window.innerHeight, size = Math.min(lw,lh)/4
 class VaryingRadiusCircleComponent extends HTMLElement {
     constructor() {
         super()
@@ -29,16 +29,17 @@ class VaryingRadiusCircle {
     }
     draw(context) {
         context.strokeStyle = '#FF8F00'
+        context.fillStyle = context.strokeStyle
         context.lineWidth = size/30
         context.save()
         context.translate(size/2,size/2)
         context.beginPath()
         var r = size/5,maxR = 2*size/5-r
         for(var i=0;i<=360;i+=60) {
-            n = 10
+            const n = 10
             var deg = 0
-            for(var j=i;j<=i+60;j+=60/n) {
-                const currR = r+maxR*Math.sin(18*(deg*this.state.scale)*Math.PI/180)
+            for(var j=i;j<i+60;j+=60/n) {
+                const currR = r+maxR*Math.sin((deg*this.state.scale)*Math.PI/180)
                 const x = currR*Math.cos(j*Math.PI/180),y = currR*Math.sin(j*Math.PI/180)
                 if(j == 0) {
                     context.moveTo(x,y)
@@ -50,6 +51,9 @@ class VaryingRadiusCircle {
             }
         }
         context.stroke()
+        if(this.state.scale == 1) {
+            context.fill()
+        }
         context.restore()
     }
     update() {
@@ -100,8 +104,10 @@ class VaryingRadiusCircleAnimator {
                 if(this.component.circle.stopped()) {
                     this.animated = false
                     clearInterval(interval)
+                    this.component.render()
                 }
             },50)
         }
     }
 }
+customElements.define('varying-radius-circle',VaryingRadiusCircleComponent)
