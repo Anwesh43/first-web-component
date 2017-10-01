@@ -17,3 +17,39 @@ class VaryingRadiusCircleComponent extends HTMLElement {
         this.render()
     }
 }
+class VaryingRadiusCircle {
+    draw(context) {
+        context.strokeStyle = '#FF8F00'
+        context.lineWidth = size/30
+        context.save()
+        context.translate(size/2,size/2)
+        context.beginPath()
+        var r = size/5,maxR = 2*size/5-r
+        for(var i=0;i<=360;i+=60) {
+            n = 10
+            var deg = 0
+            for(var j=i;j<=i+60;j+=60/n) {
+                const currR = r+maxR*Math.sin(18*deg*Math.PI/180)
+                const x = currR*Math.cos(j*Math.PI/180),y = currR*Math.sin(j*Math.PI/180)
+                if(j == 0) {
+                    context.moveTo(x,y)
+                }
+                else {
+                    context.lineTo(x,y)
+                }
+                deg+=18
+            }
+        }
+        context.stroke()
+        context.restore()
+    }
+    update() {
+
+    }
+    startUpdating() {
+
+    }
+    stopped() {
+
+    }
+}
