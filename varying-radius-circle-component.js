@@ -79,3 +79,23 @@ class VaryingRadiusState {
         this.dir = 1-2*this.scale
     }
 }
+class VaryingRadiusCircleAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation(circle) {
+        if(!this.animated) {
+            this.animated = true
+            circle.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                circle.update()
+                if(circle.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },50)
+        }
+    }
+}
