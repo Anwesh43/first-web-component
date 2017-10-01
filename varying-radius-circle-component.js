@@ -5,16 +5,22 @@ class VaryingRadiusCircleComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.animator = new VaryingRadiusCircleAnimator(this)
+        this.circle = new VaryingRadiusCircle()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.circle.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimation()
+        }
     }
 }
 class VaryingRadiusCircle {
@@ -84,14 +90,14 @@ class VaryingRadiusCircleAnimator {
         this.animated = false
         this.component = component
     }
-    startAnimation(circle) {
+    startAnimation() {
         if(!this.animated) {
             this.animated = true
-            circle.startUpdating()
+            this.component.circle.startUpdating()
             const interval = setInterval(()=>{
                 this.component.render()
-                circle.update()
-                if(circle.stopped()) {
+                this.component.circle.update()
+                if(this.component.circle.stopped()) {
                     this.animated = false
                     clearInterval(interval)
                 }
