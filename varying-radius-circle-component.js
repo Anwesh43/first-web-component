@@ -18,6 +18,9 @@ class VaryingRadiusCircleComponent extends HTMLElement {
     }
 }
 class VaryingRadiusCircle {
+    constructor() {
+        this.state = new VaryingRadiusState()
+    }
     draw(context) {
         context.strokeStyle = '#FF8F00'
         context.lineWidth = size/30
@@ -29,7 +32,7 @@ class VaryingRadiusCircle {
             n = 10
             var deg = 0
             for(var j=i;j<=i+60;j+=60/n) {
-                const currR = r+maxR*Math.sin(18*deg*Math.PI/180)
+                const currR = r+maxR*Math.sin(18*(deg*this.state.scale)*Math.PI/180)
                 const x = currR*Math.cos(j*Math.PI/180),y = currR*Math.sin(j*Math.PI/180)
                 if(j == 0) {
                     context.moveTo(x,y)
@@ -44,13 +47,13 @@ class VaryingRadiusCircle {
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-
+        return this.state.stopped()
     }
 }
 class VaryingRadiusState {
