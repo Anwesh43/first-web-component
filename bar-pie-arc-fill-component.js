@@ -6,15 +6,21 @@ class BarPieArcFillComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.animator = new BarPieFillAnimator(this)
+        this.barPieFillArc = new BarPieArcFill()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimation()
+        }
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.barPieFillArc.draw(context)
         this.img.src = canvas.toDataURL()
     }
 }
@@ -77,7 +83,7 @@ class BarPieFillAnimator {
         this.animated = false
         this.component = component
     }
-    startAnimation(barPieArcFill) {
+    startAnimation() {
         if(!this.animated) {
             this.animated = true
             const interval = setInterval(()=>{
