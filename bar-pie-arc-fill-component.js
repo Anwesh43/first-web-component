@@ -20,7 +20,7 @@ class BarPieArcFillComponent extends HTMLElement {
 }
 class BarPieArcFill {
     constructor() {
-
+        this.state = new BarPieArcFillState()
     }
     draw(context) {
         context.strokeStyle = color
@@ -50,9 +50,25 @@ class BarPieArcFill {
         }
     }
     update() {
-
+        this.state.update()
     }
     stopped() {
-        
+        return this.state.stopped()
+    }
+}
+class BarPieArcFillState {
+    constructor() {
+        this.scale = 0
+        this.deg = 0
+    }
+    update() {
+        this.deg += 4.5
+        this.scale = Math.abs(Math.sin(this.deg*Math.PI/180))
+        if(this.deg > 180) {
+            this.deg = 0
+        }
+    }
+    stopped() {
+        return this.deg == 0
     }
 }
