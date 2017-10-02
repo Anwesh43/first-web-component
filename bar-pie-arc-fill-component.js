@@ -72,3 +72,22 @@ class BarPieArcFillState {
         return this.deg == 0
     }
 }
+class BarPieFillAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation(barPieArcFill) {
+        if(!this.animated) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.barPieArcFill.update()
+                if(this.component.barPieArcFill.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },50)
+        }
+    }
+}
