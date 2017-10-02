@@ -31,29 +31,28 @@ class BarPieArcFill {
     draw(context) {
         context.strokeStyle = color
         context.fillStyle = color
-        context.lineWidth = size/15
+        context.lineWidth = size/30
         context.save()
-        context.translate(size/2,size/2)
+        context.translate(size/2,size/10)
         context.beginPath()
         context.arc(0,0,size/12,0,2*Math.PI)
         context.stroke()
         context.beginPath()
-        for(var i=0;i<=360;i+=10) {
+        context.moveTo(0,0)
+        for(var i=0;i<=360*this.state.scale;i++) {
             const x = (size/12)*Math.cos(i*Math.PI/180),y = (size/12)*Math.sin(i*Math.PI/180)
-            if(i == 0) {
-                context.moveTo(x,y)
-            }
-            else {
-                context.lineTo(x,y)
-            }
+            context.lineTo(x,y)
         }
         context.fill()
         context.restore()
         const w_rect = size/10
+        context.save()
+        context.translate(0,size/5)
         for(var i=0;i<10;i++) {
-            var h_rect = size,y_rect = (size-h_rect)*(i%2)
+            var h_rect = (size*0.8)*this.state.scale,y_rect = (size*0.8-h_rect)*(i%2)
             context.fillRect(w_rect*i,y_rect,w_rect,h_rect)
         }
+        context.restore()
     }
     update() {
         this.state.update()
@@ -68,8 +67,8 @@ class BarPieArcFillState {
         this.deg = 0
     }
     update() {
-        this.deg += 4.5
-        this.scale = Math.abs(Math.sin(this.deg*Math.PI/180))
+        this.deg += 3
+        this.scale = (Math.sin(this.deg*Math.PI/180))
         if(this.deg > 180) {
             this.deg = 0
         }
@@ -88,8 +87,8 @@ class BarPieFillAnimator {
             this.animated = true
             const interval = setInterval(()=>{
                 this.component.render()
-                this.component.barPieArcFill.update()
-                if(this.component.barPieArcFill.stopped()) {
+                this.component.barPieFillArc.update()
+                if(this.component.barPieFillArc.stopped()) {
                     this.animated = false
                     clearInterval(interval)
                 }
@@ -97,3 +96,4 @@ class BarPieFillAnimator {
         }
     }
 }
+customElements.define('bar-pie-fill',BarPieArcFillComponent)
