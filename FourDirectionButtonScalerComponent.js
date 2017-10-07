@@ -107,3 +107,21 @@ class DirectionButtonScalerContainer {
         })
     }
 }
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation(container) {
+        if(!this.animated) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                container.update(()=>{
+                    clearInterval(interval)
+                    this.animated = false
+                })
+            },75)
+        }
+    }
+}
