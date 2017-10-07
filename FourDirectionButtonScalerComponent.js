@@ -24,6 +24,8 @@ class DirectionButtonScaler {
         this.maxH = size/3
         this.x += (this.maxH+this.r)*(Math.cos(i*Math.PI/2))
         this.y += (this.maxH+this.r)*(Math.sin(i*Math.PI/2))
+        this.i = i
+        this.state = new DirectionButtonScalerState()
     }
     draw(context) {
         context.save()
@@ -32,23 +34,23 @@ class DirectionButtonScaler {
         context.arc(0,0,this.r,0,2*Math.PI)
         context.stroke()
         this.drawArc(context)
-        context.fillRect(-this.r,this.r,2*this.r,this.maxH)
+        context.fillRect(-this.r,this.r,2*this.r,this.maxH*this.state.scale)
         context.restore()
     }
     drawArc(context) {
         context.beginPath()
         context.moveTo(0,0)
-        for(var i=0;i<360;i+=5) {
+        for(var i=0;i<360*this.state.scale;i+=5) {
             const x = this.r*Math.cos(i*Math.PI/180),y = this.r*Math.sin(i*Math.PI/180)
             context.lineTo(x,y)
         }
         context.fill()
     }
     update() {
-
+        this.state.update()
     }
     stopped() {
-        return false
+        return this.state.stopped()
     }
 }
 class DirectionButtonScalerState {
