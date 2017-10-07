@@ -51,3 +51,19 @@ class DirectionButtonScaler {
         return false
     }
 }
+class DirectionButtonScalerState {
+    constructor() {
+        this.scale = 0
+        this.deg = 0
+    }
+    update() {
+        this.scale = Math.sin(this.deg*Math.PI/180)
+        this.deg += 4.5
+        if(this.deg > 180) {
+            this.deg = 0
+        }
+    }
+    stopped() {
+        return this.deg == 0
+    }
+}
