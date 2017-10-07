@@ -4,15 +4,24 @@ class FourDirectionButtonScalerComponent extends HTMLElement{
         super()
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
+        this.animator = new Animator(this)
+        this.container = new DirectionButtonScalerContainer()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            const x = event.offsetX,y = event.offsetY
+            this.container.handleTap(x,y,()=>{
+                this.animator.startAnimation(this.container)
+            })
+        }
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
 }
@@ -99,10 +108,11 @@ class DirectionButtonScalerContainer {
             }
         })
     }
-    handleTap(x,y) {
+    handleTap(x,y,startcb) {
         this.buttons.forEach((button)=>{
             if(button.handleTap(x,y)) {
                 this.animatedBtns.push(button)
+                startcb()
             }
         })
     }
@@ -125,3 +135,4 @@ class Animator {
         }
     }
 }
+customElements.define('four-direc-button',FourDirectionButtonScalerComponent)
