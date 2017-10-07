@@ -52,6 +52,9 @@ class DirectionButtonScaler {
     stopped() {
         return this.state.stopped()
     }
+    handleTap(x,y) {
+        return x>=this.x-this.r && x<=this.x+this.r && y>=this.y-this.r && y<=this.y+this.r
+    }
 }
 class DirectionButtonScalerState {
     constructor() {
@@ -67,5 +70,40 @@ class DirectionButtonScalerState {
     }
     stopped() {
         return this.deg == 0
+    }
+}
+class DirectionButtonScalerContainer {
+    constructor() {
+        this.buttons = []
+        this.animatedBtns = []
+        this.init()
+    }
+    init() {
+        for(var i=0;i<4;i++) {
+            this.buttons.push(new DirectionButtonScaler(i))
+        }
+    }
+    draw(context) {
+        this.buttons.forEach((button)=>{
+            button.draw(context)
+        })
+    }
+    update(stopcb) {
+        this.animatedBtns.forEach((btn,index)=>{
+            btn.update()
+            if(btn.stopped()) {
+                this.animatedBtns.splice(index,1)
+                if(this.animatedBtns.length == 0) {
+                    stopcb()
+                }
+            }
+        })
+    }
+    handleTap(x,y) {
+        this.buttons.forEach((button)=>{
+            if(button.handleTap(x,y)) {
+                this.animatedBtns.push(button)
+            }
+        })
     }
 }
