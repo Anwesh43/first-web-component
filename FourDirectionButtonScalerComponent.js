@@ -1,4 +1,4 @@
-const w = canvas.width,h = canvas.height,size = Math.min(w,h)/2
+const w = window.innerWidth,h = window.innerHeight,size = Math.min(w,h)/2
 class FourDirectionButtonScalerComponent extends HTMLElement{
     constructor() {
         super()
@@ -6,6 +6,7 @@ class FourDirectionButtonScalerComponent extends HTMLElement{
         this.img = document.createElement('img')
         this.animator = new Animator(this)
         this.container = new DirectionButtonScalerContainer()
+        shadow.appendChild(this.img)
     }
     connectedCallback() {
         this.render()
@@ -17,39 +18,42 @@ class FourDirectionButtonScalerComponent extends HTMLElement{
         }
     }
     render() {
+        console.log()
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        const color = this.getAttribute('color') || '#F57C00'
+        context.lineWidth = size/60
+        context.strokeStyle = color
+        context.fillStyle = color
         this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
 }
 class DirectionButtonScaler {
     constructor(i) {
-        this.x = w/2
-        this.y = h/2
-        this.r = size/15
-        this.maxH = size/3
-        this.x += (this.maxH+this.r)*(Math.cos(i*Math.PI/2))
-        this.y += (this.maxH+this.r)*(Math.sin(i*Math.PI/2))
+        this.r = size/30
+        this.maxH = size*0.4
+        this.x = (this.maxH+this.r)*(Math.cos(i*Math.PI/2))
+        this.y = (this.maxH+this.r)*(Math.sin(i*Math.PI/2))
         this.i = i
         this.state = new DirectionButtonScalerState()
     }
     draw(context) {
         context.save()
-        context.translate(this.x,this.y)
+        context.translate(this.r+this.maxH,0)
         context.beginPath()
         context.arc(0,0,this.r,0,2*Math.PI)
         context.stroke()
         this.drawArc(context)
-        context.fillRect(-this.r,this.r,2*this.r,this.maxH*this.state.scale)
+        context.fillRect(-this.r,-this.r,-this.maxH*this.state.scale,2*this.r)
         context.restore()
     }
     drawArc(context) {
         context.beginPath()
         context.moveTo(0,0)
-        for(var i=0;i<360*this.state.scale;i+=5) {
+        for(var i=0;i<=360*this.state.scale;i+=5) {
             const x = this.r*Math.cos(i*Math.PI/180),y = this.r*Math.sin(i*Math.PI/180)
             context.lineTo(x,y)
         }
@@ -62,7 +66,9 @@ class DirectionButtonScaler {
         return this.state.stopped()
     }
     handleTap(x,y) {
-        return x>=this.x-this.r && x<=this.x+this.r && y>=this.y-this.r && y<=this.y+this.r
+        const condition =  x>=this.x-this.r && x<=this.x+this.r && y>=this.y-this.r && y<=this.y+this.r
+        console.log(`${this.i} tapped:${condition} ${this.x} ${this.y}`)
+        return condition
     }
 }
 class DirectionButtonScalerState {
@@ -93,9 +99,15 @@ class DirectionButtonScalerContainer {
         }
     }
     draw(context) {
-        this.buttons.forEach((button)=>{
+        context.save()
+        context.translate(size/2,size/2)
+        this.buttons.forEach((button,index)=>{
+            context.save()
+            context.rotate(index*Math.PI/2)
             button.draw(context)
+            context.restore()
         })
+        context.restore()
     }
     update(stopcb) {
         this.animatedBtns.forEach((btn,index)=>{
@@ -109,8 +121,9 @@ class DirectionButtonScalerContainer {
         })
     }
     handleTap(x,y,startcb) {
+        console.log(`main ${x-size/2} ${y-size/2}`)
         this.buttons.forEach((button)=>{
-            if(button.handleTap(x,y)) {
+            if(button.handleTap(x-size/2,y-size/2)) {
                 this.animatedBtns.push(button)
                 startcb()
             }
@@ -130,6 +143,7 @@ class Animator {
                 container.update(()=>{
                     clearInterval(interval)
                     this.animated = false
+                    this.component.render()
                 })
             },75)
         }
