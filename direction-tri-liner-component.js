@@ -17,3 +17,43 @@ class DirectionTriLinerComponent extends HTMLElement {
         this.render()
     }
 }
+class DirectionTriLiner {
+    constructor(j) {
+        this.j = 0
+    }
+    draw(context) {
+        context.save()
+        context.translate(size/2,size/2)
+        context.save()
+        context.rotate((Math.PI/2)*this.j)
+        context.beginPath()
+        context.moveTo(-size/15,size/15)
+        context.lineTo(size/15,size/15)
+        context.lineTo(0,size/15)
+        context.fill()
+        context.restore()
+        for(var i=0;i<Math.floor(4);i++) {
+            this.drawLine(i)
+        }
+        this.drawLine(this.j)
+        context.restore()
+    }
+    drawLine(index) {
+      context.save()
+      context.rotate((Math.PI/2)*index)
+      context.beginPath()
+      context.moveTo(0,0)
+      context.lineTo(size/3,0)
+      context.stroke()
+      context.restore()
+    }
+    stopped() {
+
+    }
+    update() {
+
+    }
+    startUpdating() {
+        
+    }
+}
