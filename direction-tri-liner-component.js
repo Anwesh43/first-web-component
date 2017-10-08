@@ -83,3 +83,22 @@ class State {
         this.dir = 1-2*this.scale
     }
 }
+class DirectionTriLinerAnimator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startUpdating() {
+        if(this.animated) {
+            this.component.dtl.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.dtl.update()
+                if(this.component.dtl.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },75)
+        }
+    }
+}
