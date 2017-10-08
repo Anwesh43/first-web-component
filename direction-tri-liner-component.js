@@ -5,6 +5,7 @@ class DirectionTriLinerComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.animator = new DirectionTriLinerAnimator(this)
         this.dtl = new DirectionTriLiner()
     }
     render() {
@@ -17,6 +18,9 @@ class DirectionTriLinerComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimation()
+        }
     }
 }
 class DirectionTriLiner {
@@ -25,54 +29,67 @@ class DirectionTriLiner {
         this.state = new State()
     }
     draw(context) {
+        context.lineWidth = size/50
+        context.lineCap = 'round'
+        context.fillStyle = '#FF5722'
+        context.strokeStyle = '#FF5722'
         context.save()
         context.translate(size/2,size/2)
         context.save()
-        context.rotate((Math.PI/2)*this.j*this.state.scale)
+        context.rotate(-Math.PI/2+this.j*Math.PI/2+(Math.PI/2)*this.state.scale)
         context.beginPath()
         context.moveTo(-size/15,size/15)
-        context.lineTo(size/15,size/15)
-        context.lineTo(0,size/15)
+        context.lineTo(size/15,0)
+        context.lineTo(-size/15,-size/15)
         context.fill()
         context.restore()
-        for(var i=0;i<Math.floor(4);i++) {
-            this.drawLine(i,1)
+        for(var i=0;i<this.j;i++) {
+            this.drawLine(context,i,1)
         }
-        this.drawLine(this.j,this.state.scale)
+        this.drawLine(context,this.j,this.state.scale)
         context.restore()
     }
-    drawLine(index,scale) {
+    drawLine(context,index,scale) {
         context.save()
         context.rotate((Math.PI/2)*index)
         context.beginPath()
-        context.moveTo(0,0)
-        context.lineTo((size/3)*scale,0)
+        context.moveTo(size/3-(size/3)*scale,0)
+        context.lineTo((size/3),0)
         context.stroke()
         context.restore()
     }
     stopped() {
-        return this.state.stopped()
+        const condition =  this.state.stopped()
+        if(condition) {
+            this.j+=this.state.currDir
+            if(this.j == 4 || this.j == -1) {
+                this.state.changeDir()
+                this.j += this.state.currDir
+            }
+        }
+        return condition
     }
     update() {
         this.state.update()
     }
     startUpdating() {
+        console.log(this.j)
         this.state.startUpdating()
     }
 }
 class State {
     constructor(scale,dir) {
         this.scale = 0
-        this.dir = 0
+        this.currDir = 1
     }
     update() {
         this.scale += this.dir*0.1
-        if(this.scale > 1) {
-            this.scale = 1
+        if(this.scale > 1 && this.dir == 1) {
+            this.scale = 0
             this.dir = 0
         }
-        if(this.scale < 0) {
-            this.scale = 0
+        else if(this.dir == -1 && this.scale < 0) {
+            this.scale = 1
             this.dir = 0
         }
     }
@@ -80,7 +97,11 @@ class State {
         return this.dir == 0
     }
     startUpdating() {
-        this.dir = 1-2*this.scale
+        this.dir = this.currDir
+    }
+    changeDir() {
+        this.scale += this.currDir
+        this.currDir *= -1
     }
 }
 class DirectionTriLinerAnimator {
@@ -88,8 +109,9 @@ class DirectionTriLinerAnimator {
         this.component = component
         this.animated = false
     }
-    startUpdating() {
-        if(this.animated) {
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
             this.component.dtl.startUpdating()
             const interval = setInterval(()=>{
                 this.component.render()
@@ -102,3 +124,4 @@ class DirectionTriLinerAnimator {
         }
     }
 }
+customElements.define('direc-tri-liner',DirectionTriLinerComponent)
