@@ -5,12 +5,14 @@ class DirectionTriLinerComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.dtl = new DirectionTriLiner()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.dtl.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
