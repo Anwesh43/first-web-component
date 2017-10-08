@@ -20,12 +20,13 @@ class DirectionTriLinerComponent extends HTMLElement {
 class DirectionTriLiner {
     constructor(j) {
         this.j = 0
+        this.state = new State()
     }
     draw(context) {
         context.save()
         context.translate(size/2,size/2)
         context.save()
-        context.rotate((Math.PI/2)*this.j)
+        context.rotate((Math.PI/2)*this.j*this.state.scale)
         context.beginPath()
         context.moveTo(-size/15,size/15)
         context.lineTo(size/15,size/15)
@@ -33,28 +34,28 @@ class DirectionTriLiner {
         context.fill()
         context.restore()
         for(var i=0;i<Math.floor(4);i++) {
-            this.drawLine(i)
+            this.drawLine(i,1)
         }
-        this.drawLine(this.j)
+        this.drawLine(this.j,this.state.scale)
         context.restore()
     }
-    drawLine(index) {
-      context.save()
-      context.rotate((Math.PI/2)*index)
-      context.beginPath()
-      context.moveTo(0,0)
-      context.lineTo(size/3,0)
-      context.stroke()
-      context.restore()
+    drawLine(index,scale) {
+        context.save()
+        context.rotate((Math.PI/2)*index)
+        context.beginPath()
+        context.moveTo(0,0)
+        context.lineTo((size/3)*scale,0)
+        context.stroke()
+        context.restore()
     }
     stopped() {
-
+        return this.state.stopped()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
 }
 class State {
