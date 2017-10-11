@@ -19,7 +19,7 @@ class WifiToCircleComponent extends HTMLElement {
 }
 class WifiToCircle {
     constructor() {
-        
+
     }
     draw(context) {
         context.save()
@@ -58,5 +58,23 @@ class WifiToCircle {
     }
     startUpdating() {
 
+    }
+}
+class State {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+    }
+    update() {
+        this.scale += this.dir*0.1
+        if(this.scale > 1)  {
+            this.scale = 0
+        }
+    }
+    stopped() {
+        return this.dir == 0
+    }
+    startUpdating() {
+        this.dir = 1-2*this.state.scale
     }
 }
