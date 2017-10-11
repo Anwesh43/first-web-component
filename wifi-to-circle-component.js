@@ -19,7 +19,7 @@ class WifiToCircleComponent extends HTMLElement {
 }
 class WifiToCircle {
     constructor() {
-
+        this.state = new State()
     }
     draw(context) {
         context.save()
@@ -51,13 +51,13 @@ class WifiToCircle {
         }
     }
     update() {
-
+        this.state.update()
     }
     stopped() {
-
+        return this.state.stopped()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
 }
 class State {
