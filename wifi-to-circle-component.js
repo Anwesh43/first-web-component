@@ -17,3 +17,46 @@ class WifiToCircleComponent extends HTMLElement {
         this.render()
     }
 }
+class WifiToCircle {
+    constructor() {
+        
+    }
+    draw(context) {
+        context.save()
+        context.translate(size/2,size/2)
+        context.lineWidth = size/40
+        const r = size/3
+        for(var i=0;i<4;i++) {
+            context.save()
+            context.rotate(i*Math.PI/2)
+            for(var j=1;j<=4;j++) {
+                const deg = 15+30
+                this.drawStrokedArc(context,-deg,deg,r/j)
+            }
+            context.restore()
+        }
+        context.restore()
+    }
+    drawStrokedArc(context,start,end,r) {
+        context.beginPath()
+        for(var i=start;i<=end;i++) {
+            const x = r*Math.cos(i*Math.PI/180), y = r*Math.sin(i*Math.PI/180)
+            if(i == start) {
+                context.moveTo(x,y)
+            }
+            else {
+                context.lineTo(x,y)
+            }
+            context.stroke()
+        }
+    }
+    update() {
+
+    }
+    stopped() {
+
+    }
+    startUpdating() {
+
+    }
+}
