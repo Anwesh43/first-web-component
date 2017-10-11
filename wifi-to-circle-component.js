@@ -1,10 +1,10 @@
-const w = window.innerWidth,h = window.innerHeight,size = Math.min(w,h)/4
+const w = window.innerWidth,h = window.innerHeight,size = Math.min(w,h)/3
 class WifiToCircleComponent extends HTMLElement {
     constructor() {
         super()
         const shadow = this.attachShadow({mode:'open'})
-        const img = document.createElement('img')
-        shadow.appendChild(img)
+        this.img = document.createElement('img')
+        shadow.appendChild(this.img)
         this.animator = new Animator(this)
         this.wifiToCircle = new WifiToCircle()
     }
@@ -28,6 +28,7 @@ class WifiToCircle {
         this.state = new State()
     }
     draw(context) {
+        context.strokeStyle = '#FF5722'
         context.save()
         context.translate(size/2,size/2)
         context.lineWidth = size/40
@@ -36,7 +37,7 @@ class WifiToCircle {
             context.save()
             context.rotate(i*Math.PI/2)
             for(var j=1;j<=4;j++) {
-                const deg = 15+30
+                const deg = 15+30*this.state.scale
                 this.drawStrokedArc(context,-deg,deg,r/j)
             }
             context.restore()
@@ -74,6 +75,11 @@ class State {
     update() {
         this.scale += this.dir*0.1
         if(this.scale > 1)  {
+            this.scale = 1
+            this.dir = 0
+        }
+        if(this.scale < 0) {
+            this.dir = 0
             this.scale = 0
         }
     }
@@ -81,7 +87,7 @@ class State {
         return this.dir == 0
     }
     startUpdating() {
-        this.dir = 1-2*this.state.scale
+        this.dir = 1-2*this.scale
     }
 }
 class Animator {
@@ -108,3 +114,4 @@ class Animator {
         }
     }
 }
+customElements.define('wifi-to-circle',WifiToCircleComponent)
