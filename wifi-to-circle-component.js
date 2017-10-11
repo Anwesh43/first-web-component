@@ -5,16 +5,22 @@ class WifiToCircleComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         const img = document.createElement('img')
         shadow.appendChild(img)
+        this.animator = new Animator(this)
+        this.wifiToCircle = new WifiToCircle()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.wifiToCircle.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimation()
+        }
     }
 }
 class WifiToCircle {
@@ -76,5 +82,29 @@ class State {
     }
     startUpdating() {
         this.dir = 1-2*this.state.scale
+    }
+}
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            if(this.component.wifiToCircle) {
+                this.component.wifiToCircle.startUpdating()
+            }
+            const interval = setInterval(()=>{
+                this.component.render()
+                if(this.component.wifiToCircle) {
+                    this.component.wifiToCircle.update()
+                    if(this.component.wifiToCircle.stopped()) {
+                        this.animated = false
+                        clearInterval(interval)
+                    }
+                }
+            },50)
+        }
     }
 }
