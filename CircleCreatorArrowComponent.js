@@ -13,6 +13,8 @@ class CircleCreatorArrowComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        context.strokeStyle = '#00ACC1'
+        context.fillStyle = context.strokeStyle
         this.arrow.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -122,3 +124,4 @@ class Animator {
         }
     }
 }
+customElements.define('circle-creator-arrow',CircleCreatorArrow)
