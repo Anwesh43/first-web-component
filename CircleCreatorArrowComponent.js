@@ -62,3 +62,29 @@ class CircleCreatorArrow {
         return false
     }
 }
+class CircleCreatorArrowState {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+        this.currDir = 1
+    }
+    update() {
+        this.scale += this.dir*0.1
+        if(this.scale > 1) {
+            this.scale = 1
+            this.dir = 0
+            this.currDir = -1
+        }
+        if(this.scale < 0) {
+            this.currDir = 1
+            this.dir = 0
+            this.scale = 0
+        }
+    }
+    startUpdating() {
+        this.dir = -this.currDir
+    }
+    stopped() {
+        return this.dir == 0
+    }
+}
