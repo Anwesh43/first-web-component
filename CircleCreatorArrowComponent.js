@@ -5,7 +5,7 @@ class CircleCreatorArrowComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
-        this.arrow = CircleCreatorArrow()
+        this.arrow = new CircleCreatorArrow()
         this.animator = new Animator(this)
     }
     render() {
@@ -30,7 +30,7 @@ class CircleCreatorArrow {
         this.state = new CircleCreatorArrowState()
     }
     draw(context) {
-        const deg = -90+360*this.state.scale
+        const deg = 360*this.state.scale
         context.save()
         context.translate(size/2,size/2)
         context.save()
@@ -38,7 +38,7 @@ class CircleCreatorArrow {
         this.drawTriangle(context)
         context.restore()
         context.beginPath()
-        for(var i=0;i<deg;i+=20) {
+        for(var i=-90;i<=-90+deg;i+=5) {
             this.drawPointInCircle(context,i)
         }
         context.stroke()
@@ -46,7 +46,7 @@ class CircleCreatorArrow {
     }
     drawPointInCircle(context,deg) {
         const x = (size/3)*Math.cos(deg*Math.PI/180),y = (size/3)*Math.sin(deg*Math.PI/180)
-        if(deg == 0) {
+        if(deg == -90) {
             context.moveTo(x,y)
         }
         else {
@@ -56,7 +56,7 @@ class CircleCreatorArrow {
     drawTriangle(context) {
         context.save()
         context.translate(0,-size/3)
-        context.scale(this.state.currDir,1)
+        context.rotate(Math.PI*this.state.scale)
         context.beginPath()
         context.moveTo(-size/20,-size/20)
         context.lineTo(-size/20,size/20)
@@ -78,23 +78,20 @@ class CircleCreatorArrowState {
     constructor() {
         this.scale = 0
         this.dir = 0
-        this.currDir = 1
     }
     update() {
         this.scale += this.dir*0.1
         if(this.scale > 1) {
             this.scale = 1
             this.dir = 0
-            this.currDir = -1
         }
         if(this.scale < 0) {
-            this.currDir = 1
             this.dir = 0
             this.scale = 0
         }
     }
     startUpdating() {
-        this.dir = -this.currDir
+        this.dir = 1-2*this.scale
     }
     stopped() {
         return this.dir == 0
@@ -108,20 +105,23 @@ class Animator {
     startAnimation() {
         if(!this.animated) {
             this.animated = true
+            console.log("starting animation")
+            if(this.component.arrow) {
+                this.component.arrow.startUpdating()
+            }
             const interval = setInterval(()=>{
+                console.log("animating")
                 this.component.render()
-                if(this.component.arrow) {
-                    this.component.arrow.startUpdating()
-                }
                 if(this.component.arrow) {
                     this.component.arrow.update()
                     if(this.component.arrow.stopped()) {
                         this.animated = false
+                        this.component.render()
                         clearInterval(interval)
                     }
                 }
-            },50)
+            },100)
         }
     }
 }
-customElements.define('circle-creator-arrow',CircleCreatorArrow)
+customElements.define('circle-creator-arrow',CircleCreatorArrowComponent)
