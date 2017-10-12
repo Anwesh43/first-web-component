@@ -5,16 +5,22 @@ class CircleCreatorArrowComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.arrow = CircleCreatorArrow()
+        this.animator = new Animator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.arrow.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimation()
+        }
     }
 }
 class CircleCreatorArrow {
