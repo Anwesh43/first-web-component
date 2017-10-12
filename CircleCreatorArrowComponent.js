@@ -19,14 +19,18 @@ class CircleCreatorArrowComponent extends HTMLElement {
 }
 class CircleCreatorArrow {
     constructor() {
-
+        this.state = new CircleCreatorArrowState()
     }
     draw(context) {
+        const deg = -90+360*this.state.scale
         context.save()
         context.translate(size/2,size/2)
+        context.save()
+        context.rotate(deg*Math.PI/180)
         this.drawTriangle(context)
+        context.restore()
         context.beginPath()
-        for(var i=0;i<360;i+=20) {
+        for(var i=0;i<deg;i+=20) {
             this.drawPointInCircle(context,i)
         }
         context.stroke()
@@ -44,7 +48,7 @@ class CircleCreatorArrow {
     drawTriangle(context) {
         context.save()
         context.translate(0,-size/3)
-        context.scale(1,1)
+        context.scale(this.state.currDir,1)
         context.beginPath()
         context.moveTo(-size/20,-size/20)
         context.lineTo(-size/20,size/20)
@@ -53,13 +57,13 @@ class CircleCreatorArrow {
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-        return false
+        return this.state.stopped()
     }
 }
 class CircleCreatorArrowState {
