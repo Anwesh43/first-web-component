@@ -92,3 +92,27 @@ class CircleCreatorArrowState {
         return this.dir == 0
     }
 }
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                if(this.component.arrow) {
+                    this.component.arrow.startUpdating()
+                }
+                if(this.component.arrow) {
+                    this.component.arrow.update()
+                    if(this.component.arrow.stopped()) {
+                        this.animated = false
+                        clearInterval(interval)
+                    }
+                }
+            },50)
+        }
+    }
+}
