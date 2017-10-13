@@ -6,12 +6,14 @@ class CornerImageFilterScalerComponent extends HTMLElement {
         this.img = document.createElement('img')
         this.src = this.getAttribute('src')
         shadow.appendChild(this.img)
+        this.container = CornerImageFilterScalerContainer()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
