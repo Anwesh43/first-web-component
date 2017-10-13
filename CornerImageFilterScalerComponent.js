@@ -132,3 +132,22 @@ class CornerImageFilterScalerContainer {
         })
     }
 }
+class Animator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+        this.startAnimation = this.startAnimation.bind(this)
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.container.update(()=>{
+                    this.animated = false
+                    clearInterval(interval)
+                })
+            },50)
+        }
+    }
+}
