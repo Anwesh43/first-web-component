@@ -92,3 +92,41 @@ class State {
         return this.dir == 0
     }
 }
+class CornerImageFilterScalerContainer {
+    constructor() {
+        this.filters = []
+        this.init()
+        this.tappedFilters = []
+    }
+    init() {
+        for(var i=0;i<4;i++) {
+            this.filters.push(new CornerImageFilterScaler(i))
+        }
+    }
+    draw(context) {
+        this.filters.forEach((filter)=>{
+            filter.draw(context)
+        })
+    }
+    update(stopcb) {
+        this.tappedFilters.forEach((filter,i)=>{
+            filter.update()
+            if(filter.stopped()) {
+                this.tappedFilters.splice(i,1)
+                if(this.tappedFilters.length == 0) {
+                    stopcb()
+                }
+            }
+        })
+    }
+    handleTap(x,y,startcb) {
+        this.filters.forEach((filter)=>{
+            if(filter.handleTap(x,y)) {
+                this.tappedFilters.push(filter)
+                if(this.tappedFilters.length == 1) {
+                    startcb()
+                }
+            }
+        })
+    }
+}
