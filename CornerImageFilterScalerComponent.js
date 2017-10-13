@@ -6,8 +6,8 @@ class CornerImageFilterScalerComponent extends HTMLElement {
         this.img = document.createElement('img')
         this.src = this.getAttribute('src')
         shadow.appendChild(this.img)
-        this.container = CornerImageFilterScalerContainer()
-        this.animator = new Animator()
+        this.container = new CornerImageFilterScalerContainer()
+        this.animator = new Animator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -24,24 +24,26 @@ class CornerImageFilterScalerComponent extends HTMLElement {
             this.render()
         }
         this.img.onmousedown = (event) => {
-            this.container.handleTap(event.offsetX,event.offsety,this.animator.startAnimation)
+            this.container.handleTap(event.offsetX-size/2,event.offsetY-size/2,this.animator.startAnimation)
         }
     }
 }
 class CornerImageFilterScaler {
     constructor(i) {
         this.i = i
-        this.x = (size/3)*Math.cos(i*Math.PI/2)
-        this.y = (size/3)*Math.sin(i*Math.PI/2)
+        this.x = (size/3)*Math.cos(i*Math.PI/2+Math.PI/4)
+        this.y = (size/3)*Math.sin(i*Math.PI/2+Math.PI/4)
         this.state = new State()
     }
     draw(context,image) {
         context.save()
         context.translate(this.x,this.y)
         context.beginPath()
+        context.globalAlpha = 1
         this.drawCircle(context)
-        this.drawAlphaRect(context)
         context.restore()
+        this.drawAlphaRect(context)
+
     }
     drawCircle(context) {
         const r = size/10
@@ -110,9 +112,12 @@ class CornerImageFilterScalerContainer {
         }
     }
     draw(context) {
+        context.save()
+        context.translate(size/2,size/2)
         this.filters.forEach((filter)=>{
             filter.draw(context)
         })
+        context.restore()
     }
     update(stopcb) {
         this.tappedFilters.forEach((filter,i)=>{
@@ -145,7 +150,9 @@ class Animator {
     startAnimation() {
         if(!this.animated) {
             this.animated = true
+
             const interval = setInterval(()=>{
+                console.log(this.component.container.tappedFilters)
                 this.component.render()
                 this.component.container.update(()=>{
                     this.animated = false
@@ -155,3 +162,4 @@ class Animator {
         }
     }
 }
+customElements.define('corner-image-filter-scaler',CornerImageFilterScalerComponent)
