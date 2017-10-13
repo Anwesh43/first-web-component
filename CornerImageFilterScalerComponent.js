@@ -14,6 +14,7 @@ class CornerImageFilterScalerComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        context.drawImage(this.image,size/2-size/3,size/2-size/3,2*size/3,2*size/3)
         this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -37,30 +38,40 @@ class CornerImageFilterScaler {
     }
     draw(context,image) {
         context.save()
+        context.globalAlpha = 0.8
+        context.save()
         context.translate(this.x,this.y)
         context.beginPath()
-        context.globalAlpha = 1
+
         this.drawCircle(context)
         context.restore()
         this.drawAlphaRect(context)
+        context.restore()
 
     }
     drawCircle(context) {
+        context.fillStyle = '#F4511E'
+        context.strokeStyle = context.fillStyle
         const r = size/10
         context.moveTo(0,0)
-        for(var i=0;i<=360;i+=10) {
+        for(var i=0;i<=365*this.state.scale;i+=10) {
             const x = r*Math.cos(i*Math.PI/180),y = r*Math.sin(i*Math.PI/180)
             context.lineTo(x,y)
         }
         context.fill()
+        context.beginPath()
+        context.lineWidth = size/40
+        context.beginPath()
+        context.arc(0,0,r,0,2*Math.PI)
+        context.stroke()
     }
     drawAlphaRect(context) {
         const midx = (this.x)/2,midy = (this.y)/2
         context.save()
         context.translate(midx,midy)
-        context.scale(1,1)
+        context.scale(this.state.scale,this.state.scale)
+        context.globalAlpha = 0.5
         context.fillStyle = '#03A9F4'
-        context.globalAlpha = 0.4
         context.fillRect(-size/6,-size/6,size/3,size/3)
         context.restore()
     }
@@ -74,7 +85,7 @@ class CornerImageFilterScaler {
         this.state.startUpdating()
     }
     stopped() {
-        this.state.stopped()
+        return this.state.stopped()
     }
 }
 class State {
@@ -94,7 +105,7 @@ class State {
         }
     }
     startUpdating() {
-        this.dir = 1-2*this.state.scale
+        this.dir = 1-2*this.scale
     }
     stopped() {
         return this.dir == 0
@@ -133,6 +144,7 @@ class CornerImageFilterScalerContainer {
     handleTap(x,y,startcb) {
         this.filters.forEach((filter)=>{
             if(filter.handleTap(x,y)) {
+                filter.startUpdating()
                 this.tappedFilters.push(filter)
                 if(this.tappedFilters.length == 1) {
                     startcb()
