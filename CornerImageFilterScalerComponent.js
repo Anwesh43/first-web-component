@@ -7,6 +7,7 @@ class CornerImageFilterScalerComponent extends HTMLElement {
         this.src = this.getAttribute('src')
         shadow.appendChild(this.img)
         this.container = CornerImageFilterScalerContainer()
+        this.animator = new Animator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -21,6 +22,9 @@ class CornerImageFilterScalerComponent extends HTMLElement {
         this.image.src = this.src
         this.image.onload = () => {
             this.render()
+        }
+        this.img.onmousedown = (event) => {
+            this.container.handleTap(event.offsetX,event.offsety,this.animator.startAnimation)
         }
     }
 }
