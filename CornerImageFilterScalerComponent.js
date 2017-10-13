@@ -27,6 +27,7 @@ class CornerImageFilterScaler {
         this.i = i
         this.x = (size/3)*Math.cos(i*Math.PI/2)
         this.y = (size/3)*Math.sin(i*Math.PI/2)
+        this.state = new State()
     }
     draw(context,image) {
         context.save()
@@ -59,13 +60,13 @@ class CornerImageFilterScaler {
         return x>=this.x - size/10 && x<=this.x+size/10 && y>=this.y-size/10 && y<=this.y+size/10
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-
+        this.state.stopped()
     }
 }
 class State {
