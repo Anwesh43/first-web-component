@@ -32,10 +32,12 @@ class CornerImageFilterScaler {
         context.save()
         context.translate(this.x,this.y)
         context.beginPath()
+        this.drawCircle(context)
+        this.drawAlphaRect(context)
         context.restore()
     }
     drawCircle(context) {
-        const r = size/15
+        const r = size/10
         context.moveTo(0,0)
         for(var i=0;i<=360;i+=10) {
             const x = r*Math.cos(i*Math.PI/180),y = r*Math.sin(i*Math.PI/180)
@@ -43,7 +45,26 @@ class CornerImageFilterScaler {
         }
         context.fill()
     }
-    clipImage(context,image) {
+    drawAlphaRect(context) {
+        const midx = (this.x)/2,midy = (this.y)/2
+        context.save()
+        context.translate(midx,midy)
+        context.scale(1,1)
+        context.fillStyle = '#03A9F4'
+        context.globalAlpha = 0.4
+        context.fillRect(-size/6,-size/6,size/3,size/3)
+        context.restore()
+    }
+    handleTap(x,y) {
+        return x>=this.x - size/10 && x<=this.x+size/10 && y>=this.y-size/10 && y<=this.y+size/10
+    }
+    update() {
 
+    }
+    startUpdating() {
+
+    }
+    stopped() {
+        
     }
 }
