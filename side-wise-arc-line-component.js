@@ -60,3 +60,18 @@ class SideWiseArcLine {
         return x>=this.x - 0.1*size && x<=this.x+0.1*size && y>=this.y-0.1*size && y<=this.y + 0.1*size
     }
 }
+class State {
+    constructor() {
+        this.scale = 0
+        this.deg = 0
+    }
+    update() {
+        this.scale = Math.cos(this.deg*Math.PI/180)
+        if(this.deg > 180) {
+            this.deg = 0
+        }
+    }
+    stopped() {
+        return this.deg == 0
+    }
+}
