@@ -138,3 +138,4 @@ class Animator {
         clearInterval(this.interval)
     }
 }
+customElements.define('side-wise-arc-line',SideWiseArcLineComponent)
