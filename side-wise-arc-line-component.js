@@ -17,3 +17,32 @@ class SideWiseArcLineComponent extends HTMLElement {
         this.render()
     }
 }
+class SideWiseArcLine {
+    constructor(i) {
+        this.i = i
+        this.x = (this.i%2)*(0.8*size)+size*0.1
+        this.y = i*0.2*size+0.1*size
+    }
+    draw(context) {
+        context.beginPath()
+        for(var i=0;i<=360;i++) {
+            const x = 0.1*size*Math.cos(i*Math.PI/180), y = 0.1*size*Math.sin(i*Math.PI/180)
+            if(i == 0) {
+                context.moveTo(x,y)
+            }
+            else {
+                context.lineTo(x,y)
+            }
+        }
+        context.fill()
+    }
+    update() {
+
+    }
+    startUpdating() {
+
+    }
+    stopped() {
+
+    }
+}
