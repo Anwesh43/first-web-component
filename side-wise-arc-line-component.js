@@ -112,3 +112,22 @@ class SideWiseArcLineContainer {
         })
     }
 }
+class Animator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+        this.startAnimation = this.startAnimation.bind(this)
+        this.stopAnimation = this.stopAnimation.bind(this)
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.interval = setInterval(()=>{
+                this.component.render()
+            },75)
+        }
+    }
+    stopAnimation() {
+        this.animated = false
+        clearInterval(this.interval)
+    }
+}
