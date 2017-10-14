@@ -14,9 +14,13 @@ class SideWiseArcLineComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         this.container.draw(context)
         this.img.src = canvas.toDataURL()
+        this.animator = new Animator()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.container.handleTap(event.offsetX,event.offsetY,this.animator.startAnimation)
+        }
     }
 }
 class SideWiseArcLine {
