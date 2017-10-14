@@ -5,12 +5,14 @@ class SideWiseArcLineComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.container = new SideWiseArcLineContainer()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
@@ -123,6 +125,7 @@ class Animator {
         if(!this.animated) {
             this.interval = setInterval(()=>{
                 this.component.render()
+                this.component.container.update(this.stopAnimation)
             },75)
         }
     }
