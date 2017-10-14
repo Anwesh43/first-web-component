@@ -6,15 +6,19 @@ class SideWiseArcLineComponent extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
         this.container = new SideWiseArcLineContainer()
+        this.animator = new Animator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        context.fillStyle = '#f44336'
+        context.strokeStyle = context.fillStyle
+        context.lineWidth = size/60
+        context.lineCap = 'round'
         this.container.draw(context)
         this.img.src = canvas.toDataURL()
-        this.animator = new Animator()
     }
     connectedCallback() {
         this.render()
@@ -26,8 +30,8 @@ class SideWiseArcLineComponent extends HTMLElement {
 class SideWiseArcLine {
     constructor(i) {
         this.i = i
-        this.x = (this.i%2)*(0.8*size)+size*0.1
-        this.y = i*0.2*size+0.1*size
+        this.x = (this.i%2)*(0.65*size)+size*0.15
+        this.y = i*0.2*size+0.15*size
         this.state = new State()
     }
     draw(context) {
@@ -38,19 +42,19 @@ class SideWiseArcLine {
         context.arc(0,0,0.1*size,0,2*Math.PI)
         context.stroke()
         context.beginPath()
+        context.moveTo(0,0)
         for(var i=0;i<=360*this.state.scale;i++) {
             const x = 0.1*size*Math.cos(i*Math.PI/180), y = 0.1*size*Math.sin(i*Math.PI/180)
-            if(i == 0) {
-                context.moveTo(x,y)
-            }
-            else {
-                context.lineTo(x,y)
-            }
+            context.lineTo(x,y)
         }
         context.fill()
+        context.restore()
+        const diff = (this.x-0.5*size)
+        context.save()
+        context.translate(0.5*size,this.y)
         context.beginPath()
-        context.moveTo(0.5*size,0)
-        context.lineTo((this.x-0.5*size)*this.state.scale,0)
+        context.moveTo(diff*(1-this.state.scale),0)
+        context.lineTo(diff,0)
         context.stroke()
         context.restore()
     }
@@ -70,9 +74,11 @@ class State {
         this.deg = 0
     }
     update() {
-        this.scale = Math.cos(this.deg*Math.PI/180)
+        this.scale = Math.sin(this.deg*Math.PI/180)
+        this.deg+=4.5
         if(this.deg > 180) {
             this.deg = 0
+            this.scale = 0
         }
     }
     stopped() {
@@ -87,7 +93,7 @@ class SideWiseArcLineContainer {
         this.updatingLines = []
     }
     init() {
-        for(var i=0;i<10;i++) {
+        for(var i=0;i<4;i++) {
             this.arcLines.push(new SideWiseArcLine(i))
         }
     }
@@ -127,6 +133,8 @@ class Animator {
     }
     startAnimation() {
         if(!this.animated) {
+            console.log(this.component.container)
+            this.animated = true
             this.interval = setInterval(()=>{
                 this.component.render()
                 this.component.container.update(this.stopAnimation)
@@ -136,6 +144,7 @@ class Animator {
     stopAnimation() {
         this.animated = false
         clearInterval(this.interval)
+        this.component.render()
     }
 }
 customElements.define('side-wise-arc-line',SideWiseArcLineComponent)
