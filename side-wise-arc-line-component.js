@@ -22,6 +22,7 @@ class SideWiseArcLine {
         this.i = i
         this.x = (this.i%2)*(0.8*size)+size*0.1
         this.y = i*0.2*size+0.1*size
+        this.state = new State()
     }
     draw(context) {
         context.save()
@@ -31,7 +32,7 @@ class SideWiseArcLine {
         context.arc(0,0,0.1*size,0,2*Math.PI)
         context.stroke()
         context.beginPath()
-        for(var i=0;i<=360;i++) {
+        for(var i=0;i<=360*this.state.scale;i++) {
             const x = 0.1*size*Math.cos(i*Math.PI/180), y = 0.1*size*Math.sin(i*Math.PI/180)
             if(i == 0) {
                 context.moveTo(x,y)
@@ -43,18 +44,15 @@ class SideWiseArcLine {
         context.fill()
         context.beginPath()
         context.moveTo(0.5*size,0)
-        context.lineTo((this.x-0.5*size),0)
+        context.lineTo((this.x-0.5*size)*this.state.scale,0)
         context.stroke()
         context.restore()
     }
     update() {
-
-    }
-    startUpdating() {
-
+        this.state.update()
     }
     stopped() {
-
+        return this.state.stopped()
     }
     handleTap(x,y) {
         return x>=this.x - 0.1*size && x<=this.x+0.1*size && y>=this.y-0.1*size && y<=this.y + 0.1*size
