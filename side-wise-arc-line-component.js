@@ -55,7 +55,7 @@ class SideWiseArcLine {
         return this.state.stopped()
     }
     handleTap(x,y) {
-        return x>=this.x - 0.1*size && x<=this.x+0.1*size && y>=this.y-0.1*size && y<=this.y + 0.1*size
+        return x>=this.x - 0.1*size && x<=this.x+0.1*size && y>=this.y-0.1*size && y<=this.y + 0.1*size && this.state.stopped()
     }
 }
 class State {
@@ -71,5 +71,44 @@ class State {
     }
     stopped() {
         return this.deg == 0
+    }
+}
+class SideWiseArcLineContainer {
+    constructor(component) {
+        this.arcLines = []
+        this.init()
+        this.component = component
+        this.updatingLines = []
+    }
+    init() {
+        for(var i=0;i<10;i++) {
+            this.arcLines.push(new SideWiseArcLine(i))
+        }
+    }
+    draw(context){
+        this.arcLines.forEach((arcLine)=>{
+            arcLine.draw(context)
+        })
+    }
+    update(stopcb) {
+        this.updatingLines.forEach((line,index)=>{
+            line.update()
+            if(line.stopped()) {
+                this.updatingLines.splice(index,1)
+                if(this.updatingLines.length == 0) {
+                    stopcb()
+                }
+            }
+        })
+    }
+    handleTap(x,y,startcb) {
+        this.arcLines.forEach((arcLine)=>{
+            if(arcLine.handleTap(x,y)) {
+                this.updatingLines.push(arcLine)
+                if(this.updatingLines.length == 1) {
+                    startcb()
+                }
+            }
+        })
     }
 }
