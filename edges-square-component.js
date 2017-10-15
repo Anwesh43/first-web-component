@@ -56,6 +56,9 @@ class EdgeSquare {
     stopped() {
         return this.state.stopped()
     }
+    handleTap(x,y) {
+        return x>=this.x-size/10 && x<=this.x+size/10 && y>=this.y-size/10 && y<=this.y+size/10
+    }
 }
 class EdgeSquareState {
     constructor() {
@@ -73,10 +76,46 @@ class EdgeSquareState {
             this.dir = 0
         }
     }
-    startUpdating() {
+    startUpdating(startcb) {
         this.dir = 1-2*this.state.scale
     }
     stopped() {
         return this.dir == 0
+    }
+}
+class EdgeSquareLinkedList {
+    constructor() {
+        this.root = new EdgeSquare(0)
+        this.squares = []
+    }
+    drawEdge(context,root) {
+        root.draw(context)
+        if(root.next) {
+            drawEdge(context,root.next)
+        }
+    }
+    draw(context) {
+        this.drawEdge(context,this.root)
+    }
+    update(stopcb) {
+        this.squares.forEach((square,i)=>{
+            square.update()
+            if(square.stopped()) {
+                this.squares.splice(i,1)
+                stopcb()
+            }
+        })
+    }
+    handleTapEdge(x,y,startcb,root) {
+        if(root.handleTap(x,y)) {
+            this.squares.push(root)
+            return
+        }
+        if(!root.next) {
+            this.handleTapEdge(x,y,startcb,root.next)
+        }
+    }
+    handleTap(x,y,startcb) {
+        this.handleTapEdge(x,y,startcb,this.root)
     }
 }
