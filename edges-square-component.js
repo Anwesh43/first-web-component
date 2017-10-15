@@ -5,16 +5,24 @@ class EdgesSquareComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.animator = new Animator(this)
+        this.edgeSquareLinkedList = new EdgeSquareLinkedList()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.edgeSquareLinkedList.draw(context)
+        this.edgeSquareLinkedList.update(this.animator.stopAnimation)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            const x = event.offsetX,y = event.offsetY
+            this.edgeSquareLinkedList.handleTap(x,y,this.animator.startAnimation)
+        }
     }
 }
 class EdgeSquare {
