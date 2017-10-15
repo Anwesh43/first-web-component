@@ -1,4 +1,6 @@
 const w = window.innerWidth,h = window.innerHeight, size = Math.min(w,h)/2
+const color = '#6A1B9A'
+const dirs = [0,1,3,2]
 class EdgesSquareComponent extends HTMLElement {
     constructor() {
         super()
@@ -13,6 +15,10 @@ class EdgesSquareComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        context.fillStyle = color
+        context.strokeStyle = color
+        context.lineWidth = size/40
+        context.lineCap = 'round'
         this.edgeSquareLinkedList.draw(context)
         this.edgeSquareLinkedList.update(this.animator.stopAnimation)
         this.img.src = canvas.toDataURL()
@@ -27,9 +33,9 @@ class EdgesSquareComponent extends HTMLElement {
 }
 class EdgeSquare {
     constructor(i) {
-        this.i = i
-        this.x = size/2 + (-size/3+(size/3)*(i%2))
-        this.y = size/2 + (-size/3+(size/3)*Math.floor(i/2))
+        this.i = dirs[i]
+        this.x = size/2 + (-size/3+(size/3)*(this.i%2))
+        this.y = size/2 + (-size/3+(size/3)*Math.floor(this.i/2))
         if(i < 3) {
             this.next = new EdgeSquare(i+1)
         }
@@ -38,19 +44,19 @@ class EdgeSquare {
     draw(context) {
         context.save()
         context.translate(this.x,this.y)
-        context.strokeRect(-size/10,-size/10,size/5,size/5)
+        context.strokeRect(-size/20,-size/20,size/10,size/10)
         context.save()
         context.scale(this.state.scale,this.state.scale)
-        context.fillRect(-size/10,-size/10,size/5,size/5)
+        context.fillRect(-size/20,-size/20,size/10,size/10)
         context.restore()
         context.beginPath()
         context.moveTo(0,0)
         if(this.next) {
-            const diffX = this.next.x-this.x,diffy = this.next.y-this.y
+            const diffX = this.next.x-this.x,diffY = this.next.y-this.y
             context.lineTo(diffX*this.state.scale,diffY*this.state.scale)
         }
         else {
-            context.lineTo((2*size/3)*this.state.scale,0)
+            context.lineTo(0,-(size/3)*this.state.scale)
         }
         context.stroke()
         context.restore()
@@ -65,7 +71,7 @@ class EdgeSquare {
         return this.state.stopped()
     }
     handleTap(x,y) {
-        return x>=this.x-size/10 && x<=this.x+size/10 && y>=this.y-size/10 && y<=this.y+size/10
+        return x>=this.x-size/20 && x<=this.x+size/20 && y>=this.y-size/20 && y<=this.y+size/20 && this.state.dir == 0
     }
 }
 class EdgeSquareState {
@@ -85,7 +91,7 @@ class EdgeSquareState {
         }
     }
     startUpdating(startcb) {
-        this.dir = 1-2*this.state.scale
+        this.dir = 1-2*this.scale
     }
     stopped() {
         return this.dir == 0
@@ -99,7 +105,7 @@ class EdgeSquareLinkedList {
     drawEdge(context,root) {
         root.draw(context)
         if(root.next) {
-            drawEdge(context,root.next)
+            this.drawEdge(context,root.next)
         }
     }
     draw(context) {
@@ -110,16 +116,23 @@ class EdgeSquareLinkedList {
             square.update()
             if(square.stopped()) {
                 this.squares.splice(i,1)
-                stopcb()
+                if(this.squares.length == 0) {
+                    stopcb()
+                }
             }
         })
     }
     handleTapEdge(x,y,startcb,root) {
         if(root.handleTap(x,y)) {
+            root.startUpdating()
+            console.log(root)
             this.squares.push(root)
+            if(this.squares.length == 1) {
+                startcb()
+            }
             return
         }
-        if(!root.next) {
+        if(root.next) {
             this.handleTapEdge(x,y,startcb,root.next)
         }
     }
@@ -147,3 +160,4 @@ class Animator {
         clearInterval(this.interval)
     }
 }
+customElements.define('edge-square-compos',EdgesSquareComponent)
