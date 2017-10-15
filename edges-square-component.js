@@ -25,34 +25,36 @@ class EdgeSquare {
         if(i < 3) {
             this.next = new EdgeSquare(i+1)
         }
+        this.state = new EdgeSquareState()
     }
     draw(context) {
         context.save()
         context.translate(this.x,this.y)
         context.strokeRect(-size/10,-size/10,size/5,size/5)
         context.save()
-        context.scale(1,1)
+        context.scale(this.state.scale,this.state.scale)
         context.fillRect(-size/10,-size/10,size/5,size/5)
         context.restore()
-        context.restore()
         context.beginPath()
-        context.moveTo(this.x,this.y)
+        context.moveTo(0,0)
         if(this.next) {
-            context.lineTo(this.next.x,this.next.y)
+            const diffX = this.next.x-this.x,diffy = this.next.y-this.y
+            context.lineTo(diffX*this.state.scale,diffY*this.state.scale)
         }
         else {
-            context.lineTo(this.x+2*size/3,this.y)
+            context.lineTo((2*size/3)*this.state.scale,0)
         }
         context.stroke()
+        context.restore()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-
+        return this.state.stopped()
     }
 }
 class EdgeSquareState {
