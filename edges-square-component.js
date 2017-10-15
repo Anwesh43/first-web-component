@@ -119,3 +119,23 @@ class EdgeSquareLinkedList {
         this.handleTapEdge(x,y,startcb,this.root)
     }
 }
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+        this.startAnimation = this.startAnimation.bind(this)
+        this.stopAnimation = this.stopAnimation.bind(this)
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            this.interval = setInterval(()=>{
+                this.component.render()
+            },75)
+        }
+    }
+    stopAnimation() {
+        this.animated = false
+        clearInterval(this.interval)
+    }
+}
