@@ -1,5 +1,5 @@
 const w = window.innerWidth,h = window.innerHeight,size = Math.min(w,h)*0.4
-const attachCustomFunctionality = (context) {
+const attachCustomFunctionality = (context) => {
     context.fillCircle = function(x,y,r) {
         context.beginPath()
         context.arc(x,y,r,0,2*Math.PI)
@@ -44,6 +44,7 @@ class PolygonalCenterBall {
     }
     drawBalls(context,n) {
         const r = (size/3)*this.state.scale
+        context.fillStyle = '#f44336'
         for(var i=0;i<n;i++) {
             const x = (r)*Math.cos(i*(2*Math.PI/n)),y = (r)*Math.sin(i*(2*Math.PI/n))
             context.fillCircle(x,y,size/20)
@@ -59,7 +60,7 @@ class State {
         this.scale = 0
     }
     update(stopcb) {
-        this.scale = Math.sin(this.deg*Math.PI/180)
+        this.scale = Math.sin(this.deg)
         this.deg += Math.PI/10
         if(this.deg > Math.PI) {
             this.deg = 0
@@ -84,10 +85,11 @@ class Animator {
                     ball.update(()=>{
                         this.animated = false
                         clearInterval(interval)
+                        this.component.render()
                     })
                 }
             },100)
         }
     }
 }
-customElements.define('poygonal-center-ball',PolygonalCenterBallComponent)
+customElements.define('polygonal-center-ball',PolygonalCenterBallComponent)
