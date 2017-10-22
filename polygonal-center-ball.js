@@ -27,17 +27,24 @@ class PolygonalCenterBallComponent extends HTMLElement {
     }
 }
 class PolygonalCenterBall {
+    constructor() {
+        this.state = new State()
+    }
     draw(context,n) {
         context.save()
         context.translate(size/2,size/2)
-
+        this.drawBalls(context,n)
         context.restore()
     }
     drawBalls(context,n) {
+        const r = (size/3)*this.state.scale
         for(var i=0;i<n;i++) {
-            const x = (size/3)*Math.cos(i*(2*Math.PI/n)),y = (size/3)*Math.sin(i*(2*Math.PI/n))
+            const x = (r)*Math.cos(i*(2*Math.PI/n)),y = (r)*Math.sin(i*(2*Math.PI/n))
             context.fillCircle(x,y,size/20)
         }
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
     }
 }
 class State {
