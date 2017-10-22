@@ -62,3 +62,25 @@ class State {
         }
     }
 }
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(!this.animated) {
+            const ball = this.component.ball
+            this.animated = true
+
+            const interval = setInterval(()=>{
+                this.component.render()
+                if(ball) {
+                    ball.update(()=>{
+                        this.animated = false
+                        clearInterval(interval)
+                    })
+                }
+            },100)
+        }
+    }
+}
