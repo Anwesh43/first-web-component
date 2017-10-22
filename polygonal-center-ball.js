@@ -14,6 +14,7 @@ class PolygonalCenterBallComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.ball = new PolygonalCenterBall()
+        this.animator = new Animator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -26,6 +27,9 @@ class PolygonalCenterBallComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = ()=>{
+            this.animator.startAnimation()
+        }
     }
 }
 class PolygonalCenterBall {
