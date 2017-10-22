@@ -13,6 +13,7 @@ class PolygonalCenterBallComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.ball = new PolygonalCenterBall()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -20,6 +21,7 @@ class PolygonalCenterBallComponent extends HTMLElement {
         canvas.height = size
         const context = canvas.getContext('2d')
         attachCustomFunctionality(context)
+        this.ball.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
