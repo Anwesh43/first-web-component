@@ -40,3 +40,18 @@ class PolygonalCenterBall {
         }
     }
 }
+class State {
+    constructor() {
+        this.deg = 0
+        this.scale = 0
+    }
+    update(stopcb) {
+        this.scale = Math.sin(this.deg*Math.PI/180)
+        this.deg += Math.PI/10
+        if(this.deg > Math.PI) {
+            this.deg = 0
+            this.scale = 0
+            stopcb()
+        }
+    }
+}
