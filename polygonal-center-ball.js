@@ -9,7 +9,7 @@ const attachCustomFunctionality = (context) {
 class PolygonalCenterBallComponent extends HTMLElement {
     constructor() {
         super()
-        this.n = this.getAttribute('n')
+        this.n = this.getAttribute('n') || 6
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
@@ -22,7 +22,7 @@ class PolygonalCenterBallComponent extends HTMLElement {
         canvas.height = size
         const context = canvas.getContext('2d')
         attachCustomFunctionality(context)
-        this.ball.draw(context)
+        this.ball.draw(context,this.n)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
@@ -90,3 +90,4 @@ class Animator {
         }
     }
 }
+customElements.define('poygonal-center-ball',PolygonalCenterBallComponent)
