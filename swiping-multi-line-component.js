@@ -104,3 +104,4 @@ class Animator {
         }
     }
 }
+customElements.define('swiping-multi-line',SwipingMultiLineComponent)
