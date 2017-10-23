@@ -22,14 +22,14 @@ class SwipingMultiLineComponent extends HTMLElement {
 }
 class SwipingMultiLine {
     constructor() {
-
+        this.state = new SwipingMultiLineState()
     }
     draw(context,n) {
         const deg = (2*Math.PI)/n
         for(var i=0;i<n;i++) {
             context.save()
             context.translate(size/2,size/2)
-            context.rotate(deg*i)
+            context.rotate(deg*i*this.state.scale)
             context.beginPath()
             context.moveTo(0,0)
             context.lineTo(size/3,0)
@@ -41,13 +41,13 @@ class SwipingMultiLine {
         }
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-        return false
+        return this.state.stopped()
     }
 }
 class SwipingMultiLineState {
