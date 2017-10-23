@@ -11,6 +11,8 @@ class SwipingMultiLineComponent extends HTMLElement {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
+        context.lineWidth = size/50
+        context.lineCap = 'round'
         const context = canvas.getContext('2d')
         this.img.src = canvas.toDataURL()
     }
@@ -39,12 +41,35 @@ class SwipingMultiLine {
         }
     }
     update() {
-        
+
     }
     startUpdating() {
 
     }
     stopped() {
         return false
+    }
+}
+class SwipingMultiLineState {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+    }
+    update() {
+        this.scale += 0.1*dir
+        if(this.scale > 1) {
+            this.dir = 0
+            this.scale = 1
+        }
+        if(this.scale < 0) {
+            this.dir = 0
+            this.scale = 0
+        }
+    }
+    startUpdating() {
+        this.dir = 1-2*this.scale
+    }
+    stopped() {
+        return this.dir == 0
     }
 }
