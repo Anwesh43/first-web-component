@@ -18,3 +18,33 @@ class SwipingMultiLineComponent extends HTMLElement {
         this.render()
     }
 }
+class SwipingMultiLine {
+    constructor() {
+
+    }
+    draw(context,n) {
+        const deg = (2*Math.PI)/n
+        for(var i=0;i<n;i++) {
+            context.save()
+            context.translate(size/2,size/2)
+            context.rotate(deg*i)
+            context.beginPath()
+            context.moveTo(0,0)
+            context.lineTo(size/3,0)
+            context.stroke()
+            context.beginPath()
+            context.arc(size/3+size/10,0,size/10,0,2*Math.PI)
+            context.fill()
+            context.restore()
+        }
+    }
+    update() {
+        
+    }
+    startUpdating() {
+
+    }
+    stopped() {
+        return false
+    }
+}
