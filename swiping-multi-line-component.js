@@ -5,16 +5,25 @@ class SwipingMultiLineComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.n = this.getAttribute('n')||4
         this.img = document.createElement('img')
+        this.line = new SwipingMultiLine()
         shadow.appendChild(this.img)
     }
-    render() {
+    render(stopcb) {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
+        const context = canvas.getContext('2d')
         context.lineWidth = size/50
         context.lineCap = 'round'
-        const context = canvas.getContext('2d')
+        this.line.draw(context,this.n)
+        this.line.update()
+        if(this.line.stopped()) {
+            stopcb()
+        }
         this.img.src = canvas.toDataURL()
+    }
+    startUpdating() {
+        this.ball.startUpdating()
     }
     connectedCallback() {
         this.render()
