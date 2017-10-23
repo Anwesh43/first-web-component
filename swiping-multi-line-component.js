@@ -1,4 +1,5 @@
 const w = window.innerWidth,h = window.innerHeight,size = Math.min(w,h)/2
+const color = "#FF9800"
 class SwipingMultiLineComponent extends HTMLElement {
     constructor() {
         super()
@@ -14,8 +15,10 @@ class SwipingMultiLineComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
-        context.lineWidth = size/50
+        context.lineWidth = size/60
         context.lineCap = 'round'
+        context.fillStyle = color
+        context.strokeStyle = color
         this.line.draw(context,this.n)
         this.line.update()
         if(this.line.stopped() && stopcb) {
