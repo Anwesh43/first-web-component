@@ -6,7 +6,7 @@ class SwipingMultiLineComponent extends HTMLElement {
         this.n = this.getAttribute('n')||4
         this.img = document.createElement('img')
         this.line = new SwipingMultiLine()
-        this.animator = new Animator()
+        this.animator = new Animator(this)
         shadow.appendChild(this.img)
     }
     render(stopcb) {
@@ -18,13 +18,13 @@ class SwipingMultiLineComponent extends HTMLElement {
         context.lineCap = 'round'
         this.line.draw(context,this.n)
         this.line.update()
-        if(this.line.stopped()) {
+        if(this.line.stopped() && stopcb) {
             stopcb()
         }
         this.img.src = canvas.toDataURL()
     }
     startUpdating() {
-        this.ball.startUpdating()
+        this.line.startUpdating()
     }
     connectedCallback() {
         this.render()
@@ -48,7 +48,7 @@ class SwipingMultiLine {
             context.lineTo(size/3,0)
             context.stroke()
             context.beginPath()
-            context.arc(size/3+size/10,0,size/10,0,2*Math.PI)
+            context.arc(size/3+size/20,0,size/20,0,2*Math.PI)
             context.fill()
             context.restore()
         }
@@ -69,7 +69,7 @@ class SwipingMultiLineState {
         this.dir = 0
     }
     update() {
-        this.scale += 0.1*dir
+        this.scale += 0.1*(this.dir)
         if(this.scale > 1) {
             this.dir = 0
             this.scale = 1
