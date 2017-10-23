@@ -6,6 +6,7 @@ class SwipingMultiLineComponent extends HTMLElement {
         this.n = this.getAttribute('n')||4
         this.img = document.createElement('img')
         this.line = new SwipingMultiLine()
+        this.animator = new Animator()
         shadow.appendChild(this.img)
     }
     render(stopcb) {
@@ -27,6 +28,9 @@ class SwipingMultiLineComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.animator.startAnimation()
+        }
     }
 }
 class SwipingMultiLine {
