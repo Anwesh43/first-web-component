@@ -82,3 +82,21 @@ class SwipingMultiLineState {
         return this.dir == 0
     }
 }
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render(()=>{
+                    this.animated = false
+                    clearInterval(interval)
+                })
+            },100)
+        }
+    }
+}
