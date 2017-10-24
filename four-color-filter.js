@@ -124,7 +124,7 @@ class ColorFilterContainer {
         if(this.prev) {
             this.prev.update()
         }
-        if((this.prev && this.prev.stopped()) && (this.curr && this.curr.stopped())) {
+        if((this.curr && this.curr.stopped())) {
             stopcb()
             this.animating = false
         }
@@ -144,5 +144,21 @@ class ColorFilterContainer {
             }
         }
 
+    }
+}
+class Animator {
+    constructor(component) {
+        this.component = component
+        this.startAnimation = this.startAnimation.bind(this)
+    }
+    startAnimation() {
+        this.interval = setInterval(()=>{
+            this.component.render()
+            if(this.component.container) {
+                this.component.container.update(()=>{
+                    clearInterval(this.interval)
+                })
+            }
+        })
     }
 }
