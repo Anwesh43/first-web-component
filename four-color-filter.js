@@ -23,6 +23,7 @@ class FourColorFilterComponent extends HTMLElement {
         this.src  = this.getAttribute('src')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.container = new ColorFilterContainer()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -30,6 +31,7 @@ class FourColorFilterComponent extends HTMLElement {
         canvas.height = size
         const context = canvas.getContext('2d')
         attachFunctionalityToContext(context)
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
