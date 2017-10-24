@@ -46,22 +46,33 @@ class ColorFilter {
         this.color = colors[i]
         this.x = (size/3)*Math.cos(i*Math.PI/2+Math.PI/4)
         this.y = (size/3)*Math.sin(i*Math.PI/2+Math.PI/4)
+        this.state = new ColorFilterState()
     }
     draw(context) {
         context.save()
+        context.translate(size/2,size/2)
+        context.save()
         context.translate(this.x,this.y)
-        context.fillCircleOnScale(0,0,size/12,1)
-        context.fillRect(-this.x,-this.y,size/3,size/3)
+        context.fillStyle = this.color
+        context.strokeStyle = this.color
+        context.lineWidth = size/60
+        context.fillCircleOnScale(0,0,size/12,this.state.scale)
+        context.save()
+        context.globalAlpha = 0.6
+        context.scale(this.state.scale,this.state.scale)
+        context.fillRect(-this.x-size/4,-this.y-size/4,size/2,size/2)
+        context.restore()
+        context.restore()
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-
+        return this.state.stopped()
     }
 }
 class ColorFilterState {
@@ -85,5 +96,53 @@ class ColorFilterState {
     }
     stopped() {
         return this.dir == 0
+    }
+    handleTap(x,y) {
+        return x>=this.x-size/12 && x<=this.x+size/12 && y>=this.y-size/12 && y<=this.y+size/12 && this.state.dir == 0
+    }
+}
+class ColorFilterContainer {
+    constructor() {
+        this.filters = []
+        this.init()
+        this.animating = false
+    }
+    init() {
+        for(var i=0;i<4;i++) {
+            this.filters.push(new ColorFilter(i))
+        }
+    }
+    draw(context) {
+        this.filters.forEach((filter)=>{
+            filter.draw(context)
+        })
+    }
+    update(stopcb) {
+        if(this.curr) {
+            this.curr.update()
+        }
+        if(this.prev) {
+            this.prev.update()
+        }
+        if((this.prev && this.prev.stopped()) && (this.curr && this.curr.stopped())) {
+            stopcb()
+            this.animating = false
+        }
+    }
+    handleTap(x,y,startcb) {
+        if(!this.animating) {
+            const tappedFilters = this.filters.filter((cf)=>cf.handleTap(x,y))
+            if(tappedFilters.size == 1) {
+                if(!(this.prev && this.prev == tappedFilters[0])) {
+                    this.animating = true
+                    if(this.prev) {
+                        this.prev.startUpdating()
+                    }
+                    this.curr = tappedFilters[0]
+                    this.curr.startUpdating()
+                }
+            }
+        }
+
     }
 }
