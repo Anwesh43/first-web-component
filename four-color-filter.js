@@ -24,6 +24,7 @@ class FourColorFilterComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.container = new ColorFilterContainer()
+        this.animator = new Animator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -39,6 +40,10 @@ class FourColorFilterComponent extends HTMLElement {
         this.image.src = this.src
         this.image.onload = () => {
             this.render()
+        }
+        this.img.onmousedown = (event) => {
+            const x = event.offsetX,y = event.offsetY
+            this.container.handleTap(x-size/2,y-size/2,this.animator.startAnimation)
         }
     }
 }
