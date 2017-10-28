@@ -1,11 +1,11 @@
-var w = window.innerWidth,h = window.innerHeight,r = Math.min(w,h)/40,size = Math.min(w,h)/8
+var w = window.innerWidth,h = window.innerHeight,r = Math.min(w,h)/40,size = Math.min(w,h)/8,color = "#FF9800"
 class MoveInRectComponent extends HTMLElement{
     constructor() {
         super()
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
-        this.graph = new InRectMoverGraph(r,r)
+        this.graph = new InRectMoverGraph(2*r,2*r)
         this.animator = new InRectMoverAnimator(this)
     }
     render() {
@@ -13,6 +13,12 @@ class MoveInRectComponent extends HTMLElement{
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
+        context.fillStyle = '#212121'
+        context.fillRect(0,0,w,h)
+        context.lineCap = "round"
+        context.lineWeight = Math.min(w,h)/40
+        context.fillStyle = color
+        context.strokeStyle = color
         this.graph.draw(context)
         this.graph.update()
         this.img.src = canvas.toDataURL()
@@ -21,7 +27,7 @@ class MoveInRectComponent extends HTMLElement{
         this.graph.startUpdating()
     }
     stopped() {
-        this.graph.stopped()
+        return this.graph.stopped()
     }
     connectedCallback() {
         this.render()
@@ -32,18 +38,18 @@ class MoveInRectComponent extends HTMLElement{
 }
 class InRectMoverGraph {
     constructor(x,y) {
-        this.root = new InRectMoverNode(x,y)
+        this.root = new InRectMoverNode(x,y,0)
         this.curr = this.root
         this.deg = 0
     }
-    draw(context,node) {
+    drawNode(context,node) {
         node.draw(context)
         if(node.neighbor) {
-            this.draw(context,node.neighbor)
+            this.drawNode(context,node.neighbor)
         }
     }
     draw(context) {
-        this.draw(context,this.root)
+        this.drawNode(context,this.root)
     }
     update() {
         this.curr.update()
@@ -59,21 +65,29 @@ class InRectMoverGraph {
     startUpdating() {
         const node = new InRectMoverNode(this.curr.x,this.curr.y,this.deg)
         this.curr.neighbor = node
-        this.curr = neighbor
+        this.curr = this.curr.neighbor
         this.curr.startUpdating()
+        //console.log(node)
     }
 }
 class InRectMoverNode {
-    constructor(x,y,r,deg) {
+    constructor(x,y,deg) {
         this.x = x
         this.y = y
+        this.ox = x
+        this.oy = y
         this.deg = deg
-        thi.state = new InRectMoverNodeState()
+        this.state = new InRectMoverNodeState()
     }
-    draw(context,ax,ay) {
+    draw(context) {
+        //console.log(size)
         const ax = size*Math.cos(this.deg*Math.PI/2),ay = size*Math.sin(this.deg*Math.PI/2)
-        this.x = this.x+ax*this.state.scale
-        this.y = this.y+ay*this.state.scale
+        //console.log(ax)
+        //console.log(ay)
+        this.x = this.ox+Math.abs(ax*this.state.scale)
+        this.y = this.oy+ay*this.state.scale
+        //console.log(this.x)
+        //console.log(this.y)
         context.save()
         context.translate(this.x,this.y)
         context.beginPath()
@@ -104,7 +118,7 @@ class InRectMoverNodeState {
         this.dir = 0
     }
     update() {
-        this.scale += 0.1*dir
+        this.scale += 0.1*this.dir
         if(Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = (this.prevScale+1)%2
             this.dir = 0
@@ -130,6 +144,7 @@ class InRectMoverAnimator {
             const interval = setInterval(()=>{
                 this.component.render()
                 if(this.component.stopped()) {
+                    //console.log("stopped")
                     clearInterval(interval)
                     this.animated = false
                 }
