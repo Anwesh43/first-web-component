@@ -1,4 +1,4 @@
-var w = window.innerWidth,h = window.innerHeight,r = Math.min(w,h)/20
+var w = window.innerWidth,h = window.innerHeight,r = Math.min(w,h)/40,size = Math.min(w,h)/8
 class MoveInRectComponent extends HTMLElement{
     constructor() {
         super()
@@ -18,35 +18,61 @@ class MoveInRectComponent extends HTMLElement{
     }
 }
 class InRectMoverGraph {
-    constructor() {
-
+    constructor(x,y) {
+        this.root = new InRectMoverNode(x,y)
+        this.curr = this.root
+        this.deg = 0
+    }
+    draw(context,node) {
+        node.draw(context)
+        if(node.neighbor) {
+            this.draw(context,node.neighbor)
+        }
     }
     draw(context) {
-
+        this.draw(context,this.root)
     }
     update() {
-
+        this.curr.update()
     }
     stopped() {
-
+        const condition =  this.curr.stopped()
+        if(condition) {
+            this.deg++
+            this.deg%=4
+        }
+        return condition
     }
     startUpdating() {
-
+        const node = new InRectMoverNode(this.curr.x,this.curr.y,this.deg)
+        this.curr.neighbor = node
+        this.curr = neighbor
+        this.curr.startUpdating()
     }
 }
 class InRectMoverNode {
-    constructor(x,y,r) {
+    constructor(x,y,r,deg) {
         this.x = x
         this.y = y
+        this.deg = deg
         thi.state = new InRectMoverNodeState()
     }
     draw(context,ax,ay) {
+        const ax = size*Math.cos(this.deg*Math.PI/2),ay = size*Math.sin(this.deg*Math.PI/2)
+        this.x = this.x+ax*this.state.scale
+        this.y = this.y+ay*this.state.scale
         context.save()
-        context.translate(this.x+ax*this.state.scale,this.y+ay*this.state.scale)
+        context.translate(this.x,this.y)
         context.beginPath()
         context.arc(0,0,r,0,2*Math.PI)
         context.fill()
         context.restore()
+        if(this.neighbor) {
+            context.beginPath()
+            context.moveTo(this.x,this.y)
+            context.lineTo(this.neighbor.x,this.neighbor.y)
+            context.stroke()
+        }
     }
     update() {
         this.state.update()
