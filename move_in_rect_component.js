@@ -5,13 +5,22 @@ class MoveInRectComponent extends HTMLElement{
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.graph = new InRectMoverGraph(r,r)
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
+        this.graph.draw(context)
+        this.graph.update()
         this.img.src = canvas.toDataURL()
+    }
+    startUpdating() {
+        this.graph.startUpdating()
+    }
+    stopped() {
+        this.graph.stopped()
     }
     connectedCallback() {
         this.render()
@@ -103,5 +112,24 @@ class InRectMoverNodeState {
     }
     startUpdating() {
         this.dir = 1-2*this.scale
+    }
+}
+class InRectMoverAnimator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startAnimating() {
+        if(!this.animated) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                if(this.component.stopped()) {
+                    clearInterval(interval)
+                    this.animated = false
+                }
+            },50)
+        }
     }
 }
