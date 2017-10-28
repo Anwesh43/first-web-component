@@ -38,23 +38,24 @@ class InRectMoverNode {
     constructor(x,y,r) {
         this.x = x
         this.y = y
+        thi.state = new InRectMoverNodeState()
     }
     draw(context,ax,ay) {
         context.save()
-        context.translate(this.x+ax,this.y+ay)
+        context.translate(this.x+ax*this.state.scale,this.y+ay*this.state.scale)
         context.beginPath()
         context.arc(0,0,r,0,2*Math.PI)
         context.fill()
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
     stopped() {
-
+        return this.state.stopped()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
 }
 class InRectMoverNodeState {
