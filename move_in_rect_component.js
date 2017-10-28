@@ -1,4 +1,4 @@
-var w = window.innerWidth,h = window.innerHeight
+var w = window.innerWidth,h = window.innerHeight,r = Math.min(w,h)/20
 class MoveInRectComponent extends HTMLElement{
     constructor() {
         super()
@@ -27,7 +27,33 @@ class InRectMoverGraph {
     update() {
 
     }
-    stopUpdating() {
+    stopped() {
+
+    }
+    startUpdating() {
+
+    }
+}
+class InRectMoverNode {
+    constructor(x,y,r) {
+        this.x = x
+        this.y = y
+    }
+    draw(context,ax,ay) {
+        context.save()
+        context.translate(this.x+ax,this.y+ay)
+        context.beginPath()
+        context.arc(0,0,r,0,2*Math.PI)
+        context.fill()
+        context.restore()
+    }
+    update() {
+
+    }
+    stopped() {
+
+    }
+    startUpdating() {
 
     }
 }
