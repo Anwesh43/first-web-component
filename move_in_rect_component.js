@@ -17,3 +17,17 @@ class MoveInRectComponent extends HTMLElement{
         this.render()
     }
 }
+class InRectMoverGraph {
+    constructor() {
+
+    }
+    draw(context) {
+
+    }
+    update() {
+
+    }
+    stopUpdating() {
+
+    }
+}
