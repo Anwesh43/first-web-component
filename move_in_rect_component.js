@@ -137,3 +137,4 @@ class InRectMoverAnimator {
         }
     }
 }
+customElements.define('move-in-rect-comp',MoveInRectComponent)
