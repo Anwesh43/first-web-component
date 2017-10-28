@@ -6,6 +6,7 @@ class MoveInRectComponent extends HTMLElement{
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.graph = new InRectMoverGraph(r,r)
+        this.animator = new InRectMoverAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -24,6 +25,9 @@ class MoveInRectComponent extends HTMLElement{
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimating()
+        }
     }
 }
 class InRectMoverGraph {
