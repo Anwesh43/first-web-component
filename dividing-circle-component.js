@@ -11,9 +11,13 @@ class DividingCircleComponent extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
         this.circle = new DividingCircle()
+        this.animator = new DividingCircleAnimator(this)
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimating()
+        }
     }
     startUpdating() {
       this.circle.startUpdating()
