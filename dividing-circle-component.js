@@ -58,7 +58,7 @@ class DividingCircle {
                 context.save()
                 context.rotate(Math.PI/4*(1-2*j))
                 this.drawLine(context,this.state.scales[1])
-                drawCircle(size/6,0,size/20)
+                drawCircle(context,size/6*(this.state.scales[1]),0,size/20)
                 context.restore()
             }
             context.restore()
@@ -79,7 +79,7 @@ class DividingCircle {
 class DividingCircleState {
     constructor() {
         this.scales = [0,0]
-        this.currDir = 0
+        this.currDir = 1
         this.dir = 0
         this.prev = 0
         this.j = 0
@@ -89,7 +89,7 @@ class DividingCircleState {
         if(Math.abs(this.scales[this.j] - this.prev) > 1) {
             this.scales[this.j] = (this.prev+1)%2
             this.j+=this.dir
-            if(this.j == this.scales.length) {
+            if(this.j == this.scales.length || this.j == -1) {
                 this.dir = 0
                 this.currDir *= -1
                 this.j += this.currDir
@@ -112,13 +112,15 @@ class DividingCircleAnimator {
     startAnimating() {
         if(!this.animated) {
             this.animated = true
+            this.component.startUpdating()
             const interval = setInterval(()=>{
                 this.component.render()
                 if(this.component.stopped()) {
                     this.animated = false
                     clearInterval(interval)
                 }
-            },100)
+            },50)
         }
     }
 }
+customElements.define('dividing-circle-comp',DividingCircleComponent)
