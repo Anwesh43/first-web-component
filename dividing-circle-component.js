@@ -24,12 +24,12 @@ class DividingCircleComponent extends HTMLElement {
 }
 class DividingCircle {
     constructor() {
-
+        this.state = new DividingCircleState()
     }
-    drawLine(context) {
+    drawLine(context,scale) {
         context.beginPath()
         context.moveTo(0,0)
-        context.lineTo(size/6,0)
+        context.lineTo(scale*(size/6),0)
         context.stroke()
     }
     draw(context) {
@@ -38,13 +38,13 @@ class DividingCircle {
         for(var i=0;i<2;i++) {
             context.save()
             context.scale(1-2*i,1)
-            this.drawLine(context)
+            this.drawLine(context,this.state.scales[0])
             context.save()
-            context.translate(size/6,0)
+            context.translate(size/6*(this.state.scales[0]),0)
             for(var j=0;j<2;j++) {
                 context.save()
                 context.rotate(Math.PI/4*(1-2*j))
-                this.drawLine(context)
+                this.drawLine(context,this.state.scales[1])
                 drawCircle(size/6,0,size/20)
                 context.restore()
             }
@@ -54,13 +54,13 @@ class DividingCircle {
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-
+        return this.state.stopped()
     }
 }
 class DividingCircleState {
