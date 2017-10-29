@@ -63,3 +63,31 @@ class DividingCircle {
 
     }
 }
+class DividingCircleState {
+    constructor() {
+        this.scales = [0,0]
+        this.currDir = 0
+        this.dir = 0
+        this.prev = 0
+        this.j = 0
+    }
+    update() {
+        this.scales[this.j] += this.dir * 0.1
+        if(Math.abs(this.scales[this.j] - this.prev) > 1) {
+            this.scales[this.j] = (this.prev+1)%2
+            this.j+=this.dir
+            if(this.j == this.scales.length) {
+                this.dir = 0
+                this.currDir *= -1
+                this.j += this.currDir
+            }
+            this.prev = this.scales[this.j]
+        }
+    }
+    startUpdating() {
+        this.dir = this.currDir
+    }
+    stopped() {
+        return this.dir == 0
+    }
+}
