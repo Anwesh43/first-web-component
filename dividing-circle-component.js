@@ -10,15 +10,24 @@ class DividingCircleComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.circle = new DividingCircle()
     }
     connectedCallback() {
         this.render()
+    }
+    startUpdating() {
+      this.circle.startUpdating()
+    }
+    stopped() {
+        return this.circle.stopped()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.circle.draw(context)
+        this.circle.update()
         this.img.src = canvas.toDataURL()
     }
 }
@@ -89,5 +98,23 @@ class DividingCircleState {
     }
     stopped() {
         return this.dir == 0
+    }
+}
+class DividingCircleAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimating() {
+        if(!this.animated) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },100)
+        }
     }
 }
