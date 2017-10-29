@@ -30,6 +30,10 @@ class DividingCircleComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        context.fillStyle = '#01579B'
+        context.strokeStyle = '#01579B'
+        context.lineWidth = size/50
+        context.lineCap = 'round'
         this.circle.draw(context)
         this.circle.update()
         this.img.src = canvas.toDataURL()
