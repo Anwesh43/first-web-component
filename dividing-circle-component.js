@@ -1,4 +1,3 @@
-var w = window.innerWidth,h = window.innerHeight,size = Math.min(w,h)/2
 const drawCircle = (context,x,y,r) => {
     context.beginPath()
     context.arc(x,y,r,0,2*Math.PI)
@@ -12,10 +11,12 @@ class DividingCircleComponent extends HTMLElement {
         shadow.appendChild(this.img)
         this.circle = new DividingCircle()
         this.animator = new DividingCircleAnimator(this)
+        this.windowController = new WindowController()
+        this.windowController.adjustOnResize(this.render.bind(this))
     }
     connectedCallback() {
         this.render()
-        this.img.onmousedown = (event) => {
+        this.img.onclick = (event) => {
             this.animator.startAnimating()
         }
     }
@@ -26,6 +27,7 @@ class DividingCircleComponent extends HTMLElement {
         return this.circle.stopped()
     }
     render() {
+        var w = this.windowController.w,h = this.windowController.h,size = Math.min(w,h)/2
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
@@ -34,7 +36,7 @@ class DividingCircleComponent extends HTMLElement {
         context.strokeStyle = '#01579B'
         context.lineWidth = size/50
         context.lineCap = 'round'
-        this.circle.draw(context)
+        this.circle.draw(context,size)
         this.circle.update()
         this.img.src = canvas.toDataURL()
     }
@@ -43,25 +45,25 @@ class DividingCircle {
     constructor() {
         this.state = new DividingCircleState()
     }
-    drawLine(context,scale) {
+    drawLine(context,scale,size) {
         context.beginPath()
         context.moveTo(0,0)
         context.lineTo(scale*(size/6),0)
         context.stroke()
     }
-    draw(context) {
+    draw(context,size) {
         context.save()
         context.translate(size/2,size/2)
         for(var i=0;i<2;i++) {
             context.save()
             context.scale(1-2*i,1)
-            this.drawLine(context,this.state.scales[0])
+            this.drawLine(context,this.state.scales[0],size)
             context.save()
             context.translate(size/6*(this.state.scales[0]),0)
             for(var j=0;j<2;j++) {
                 context.save()
                 context.rotate(Math.PI/4*(1-2*j))
-                this.drawLine(context,this.state.scales[1])
+                this.drawLine(context,this.state.scales[1],size)
                 drawCircle(context,size/6*(this.state.scales[1]),0,size/20)
                 context.restore()
             }
