@@ -94,3 +94,4 @@ class Animator {
         }
     }
 }
+customElements.define('center-to-corner-rect',CenterToCornerRect)
