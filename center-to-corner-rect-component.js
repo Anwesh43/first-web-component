@@ -1,8 +1,8 @@
-const w = canvas.width,h = canvas.height,size = Math.min(w,h)/2
+const w = window.innerWidth,h = window.innerHeight,size = Math.min(w,h)/2
 class CenterToCornerRectComponent extends HTMLElement {
     constructor() {
         super()
-        this.img = document.createElement(img)
+        this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.centerToCorner = new CenterToCornerRect()
@@ -10,8 +10,8 @@ class CenterToCornerRectComponent extends HTMLElement {
     }
     render() {
         const canvas = document.createElement('canvas')
-        canvas.width = w
-        canvas.height = h
+        canvas.width = size
+        canvas.height = size
         const context = canvas.getContext('2d')
         context.fillStyle = '#00BCD4'
         this.centerToCorner.draw(context)
@@ -37,9 +37,9 @@ class CenterToCornerRect {
     }
     draw(context) {
         for(var i=0;i<4;i++) {
-            const xgap = (i%2)*size/4,ygap = Math.floor(i/2)*size/4
+            const xgap = -size/4+(i%2)*size/2,ygap = -size/4+Math.floor(i/2)*size/2
             context.save()
-            context.translate(size/2-xgap*this.state.scale,size/2-ygap*this.state.scale)
+            context.translate(size/2+xgap*this.state.scale,size/2-ygap*this.state.scale)
             context.fillRect(-size/4,-size/4,size/2,size/2)
             context.restore()
         }
@@ -90,8 +90,8 @@ class Animator {
                     this.animated = false
                     clearInterval(interval)
                 }
-            })
+            },30)
         }
     }
 }
-customElements.define('center-to-corner-rect',CenterToCornerRect)
+customElements.define('center-to-corner-rect',CenterToCornerRectComponent)
