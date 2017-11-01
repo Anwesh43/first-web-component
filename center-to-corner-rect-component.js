@@ -5,6 +5,7 @@ class CenterToCornerRectComponent extends HTMLElement {
         this.img = document.createElement(img)
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.centerToCorner = new CenterToCornerRect()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,6 +14,12 @@ class CenterToCornerRectComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#00BCD4'
         this.img.src = canvas.toDataURL()
+    }
+    stopped() {
+        return this.centerToCorner.stopped()
+    }
+    startUpdating() {
+        this.centerToCorner.startUpdating()
     }
     connectedCallback() {
         this.render()
@@ -54,6 +61,9 @@ class State {
             this.prevScale = this.scale
             this.dir = 0
         }
+    }
+    startUpdating() {
+        this.dir = 1-2*this.scale
     }
     stopped() {
         return this.dir == 0
