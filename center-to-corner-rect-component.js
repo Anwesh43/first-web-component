@@ -20,25 +20,25 @@ class CenterToCornerRectComponent extends HTMLElement {
 }
 class CenterToCornerRect {
     constructor() {
-
+        this.state = new State()
     }
     draw(context) {
         for(var i=0;i<4;i++) {
             const xgap = (i%2)*size/4,ygap = Math.floor(i/2)*size/4
             context.save()
-            context.translate(size/2-xgap,size/2-ygap)
+            context.translate(size/2-xgap*this.state.scale,size/2-ygap*this.state.scale)
             context.fillRect(-size/4,-size/4,size/2,size/2)
             context.restore()
         }
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
-
+        return this.state.stopped()
     }
 }
 class State {
