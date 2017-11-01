@@ -13,6 +13,8 @@ class CenterToCornerRectComponent extends HTMLElement {
         canvas.height = h
         const context = canvas.getContext('2d')
         context.fillStyle = '#00BCD4'
+        this.centerToCorner.draw(context)
+        this.centerToCorner.update()
         this.img.src = canvas.toDataURL()
     }
     stopped() {
@@ -67,5 +69,24 @@ class State {
     }
     stopped() {
         return this.dir == 0
+    }
+}
+class Animator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            })
+        }
     }
 }
