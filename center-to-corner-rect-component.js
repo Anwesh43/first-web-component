@@ -6,6 +6,7 @@ class CenterToCornerRectComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.centerToCorner = new CenterToCornerRect()
+        this.animator = new Animator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -25,6 +26,9 @@ class CenterToCornerRectComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = ()=>{
+            this.animator.startAnimation()
+        }
     }
 }
 class CenterToCornerRect {
