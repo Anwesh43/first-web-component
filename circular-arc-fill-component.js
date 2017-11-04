@@ -17,6 +17,7 @@ class CircularArcFillComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.circularArc = new CircularArc()
+        this.animator = new Animator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -32,6 +33,9 @@ class CircularArcFillComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimating()
+        }
     }
 }
 class CircularArc {
