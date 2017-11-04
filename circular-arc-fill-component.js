@@ -97,3 +97,4 @@ class Animator {
         }
     }
 }
+customElements.define('circular-arc-fill',CircularArcFillComponent)
