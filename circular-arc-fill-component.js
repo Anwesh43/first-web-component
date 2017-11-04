@@ -16,13 +16,19 @@ class CircularArcFillComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.circularArc = new CircularArc()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.circularArc.draw(context)
+        this.circularArc.update()
         this.img.src = canvas.toDataURL()
+    }
+    stopped() {
+        return this.circularArc.stopped()
     }
     connectedCallback() {
         this.render()
