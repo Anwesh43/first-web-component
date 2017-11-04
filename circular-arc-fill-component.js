@@ -45,9 +45,27 @@ class CircularArc {
         return true
     }
     startUpdating() {
-        
+
     }
     handleTap(x,y) {
         return x>=size/2-size/10 && x<=size/2+size/10 && y>=size/2-size/10 && y<=size/2+size/10
+    }
+}
+class State {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+        this.prevScale = 0
+    }
+    update() {
+        this.scale += dir*0.1
+        if(Math.abs(this.scale - this.prevScale) > 1) {
+            this.scale = (this.prevScale + 1)%2
+            this.prevScale = scale
+            this.dir = 0
+        }
+    }
+    stopped() {
+        return this.dir == 0
     }
 }
