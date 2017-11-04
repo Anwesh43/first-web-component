@@ -34,8 +34,20 @@ class CircularArc {
     }
     draw(context) {
         context.save()
-        context.translate(x,y)
-
+        context.translate(size/2,size/2)
+        drawArc(context,0,0,size/10,360)
         context.restore()
+    }
+    update() {
+
+    }
+    stopped() {
+        return true
+    }
+    startUpdating() {
+        
+    }
+    handleTap(x,y) {
+        return x>=size/2-size/10 && x<=size/2+size/10 && y>=size/2-size/10 && y<=size/2+size/10
     }
 }
