@@ -85,6 +85,10 @@ class Animator {
             this.animated = true
             const interval = setInterval(()=>{
                 this.component.render()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
             },50)
         }
     }
