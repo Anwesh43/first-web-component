@@ -69,3 +69,17 @@ class State {
         return this.dir == 0
     }
 }
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimating() {
+        if(!this.animated) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+            },50)
+        }
+    }
+}
