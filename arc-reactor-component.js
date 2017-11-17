@@ -5,6 +5,8 @@ class ArcReactorComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.animator = new ArcReactorAnimator(this)
+        this.arcReactor = new ArcReactor(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -16,13 +18,13 @@ class ArcReactorComponent extends HTMLElement {
         this.img.src = canvas.toDataURL()
     }
     update() {
-
+        this.arcReactor.update()
     }
     stopped() {
-
+        return this.arcReactor.stopped()
     }
     startUpdating() {
-
+        this.arcReactor.startUpdating()
     }
 }
 class ArcReactor {
