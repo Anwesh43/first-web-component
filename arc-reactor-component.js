@@ -17,13 +17,16 @@ class ArcReactorComponent extends HTMLElement {
     }
 }
 class ArcReactor {
+    constructor() {
+        this.state = new ArcReactorState()
+    }
     draw(context) {
         context.fillStyle = '#311B92'
         context.strokeStyle = '#311B92'
         const kr = Math.min(w,h)/2
         context.save()
         context.translate(w/2,h/2)
-        context.rotate(Math.PI/2)
+        context.rotate(this.state.deg)
         context.lineWidth = kr/10
         context.lineCap = 'round'
         for(var i=0;i<8;i++) {
@@ -34,7 +37,7 @@ class ArcReactor {
         }
         this.strokeArc(context,0,0,kr/1.5,0,360)
         context.save()
-        context.scale(1,1)
+        context.scale(this.state.scale,this.state.scale)
         context.beginPath()
         context.arc(0,0,kr/1.5,0,2*Math.PI)
         context.fill()
@@ -59,10 +62,10 @@ class ArcReactor {
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
     stopped() {
         return false
