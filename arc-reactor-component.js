@@ -15,6 +15,15 @@ class ArcReactorComponent extends HTMLElement {
         context.fillRect(0,0,w,h)
         this.img.src = canvas.toDataURL()
     }
+    update() {
+
+    }
+    stopped() {
+
+    }
+    startUpdating() {
+
+    }
 }
 class ArcReactor {
     constructor() {
@@ -98,5 +107,24 @@ class ArcReactorState {
     }
     stopped() {
         return this.dir == 0
+    }
+}
+class ArcReactorAnimator {
+    constructor(component){
+        this.animated = false
+        this.component = component
+    }
+    startUpdating() {
+        if(!this.animated) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update()
+                if(this.component.stopped()) {
+                    clearInterval(interval)
+                }
+            },50)
+        }
     }
 }
