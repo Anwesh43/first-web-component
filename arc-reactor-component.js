@@ -21,6 +21,7 @@ class ArcReactorComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,w,h)
+        this.arcReactor.draw(context)
         this.img.src = canvas.toDataURL()
     }
     update() {
@@ -40,7 +41,7 @@ class ArcReactor {
     draw(context) {
         context.fillStyle = '#311B92'
         context.strokeStyle = '#311B92'
-        const kr = Math.min(w,h)/2
+        const kr = Math.min(w,h)/3
         context.save()
         context.translate(w/2,h/2)
         context.rotate(this.state.deg)
@@ -66,16 +67,16 @@ class ArcReactor {
         context.translate(cx,cy)
         context.beginPath()
         for(var i=a;i<=b;i++) {
-            x = cx+Math.cos(i*Math.PI/180)
-            y = cy+Math.sin(i*Math.PI/180)
+            var x = cx+cr*Math.cos(i*Math.PI/180)
+            var y = cy+cr*Math.sin(i*Math.PI/180)
             if(i == 0) {
                 context.moveTo(x,y)
             }
             else {
                 context.lineTo(x,y)
             }
-            context.stroke()
         }
+        context.stroke()
         context.restore()
     }
     update() {
@@ -85,7 +86,7 @@ class ArcReactor {
         this.state.startUpdating()
     }
     stopped() {
-        return false
+        return this.state.stopped()
     }
 }
 class ArcReactorState {
@@ -97,10 +98,10 @@ class ArcReactorState {
         this.d = 0
     }
     update() {
-        this.d += (3*dir)
+        this.d += (10*this.dir)
         this.scale = Math.sin(this.d*Math.PI/180)
         this.deg = this.prevDeg + (Math.PI/2)*((this.d)/180)
-        if(this.scale >= 1) {
+        if(this.d >= 180) {
             this.scale = 0
             this.dir = 0
             this.d = 0
@@ -124,6 +125,7 @@ class ArcReactorAnimator {
     }
     startUpdating() {
         if(!this.animated) {
+            console.log(this.animated)
             this.animated = true
             this.component.startUpdating()
             const interval = setInterval(()=>{
@@ -131,8 +133,11 @@ class ArcReactorAnimator {
                 this.component.update()
                 if(this.component.stopped()) {
                     clearInterval(interval)
+                    this.animated = false
+                    this.component.render()
                 }
             },50)
         }
     }
 }
+customElements.define('arc-reactor-comp',ArcReactorComponent)
