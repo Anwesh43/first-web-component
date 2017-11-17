@@ -68,3 +68,32 @@ class ArcReactor {
         return false
     }
 }
+class ArcReactorState {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+        this.deg = 0
+        this.prevDeg = 0
+        this.d = 0
+    }
+    update() {
+        this.d += (3*dir)
+        this.scale = Math.sin(this.d*Math.PI/180)
+        this.deg = this.prevDeg + (Math.PI/2)*((this.d)/180)
+        if(this.scale >= 1) {
+            this.scale = 0
+            this.dir = 0
+            this.d = 0
+            this.deg = this.prevDeg + Math.PI/2
+            this.prevDeg = this.deg
+        }
+    }
+    startUpdating() {
+        this.dir = 1
+        this.scale = 0
+        this.d = 0
+    }
+    stopped() {
+        return this.dir == 0
+    }
+}
