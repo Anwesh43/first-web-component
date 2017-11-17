@@ -8,6 +8,12 @@ class ArcReactorComponent extends HTMLElement {
         this.animator = new ArcReactorAnimator(this)
         this.arcReactor = new ArcReactor(this)
     }
+    connectedCallback() {
+        this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startUpdating()
+        }
+    }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w
