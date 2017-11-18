@@ -20,30 +20,33 @@ class SquareSideComponent extends HTMLElement {
     }
 }
 class SquareSide {
+    constructor() {
+        this.state = new SquareSideState()
+    }
     draw(context) {
         context.fillStyle = '#f44336'
         context.save()
         context.translate(size,size)
         for(var i=0;i<4;i++) {
             context.save()
-            context.translate(0,-size/3)
+            context.translate(0,-size/3*this.state.scale)
             var x = -size/3,y = -size/3
             for(var j=0;j<5;j++) {
                 context.save()
                 context.translate(x+size/30,y+size/30)
                 context.fillRect(-size/30,-size/30,size/15,size/15)
                 context.restore()
-                x+=size/15
+                x+=size/15*this.state.scale
             }
             context.restore()
         }
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
     stopped() {
-
+        return this.state.stopped()
     }
 }
 class SquareSideState {
