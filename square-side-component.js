@@ -42,10 +42,24 @@ class SquareSide {
     update() {
 
     }
-    startUpdating() {
-
-    }
     stopped() {
 
+    }
+}
+class SquareSideState {
+    constructor() {
+        this.scale = 0
+        this.deg = 0
+    }
+    update() {
+        this.deg+=9
+        this.scale = Math.sin(this.deg*Math.PI/180)
+        if(this.deg > 180) {
+            this.deg = 0
+            this.scale = 0
+        }
+    }
+    stopped() {
+        return this.deg == 0
     }
 }
