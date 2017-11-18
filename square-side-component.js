@@ -6,6 +6,7 @@ class SquareSideComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.squareSide = new SquareSide()
+        this.animator = new SquareSideAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -23,6 +24,9 @@ class SquareSideComponent extends HTMLElement {
     }
     connectecCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimation()
+        }
     }
 }
 class SquareSide {
