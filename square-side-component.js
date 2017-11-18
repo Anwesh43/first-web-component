@@ -22,7 +22,7 @@ class SquareSideComponent extends HTMLElement {
     stopped() {
         return this.squareSide.stopped()
     }
-    connectecCallback() {
+    connectedCallback() {
         this.render()
         this.img.onmousedown = (event) => {
             this.animator.startAnimation()
@@ -36,18 +36,21 @@ class SquareSide {
     draw(context) {
         context.fillStyle = '#f44336'
         context.save()
-        context.translate(size,size)
+        context.translate(size/2,size/2)
         for(var i=0;i<4;i++) {
             context.save()
-            context.translate(0,-size/3*this.state.scale)
-            var x = -size/3,y = -size/3
+            context.rotate(i*Math.PI/2)
+            context.save()
+            context.translate(0,(-size/3)*this.state.scale)
+            var x = (-size/3)*this.state.scale
             for(var j=0;j<5;j++) {
                 context.save()
-                context.translate(x+size/30,y+size/30)
-                context.fillRect(-size/30,-size/30,size/15,size/15)
+                context.translate(x+size/30,size/30)
+                context.fillRect(-size/15,-size/15,2*size/15,2*size/15)
                 context.restore()
-                x+=size/15*this.state.scale
+                x+=2*size/15*this.state.scale
             }
+            context.restore()
             context.restore()
         }
         context.restore()
@@ -94,3 +97,4 @@ class SquareSideAnimator {
         }
     }
 }
+customElements.define('square-side-comp',SquareSideComponent)
