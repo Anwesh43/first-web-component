@@ -5,6 +5,7 @@ class SquareSideComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.squareSide = new SquareSide()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,7 +14,12 @@ class SquareSideComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,size,size)
+        this.squareSide.draw(context)
+        this.squareSide.update()
         this.img.src = canvas.toDataURL()
+    }
+    stopped() {
+        return this.squareSide.stopped()
     }
     connectecCallback() {
         this.render()
@@ -76,6 +82,10 @@ class SquareSideAnimator {
             this.animated = true
             const interval = setInterval(()=>{
                 this.component.render()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
             },100)
         }
     }
