@@ -66,3 +66,17 @@ class SquareSideState {
         return this.deg == 0
     }
 }
+class SquareSideAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+            },100)
+        }
+    }
+}
