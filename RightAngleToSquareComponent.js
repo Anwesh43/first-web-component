@@ -5,7 +5,7 @@ class RightAngleToSquareComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
-        this.rightAngleToSquareContainer = new RightAngleToSquareContainer()
+        this.rightAngleToSquareContainer = new RightAngleToSquareContainer(10)
         this.animator = new RightAngleToSquareAnimator(this)
     }
     render() {
@@ -120,3 +120,4 @@ class RightAngleToSquareAnimator {
         }
     }
 }
+customElements.define('right-angle-to-square-comp',RightAngleToSquareComponent)
