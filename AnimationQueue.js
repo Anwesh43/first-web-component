@@ -13,8 +13,9 @@ class AnimationQueue {
     startUpdating() {
         if(this.queue.length > 0) {
             this.curr = this.queue[0]
+            return true
         }
-
+        return false
     }
     stopped() {
         const stop_condition = this.curr.stopped()
