@@ -5,6 +5,7 @@ class RightAngleToSquareComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.rightAngleToSquareContainer = new RightAngleToSquareContainer()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -15,6 +16,15 @@ class RightAngleToSquareComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+    }
+    update() {
+        this.rightAngleToSquareContainer.update()
+    }
+    stopped() {
+        return this.rightAngleToSquareContainer.stopped()
+    }
+    startUpdating() {
+        return this.rightAngleToSquareContainer.startUpdating()
     }
 }
 class RightAngleToSquare {
@@ -83,5 +93,23 @@ class RightAngleToSquareContainer {
     }
     stopped() {
         return this.queue.stopped()
+    }
+}
+class RightAngleToSquareAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startUpdating() {
+        if(!this.animated && this.component.startUpdating()) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.update()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },50)
+        }
     }
 }
