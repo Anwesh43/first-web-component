@@ -6,16 +6,23 @@ class RightAngleToSquareComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.rightAngleToSquareContainer = new RightAngleToSquareContainer()
+        this.animator = new RightAngleToSquareAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
+        context.fillStyle = '#212121'
+        context.fillRect(0,0,w,h)
+        this.rightAngleToSquareContainer.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = (event) =>{
+            this.animator.startUpdating()
+        }
     }
     update() {
         this.rightAngleToSquareContainer.update()
