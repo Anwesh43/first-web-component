@@ -13,6 +13,7 @@ class AnimationQueue {
     startUpdating() {
         if(this.queue.length > 0) {
             this.curr = this.queue[0]
+            this.curr.startUpdating()
             return true
         }
         return false
@@ -40,6 +41,9 @@ class Animation {
         if(this.cb) {
             this.cb(this.scale)
         }
+    }
+    startUpdating() {
+        this.dir = 1
     }
     stopped() {
         return this.dir == 0
