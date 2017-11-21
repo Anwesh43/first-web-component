@@ -41,8 +41,10 @@ class RightAngleToSquare {
         this.scale = 0
         this.updateFns = [(scale)=>{
             this.scale = scale
+            console.log(this.scale)
         },(scale)=>{
             this.deg = Math.PI*scale
+            console.log(this.deg)
         }]
     }
     addToAnimQueue(queue) {
@@ -51,24 +53,28 @@ class RightAngleToSquare {
         })
     }
     draw(context) {
+        const size = this.size
+        context.strokeStyle = '#f44336'
         context.save()
         context.translate(w/2,h/2)
         context.lineWidth = size/10
         context.lineCap = "round"
         for(var i=0;i<2;i++) {
-            canvas.save()
-            canvas.rotate(i*this.deg)
+            context.save()
+            context.rotate(i*this.deg)
             for(var j=0;j<2;j++) {
                 context.save()
                 context.translate(size/2,size/2)
                 context.rotate(-j*Math.PI/2)
-                context.beginPath()
-                context.moveTo(0,0)
-                context.lineTo(0,-size*this.scale)
-                context.stroke()
+                if(this.scale > 0) {
+                    context.beginPath()
+                    context.moveTo(0,0)
+                    context.lineTo(0,-size*this.scale)
+                    context.stroke()
+                }
                 context.restore()
             }
-            canvas.restore()
+            context.restore()
         }
         context.restore()
     }
@@ -80,10 +86,10 @@ class RightAngleToSquareContainer {
         this.init(n)
     }
     init(n) {
-        const size = Math.min(w,h)/2
+        const size = 20*Math.min(w,h)/21
         for(var i=0;i<n;i++) {
             const rightAngleToSquare = new RightAngleToSquare(size/(n-i))
-            rightAngleToSquare.addToAnimQueue(queue)
+            rightAngleToSquare.addToAnimQueue(this.queue)
             this.rightAngles.push(rightAngleToSquare)
         }
     }
@@ -109,8 +115,9 @@ class RightAngleToSquareAnimator {
     }
     startUpdating() {
         if(!this.animated && this.component.startUpdating()) {
-            this.animated = true
+            console.log("coming here")
             const interval = setInterval(()=>{
+                this.component.render()
                 this.component.update()
                 if(this.component.stopped()) {
                     this.animated = false
