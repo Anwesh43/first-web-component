@@ -28,10 +28,15 @@ class RightAngleToSquare {
             this.deg = Math.PI*scale
         }]
     }
+    addToAnimQueue(queue) {
+        this.updateFns.forEach((updateFn)=>{
+            queue.push(updateFn)
+        })
+    }
     draw(context) {
         context.save()
         context.translate(w/2,h/2)
-        context.lineWidth = Math.min(w,h)/40
+        context.lineWidth = size/10
         context.lineCap = "round"
         for(var i=0;i<2;i++) {
             canvas.save()
@@ -49,5 +54,34 @@ class RightAngleToSquare {
             canvas.restore()
         }
         context.restore()
+    }
+}
+class RightAngleToSquareContainer {
+    constructor(n) {
+        this.rightAngles = []
+        this.queue = new AnimationQueue()
+        this.init(n)
+    }
+    init(n) {
+        const size = Math.min(w,h)/2
+        for(var i=0;i<n;i++) {
+            const rightAngleToSquare = new RightAngleToSquare(size/(n-i))
+            rightAngleToSquare.addToAnimQueue(queue)
+            this.rightAngles.push(rightAngleToSquare)
+        }
+    }
+    draw(context) {
+        this.rightAngles.forEach((rightAngle)=>{
+            rightAngle.draw(context)
+        })
+    }
+    update() {
+        this.queue.update()
+    }
+    startUpdating() {
+        return this.queue.startUpdating()
+    }
+    stopped() {
+        return this.queue.stopped()
     }
 }
