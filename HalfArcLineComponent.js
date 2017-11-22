@@ -19,16 +19,21 @@ class HalfArcLineComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.halfArcLine = new HalfArcLine()
+        this.animator = new HalfArcLineAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
+        this.halfArcLine.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) =>{
+            this.animator.startUpdating()
+        }
     }
     update() {
         this.halfArcLine.update()
