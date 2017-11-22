@@ -18,6 +18,7 @@ class HalfArcLineComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.halfArcLine = new HalfArcLine()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -29,6 +30,15 @@ class HalfArcLineComponent extends HTMLElement {
     connectedCallback() {
         this.render()
     }
+    update() {
+        this.halfArcLine.update()
+    }
+    stopped() {
+        return this.halfArcLine.stopped()
+    }
+    startUpdating() {
+        this.halfArcLine.startUpdating()
+    }
 }
 class HalfArcLine {
     constructor() {
@@ -36,6 +46,9 @@ class HalfArcLine {
         this.queue = new AnimationQueue()
         this.queue.push((scale)=>{
             this.scale = scale
+        })
+        this.queue.push((scale)=>{
+            this.scale = 1-scale
         })
     }
     update() {
