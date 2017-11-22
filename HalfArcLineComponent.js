@@ -1,4 +1,17 @@
-const w = window.innerWidth, h = window.innerHeight
+const w = window.innerWidth, h = window.innerHeight, size = Math.min(w,h)/2
+const drawArc = (context,r,start_deg,end_deg) {
+    context.beginPath()
+    for(var i=start_deg;i<=end_deg;i++) {
+        const x = r*Math.cos(i*Math.PI/180),y = r*Math.sin(i*Math.PI/180)
+        if(i == start_deg) {
+            context.moveTo(x,y)
+        }
+        else {
+            context.lineTo(x,y)
+        }
+        context.stroke()
+    }
+}
 class HalfArcLineComponent extends HTMLElement {
     constructor() {
         super()
@@ -15,5 +28,40 @@ class HalfArcLineComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+    }
+}
+class HalfArcLine {
+    constructor() {
+        this.scale = 0
+        this.queue = new AnimationQueue()
+        this.queue.push((scale)=>{
+            this.scale = scale
+        })
+    }
+    update() {
+        this.queue.update()
+    }
+    stopped() {
+        return this.queue.stopped()
+    }
+    startUpdating() {
+        this.queue.startUpdating()
+    }
+    draw(context) {
+        context.lineWidth = size/40
+        context.lineCap = 'round'
+        for(var i=0;i<2;i++) {
+            context.save()
+            context.translate(w/2,h/2)
+            context.save()
+            context.rotate(this.scale*Math.PI/2)
+            context.beginPath()
+            context.moveTo(0,0)
+            context.lineTo(0,size/3)
+            context.stroke()
+            context.restore()
+            drawArc(context,size/3,0,90*this.scale)
+            context.restore()
+        }
     }
 }
