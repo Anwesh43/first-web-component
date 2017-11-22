@@ -78,3 +78,23 @@ class HalfArcLine {
         }
     }
 }
+class HalfArcLineAnimator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startUpdating() {
+        if(!this.animated) {
+            this.animated = true
+            this.component.startUpdating()
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },50)
+        }
+    }
+}
