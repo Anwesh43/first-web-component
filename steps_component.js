@@ -6,6 +6,7 @@ class StepsComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.n = this.getAttribute('n')||6
+        this.container = new StepsContainer(this.n)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -14,6 +15,7 @@ class StepsComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,w,h)
+        container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
