@@ -19,7 +19,7 @@ class StepsComponent extends HTMLElement {
         context.fillRect(0,0,w,h)
         context.strokeStyle = this.color
         context.fillStyle = this.color
-        container.draw(context)
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     update() {
@@ -56,9 +56,13 @@ class Step {
         context.beginPath()
         context.arc(0,0,this.w/10,0,2*Math.PI)
         context.stroke()
-        this.drawArc(context,this.w/10,360*this.deg_scale)
-        this.drawLine(context,0,0,w*this.x_scale,0)
-        this.drawLine(context,w,0,w,h*this.y_scale)
+        this.drawArc(context,this.w/10,361*this.deg_scale)
+        if(this.x_scale > 0) {
+            this.drawLine(context,0,0,this.w*this.x_scale,0)
+        }
+        if(this.y_scale > 0) {
+            this.drawLine(context,this.w,0,this.w,this.h*this.y_scale)
+        }
         context.restore()
     }
     drawLine(context,x1,y1,x2,y2) {
@@ -92,8 +96,8 @@ class Step {
 class StepsContainer {
     constructor(n) {
         this.steps = []
-        this.initSteps(n)
         this.queue = new AnimationQueue()
+        this.initSteps(n)
     }
     initSteps(n) {
         if(n > 0) {
