@@ -20,3 +20,54 @@ class StepsComponent extends HTMLElement {
         this.render()
     }
 }
+class Step {
+    constructor(x,y,w,h) {
+        this.deg_scale = 0
+        this.x_scale = 0
+        this.y_scale = 0
+        this.x = x
+        this.y = y
+        this.w = w
+        this.h = h
+    }
+    draw(context) {
+        context.lineWidth = this.w/25
+        context.lineCap = 'round'
+        context.save()
+        context.translate(this.x,this.y)
+        context.beginPath()
+        context.arc(0,0,this.w/10,0,2*Math.PI)
+        context.stroke()
+        this.drawArc(context,this.w/10,360*this.deg_scale)
+        this.drawLine(context,0,0,w*this.x_scale,0)
+        this.drawLine(context,w,0,w,h*this.y_scale)
+        context.restore()
+    }
+    drawLine(context,x1,y1,x2,y2) {
+        context.beginPath()
+        context.moveTo(x1,y1)
+        context.lineTo(x2,y2)
+        context.stroke()
+    }
+    drawArc(context,r,deg){
+        context.beginPath()
+        context.moveTo(0,0)
+        for(var i=0;i<=deg;i++) {
+            const x = r*Math.cos(i*Math.PI/180)
+            const y = r*Math.sin(i*Math.PI/180)
+            context.lineTo(x,y)
+        }
+        context.fill()
+    }
+    addToAnimQueue(queue) {
+        queue.push((scale)=>{
+            this.deg_scale = scale
+        })
+        queue.push((scale)=>{
+            this.x_scale = scale
+        })
+        queue.push((scale)=>{
+            this.y_scale = scale
+        })
+    }
+}
