@@ -1,4 +1,4 @@
-const w = window.innerWidth, h = window.innerHeight
+var w = window.innerWidth, h = window.innerHeight
 class StepsComponent extends HTMLElement {
     constructor() {
         super()
@@ -69,5 +69,39 @@ class Step {
         queue.push((scale)=>{
             this.y_scale = scale
         })
+    }
+}
+class StepsContainer {
+    constructor(n) {
+        this.steps = []
+        this.initSteps(n)
+        this.queue = new AnimationQueue()
+    }
+    initSteps(n) {
+        if(n > 0) {
+          const x_gap = w/(n+1),y_gap = h/(n+1)
+          var x = x_gap/2,y = y_gap/2
+          for(var i=0;i<n;i++) {
+              const step = new Step(x,y,x_gap,y_gap)
+              step.addToAnimQueue(this.queue)
+              this.steps.push(step)
+              x+=x_gap
+              y+=y_gap
+          }
+        }
+    }
+    draw(context) {
+        this.steps.forEach((step)=>{
+            step.draw(context)
+        })
+    }
+    update() {
+        this.queue.update()
+    }
+    startUpdating() {
+        return this.queue.startUpdating()
+    }
+    stopped() {
+        return this.queue.stopped()
     }
 }
