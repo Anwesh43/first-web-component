@@ -107,3 +107,22 @@ class StepsContainer {
         return this.queue.stopped()
     }
 }
+class StepsAnimator{
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startUpdating() {
+        if(!this.animated && this.component.startUpdating()) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            })
+        }
+    }
+}
