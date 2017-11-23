@@ -8,6 +8,7 @@ class StepsComponent extends HTMLElement {
         this.n = this.getAttribute('n')||6
         this.container = new StepsContainer(this.n)
         this.animator = new StepsAnimator(this)
+        this.color = this.getAttribute('color')||'#E65100'
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -16,6 +17,8 @@ class StepsComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,w,h)
+        context.strokeStyle = this.color
+        context.fillStyle = this.color
         container.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -139,3 +142,4 @@ class StepsAnimator{
         }
     }
 }
+customElements.define('steps-comp',StepsComponent)
