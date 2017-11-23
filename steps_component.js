@@ -96,6 +96,8 @@ class Step {
 class StepsContainer {
     constructor(n) {
         this.steps = []
+        this.xaxis_scale = 0
+        this.yaxis_scale = 0
         this.queue = new AnimationQueue()
         this.initSteps(n)
     }
@@ -103,6 +105,10 @@ class StepsContainer {
         if(n > 0) {
           const x_gap = w/(n+1),y_gap = h/(n+1)
           var x = x_gap/2,y = y_gap/2
+          this.x_pivot = x_gap/2
+          this.y_pivot = y_gap/2+y_gap*(n)
+          this.wx = x_gap*n
+          this.hy = y_gap*(n)
           for(var i=0;i<n;i++) {
               const step = new Step(x,y,x_gap,y_gap)
               step.addToAnimQueue(this.queue)
@@ -110,12 +116,24 @@ class StepsContainer {
               x+=x_gap
               y+=y_gap
           }
+          this.queue.push((scale)=>{
+              this.xaxis_scale = scale
+              this.yaxis_scale = scale
+          })
         }
     }
     draw(context) {
         this.steps.forEach((step)=>{
             step.draw(context)
         })
+        this.drawAxis(context,this.x_pivot+this.wx*this.xaxis_scale,this.y_pivot)
+        this.drawAxis(context,this.x_pivot,this.y_pivot - (this.yaxis_scale*this.hy))
+    }
+    drawAxis(context,x,y) {
+        context.beginPath()
+        context.moveTo(this.x_pivot,this.y_pivot)
+        context.lineTo(x,y)
+        context.stroke()
     }
     update() {
         this.queue.update()
