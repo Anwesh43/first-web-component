@@ -119,3 +119,22 @@ class TextScreenContainer {
         return this.queue.stopped()
     }
 }
+class TextScreenAnimator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startAnimating() {
+        if(!this.animated && this.component.startUpdating()) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update()
+                if(this.component.stopped()) {
+                    this.animated = false
+                    clearInterval(interval)
+                }
+            },50)
+        }
+    }
+}
