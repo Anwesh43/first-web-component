@@ -49,11 +49,20 @@ class TextContainer {
         })
     }
     initTextParts(texts,queue) {
-
+        var y = -h/30*(1+texts.length)/2
+        texts.forEach((text)=>{
+            const textPart = new TextPart(text,y)
+            textPart.addAnimation(queue)
+            this.textParts.push(textPart)
+            y += h/15
+        })
     }
     draw(context) {
         context.save()
         context.translate(w/2,this.y)
+        this.textParts.forEach((textPart)=>{
+            textPart.draw(context)
+        })
         context.restore()
     }
 }
@@ -78,5 +87,6 @@ class TextPart{
       context.font = context.replace(/\d{2}/,`${h/30}`)
       context.fillStyle = 'white'
       context.fillText(this.text,this.x-tw/2,this.y,paint)
+      this.time++
   }
 }
