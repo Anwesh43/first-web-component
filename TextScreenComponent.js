@@ -5,16 +5,27 @@ class TextScreenComponent extends HTMLElement {
         this.img = document.createElement('canvas')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.container = new TextContainer()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+    }
+    update() {
+        this.container.update()
+    }
+    stopped() {
+        return this.container.stopped()
+    }
+    startUpdating() {
+        return this.container.startUpdating()
     }
 }
 class TextScreen {
