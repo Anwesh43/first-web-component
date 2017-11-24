@@ -90,3 +90,21 @@ class TextPart{
       this.time++
   }
 }
+class TextScreenContainer {
+    constructor() {
+        this.queue = new AnimationQueue()
+        this.textScreen = new TextScreen(["hello world","hello world 1","hello world 2"],"#00ACC1",queue)
+    }
+    draw(context) {
+        this.textScreen.draw(context)
+    }
+    update() {
+        this.queue.update()
+    }
+    startUpdating() {
+        return this.queue.startUpdating()
+    }
+    stopped() {
+        return this.queue.stopped()
+    }
+}
