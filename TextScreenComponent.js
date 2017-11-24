@@ -36,3 +36,24 @@ class TextScreen {
         context.fillRect(this.x,0,w,h)
     }
 }
+class TextContainer {
+    constructor(texts,queue) {
+        this.textParts = []
+        this.y = h/2
+        this.initTextParts(texts,queue)
+        this.initAnimation(queue)
+    }
+    initAnimation(queue) {
+        queue.push((scale)=>{
+            this.y = h/2 - (h/2+(h/30+(h/30)*(this.textParts.length)/2))*scale
+        })
+    }
+    initTextParts(texts,queue) {
+
+    }
+    draw(context) {
+        context.save()
+        context.translate(w/2,this.y)
+        context.restore()
+    }
+}
