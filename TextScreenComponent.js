@@ -57,3 +57,26 @@ class TextContainer {
         context.restore()
     }
 }
+class TextPart{
+  constructor(text,y) {
+      this.text = text
+      this.x = w/2
+      this.y = y
+      this.px = x
+      this.time = 0
+  }
+  addAnimation(queue) {
+      queue.push((scale)=>{
+          this.x = this.px - (w/2)*scale
+      })
+  }
+  draw(context) {
+      const tw = context.measureText(this.text).w
+      if(this.time == 0) {
+          this.x += tw
+      }
+      context.font = context.replace(/\d{2}/,`${h/30}`)
+      context.fillStyle = 'white'
+      context.fillText(this.text,this.x-tw/2,this.y,paint)
+  }
+}
