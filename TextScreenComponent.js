@@ -17,3 +17,22 @@ class TextScreenComponent extends HTMLElement {
         this.render()
     }
 }
+class TextScreen {
+    constructor(texts,color,queue) {
+        this.x = -w
+        queue.push((scale)=>{
+            this.x = -w + w*scale
+        })
+        this.initTextContainer(texts,queue)
+        queue.push((scale)=>{
+            this.x = w*scale
+        })
+    }
+    initTextContainer(texts,queue) {
+
+    }
+    draw(context,color) {
+        context.fillStyle = color
+        context.fillRect(this.x,0,w,h)
+    }
+}
