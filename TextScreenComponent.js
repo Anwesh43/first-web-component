@@ -6,6 +6,7 @@ class TextScreenComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.container = new TextContainer()
+        this.animator = new TextScreenAnimator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -17,6 +18,9 @@ class TextScreenComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = (event) => {
+            this.animator.startAnimating()
+        }
     }
     update() {
         this.container.update()
