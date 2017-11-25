@@ -5,6 +5,8 @@ class RoundBarButtonListComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        const n = this.getAttribute('n') || 6
+        this.container = new RoundBarContainer(n)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -14,7 +16,17 @@ class RoundBarButtonListComponent extends HTMLElement {
         context.fillStyle = '#212121'
         context.fillRect(0,0,w,h)
         context.fillStyle = '#FFC107'
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
+    }
+    update() {
+        this.container.update()
+    }
+    startUpdating() {
+        return this.container.startUpdating()
+    }
+    stopped() {
+        return this.container.stopped()
     }
     connectedCallback() {
         this.render()
@@ -92,10 +104,15 @@ class RoundBarAnimator {
         this.component = component
     }
     startAnimation() {
-        if(!this.animated) {
+        if(!this.animated && this.component.startUpdating()) {
             this.animated = true
             const interval = setInterval(()=>{
                 this.component.render()
+                this.component.update()
+                if(this.component.stopped()) {
+                    clearInterval(interval)
+                    this.animated = false
+                }
             })
         }
     }
