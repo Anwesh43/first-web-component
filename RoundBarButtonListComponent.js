@@ -21,8 +21,7 @@ class RoundBarButtonListComponent extends HTMLElement {
     }
 }
 class RoundBar {
-    constructor(x,y,h) {
-        this.x = x
+    constructor(y,h) {
         this.y = y
         this.w_scale = 0
         this.h = h
@@ -32,17 +31,58 @@ class RoundBar {
             this.w_scale = scale
         })
     }
+    addReverseAnimQueue(queue) {
+        queue.push((scale)=>{
+            this.w_scale = 1-scale
+        })
+    }
     draw(context) {
-        const new_x = (9*w/20)*this.w_scale,
+        const new_x = (w/2-this.h/2)*this.w_scale,
         for(var i=0;i<2;i++) {
             context.save()
             context.translate(w/2,this.y)
             context.scale(1,1-2*i)
             context.fillRect(-w/2,-this.h/2,new_x,h)
             context.beginPath()
-            context.arc(-w/2+new_x,0,w/20,0,2*Math.PI)
+            context.arc(-w/2+new_x,0,this.h/2,0,2*Math.PI)
             context.fill()
             context.restore()
         }
+    }
+}
+class RoundBarContainer {
+    constructor(queue,n) {
+        this.roundBars = []
+        this.scale = 0
+    }
+    initRoundBars(n) {
+        if(n > 0) {
+            const h_gap = (3*h/5)/n
+            var y = 2*h/5
+            for(var i=0;i<n;i++) {
+                this.roundBars.push(new RoundBar(y,h_gap))
+            }
+        }
+    }
+    addAnimation(queue) {
+        this.roundBars.forEach((roundBar)=>{
+            roundBar.addToAnimQueue(queue)
+        })
+        queue.push((scale)=>{
+            this.scale = scale
+        })
+    }
+    addReverseAnimQueue(queue) {
+        queue.push((scale)=>{
+            this.scale = 1-scale
+        })
+        this.roundBars.forEach((roundBar)=>{
+            roundBar.addReverseAnimQueue(queue)
+        })
+    }
+    draw(context) {
+        this.roundBars.forEach((roundBar)=>{
+            roundBar.draw(context)
+        })
     }
 }
