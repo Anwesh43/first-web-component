@@ -110,7 +110,7 @@ class RoundBarContainer {
     drawArc(context) {
         const r = Math.min(w,h)/10
         context.save()
-        context.translate(w/2,h/5 - r)
+        context.translate(w/2,3*h/10 - r)
         context.beginPath()
         context.moveTo(0,0)
         for(var i=0;i <= 365*this.scale;i+=10) {
