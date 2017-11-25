@@ -7,6 +7,7 @@ class RoundBarButtonListComponent extends HTMLElement {
         shadow.appendChild(this.img)
         const n = this.getAttribute('n') || 6
         this.container = new RoundBarContainer(n)
+        this.animator = new RoundBarAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -30,6 +31,9 @@ class RoundBarButtonListComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.animator.startAnimation()
+        }
     }
 }
 class RoundBar {
