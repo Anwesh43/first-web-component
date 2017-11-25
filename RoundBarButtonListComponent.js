@@ -86,3 +86,17 @@ class RoundBarContainer {
         })
     }
 }
+class RoundBarAnimator {
+    constructor(component){
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.animated = true
+            const interval = setInterval(()=>{
+                this.component.render()
+            })
+        }
+    }
+}
