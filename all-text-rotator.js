@@ -48,6 +48,28 @@ class AllTextRotator {
 
     }
     stopped() {
+
+    }
+}
+class IndividualText {
+    constructor(text) {
+        this.text = text
+    }
+    draw(context,x,y) {
+        const tw = TextUtil.getTextSize(context,this.text)
+        context.save()
+        context.translate(x+tw/2,y+fontSize/2)
+        context.rotate(this.deg*Math.PI/180)
+        context.fillText(this.text,0,0)
+        context.restore()
+    }
+    update() {
+
+    }
+    stopped() {
+
+    }
+    startUpdating() {
         
     }
 }
