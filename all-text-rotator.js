@@ -1,3 +1,12 @@
+const fontSize = 40
+class TextUtil {
+    changeFont(context,font) {
+        context.font = context.font.replace(/d{2}/,font)
+    }
+    getTextSize(context,text) {
+        return context.measureText(this.text).width
+    }
+}
 class AllTextRotatorComponent extends HTMLElement {
     constructor() {
         super()
@@ -9,12 +18,12 @@ class AllTextRotatorComponent extends HTMLElement {
     render() {
         const canvas = document.createElement('canvas')
         var context = canvas.getContext('2d')
-        context.font = context.font.replace(/\d{2}/,"30")
-        const tw = context.measureText(this.text)
+        TextUtil.changeFont(context,fontSize)
+        const tw = TextUtil.getTextSize(context,this.text)
         canvas.width = 2*tw
-        canvas.height = 90
+        canvas.height = 2*fontSize
         context = canvas.getContext('2d')
-        context.font = context.font.replace(/\d{2}/,"30")
+        TextUtil.changeFont(context,fontSize)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
