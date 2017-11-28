@@ -15,6 +15,7 @@ class AllTextRotatorComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.textRotator = new AllTextRotator(this.text)
+        this.animator = new AllTextRotatingAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -36,6 +37,9 @@ class AllTextRotatorComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = () => {
+            this.animator.startAnimation()
+        }
     }
 }
 class AllTextRotator {
@@ -114,5 +118,25 @@ class IndividualTextState {
     }
     stopped() {
         return this.dir == 0
+    }
+}
+class AllTextRotatingAnimator {
+    constructor(component) {
+        this.component = component
+        this.animated = false
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.component.startUpdating(()=>{
+                this.animated = true
+            })
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update(()=>{
+                    this.animated = false
+                    clearInterval(interval)
+                })
+            },50)
+        }
     }
 }
