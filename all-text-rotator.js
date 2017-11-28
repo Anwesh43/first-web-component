@@ -47,10 +47,17 @@ class AllTextRotator {
         this.text = text
         this.j = 0
         this.dir = 1
+        this.init()
         this.setCurrentText()
     }
+    init() {
+        this.iTexts = []
+        for(var i=0;i<this.text.length;i++) {
+            this.iTexts.push(new IndividualText(this.text.charAt(i)))
+        }
+    }
     setCurrentText() {
-        this.curr = new IndividualText(this.text.charAt(this.j))
+        this.curr = this.iTexts[this.j]
     }
     draw(context,w,h) {
         context.fillStyle = '#212121'
@@ -118,6 +125,7 @@ class IndividualTextState {
             this.scale = this.prev_scale + this.dir
             this.dir = 0
             this.prev_scale = this.scale
+            console.log(this.scale)
         }
     }
     startUpdating() {
