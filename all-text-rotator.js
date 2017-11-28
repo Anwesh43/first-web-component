@@ -30,3 +30,24 @@ class AllTextRotatorComponent extends HTMLElement {
         this.render()
     }
 }
+class AllTextRotator {
+    constructor(text) {
+        this.text = text
+        this.j = 0
+    }
+    draw(context,w,h) {
+        context.fillStyle = '#212121'
+        const currText = this.text.substr(0,this.j)
+        const tw = TextUtil.getTextSize(context,currText)
+        context.fillText(currText,w/2-(tw)/2,h/2+fontSize/2)
+    }
+    update() {
+
+    }
+    startUpdating() {
+
+    }
+    stopped() {
+        
+    }
+}
