@@ -14,6 +14,7 @@ class AllTextRotatorComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.textRotator = new AllTextRotator(this.text)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -24,7 +25,14 @@ class AllTextRotatorComponent extends HTMLElement {
         canvas.height = 2*fontSize
         context = canvas.getContext('2d')
         TextUtil.changeFont(context,fontSize)
+        this.textRotator.draw(context,canvas.width,canvas.height)
         this.img.src = canvas.toDataURL()
+    }
+    update(stopcb) {
+        this.textRotator.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.textRotator.startUpdating(startcb)
     }
     connectedCallback() {
         this.render()
