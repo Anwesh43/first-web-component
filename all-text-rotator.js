@@ -1,16 +1,16 @@
-const fontSize = 40
+const fontSize = 60
 class TextUtil {
-    changeFont(context,font) {
-        context.font = context.font.replace(/d{2}/,font)
+    static changeFont(context,font) {
+        context.font = context.font.replace(/\d{2}/,font)
     }
-    getTextSize(context,text) {
-        return context.measureText(this.text).width
+    static getTextSize(context,text) {
+        return context.measureText(text).width
     }
 }
 class AllTextRotatorComponent extends HTMLElement {
     constructor() {
         super()
-        this.text = this.getAttribute('text')
+        this.text = this.getAttribute('text')||'Hello World'
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
@@ -56,8 +56,13 @@ class AllTextRotator {
         context.fillStyle = '#212121'
         const currText = this.text.substr(0,this.j)
         const tw = TextUtil.getTextSize(context,currText)
-        context.fillText(currText,w/2-(tw)/2,h/2+fontSize/2)
-        this.curr.draw(context,tw+TextUtil.getTextSize(context,this.curr.text),h/2)
+        console.log(currText)
+        console.log(context.measureText(currText))
+        context.fillText(currText,w/2-(tw)/2,h/2)
+        console.log(`${w/2-tw/2},${tw/2+w/2},${w/2},${tw}`)
+        if(this.scale != 0) {
+            this.curr.draw(context,w/2+(tw/2),h/2)
+        }
     }
     update(stopcb) {
         this.curr.update()
@@ -83,10 +88,12 @@ class IndividualText {
     }
     draw(context,x,y) {
         const tw = TextUtil.getTextSize(context,this.text)
+        console.log(`${x},${y}`)
+        console.log(tw)
         context.save()
-        context.translate(x+tw/2,y+fontSize/2)
-        context.rotate(this.deg*Math.PI/180)
-        context.fillText(this.text,0,0)
+        context.translate(x+tw/2,y-fontSize/4)
+        context.rotate(2*Math.PI*this.state.scale)
+        context.fillText(this.text,-tw/2,fontSize/4)
         context.restore()
     }
     update() {
@@ -140,3 +147,4 @@ class AllTextRotatingAnimator {
         }
     }
 }
+customElements.define('all-text-rotator-comp',AllTextRotatorComponent)
