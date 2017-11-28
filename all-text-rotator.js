@@ -70,6 +70,27 @@ class IndividualText {
 
     }
     startUpdating() {
-        
+
+    }
+}
+class IndividualTextState {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+        this.prev_scale = 0
+    }
+    update() {
+        this.scale += this.dir*0.1
+        if(Math.abs(this.scale - this.prev_scale) > 1) {
+            this.scale = this.prev_scale + this.dir
+            this.dir = 0
+            this.prev_scale = this.scale
+        }
+    }
+    startUpdating() {
+        this.dir = 1-2*this.scale
+    }
+    stopped() {
+        return this.dir == 0
     }
 }
