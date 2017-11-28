@@ -54,6 +54,7 @@ class AllTextRotator {
 class IndividualText {
     constructor(text) {
         this.text = text
+        this.state = new IndividualTextState()
     }
     draw(context,x,y) {
         const tw = TextUtil.getTextSize(context,this.text)
@@ -64,13 +65,13 @@ class IndividualText {
         context.restore()
     }
     update() {
-
+        this.state.update()
     }
     stopped() {
-
+        return this.state.stopped()
     }
     startUpdating() {
-
+        this.state.startUpdating()
     }
 }
 class IndividualTextState {
