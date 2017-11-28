@@ -34,21 +34,34 @@ class AllTextRotator {
     constructor(text) {
         this.text = text
         this.j = 0
+        this.dir = 1
+        this.setCurrentText()
+    }
+    setCurrentText() {
+        this.curr = new IndividualText(this.text.charAt(this.j))
     }
     draw(context,w,h) {
         context.fillStyle = '#212121'
         const currText = this.text.substr(0,this.j)
         const tw = TextUtil.getTextSize(context,currText)
         context.fillText(currText,w/2-(tw)/2,h/2+fontSize/2)
+        this.curr.draw(context,tw+TextUtil.getTextSize(context,this.curr.text),h/2)
     }
-    update() {
-
+    update(stopcb) {
+        this.curr.update()
+        if(this.curr.stopped()) {
+            this.j += this.dir
+            if(this.j ==  this.text.length || this.j == -1) {
+                this.dir *= -1
+                this.j += this.dir
+            }
+            this.setCurrentText()
+            stopcb()
+        }
     }
-    startUpdating() {
-
-    }
-    stopped() {
-
+    startUpdating(startcb) {
+        this.curr.startUpdating()
+        startcb()
     }
 }
 class IndividualText {
