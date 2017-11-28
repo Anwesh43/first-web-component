@@ -60,7 +60,7 @@ class AllTextRotator {
         console.log(context.measureText(currText))
         context.fillText(currText,w/2-(tw)/2,h/2)
         console.log(`${w/2-tw/2},${tw/2+w/2},${w/2},${tw}`)
-        if(this.scale != 0) {
+        if(this.curr.state.scale != 0) {
             this.curr.draw(context,w/2+(tw/2),h/2)
         }
     }
@@ -92,7 +92,7 @@ class IndividualText {
         console.log(tw)
         context.save()
         context.translate(x+tw/2,y-fontSize/4)
-        context.rotate(2*Math.PI*this.state.scale)
+        context.rotate(2*Math.PI*(this.state.scale))
         context.fillText(this.text,-tw/2,fontSize/4)
         context.restore()
     }
@@ -142,6 +142,7 @@ class AllTextRotatingAnimator {
                 this.component.update(()=>{
                     this.animated = false
                     clearInterval(interval)
+                    this.component.render()
                 })
             },50)
         }
