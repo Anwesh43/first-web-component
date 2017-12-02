@@ -69,6 +69,7 @@ class ArcLineState {
 class ArcAngleLineContainer {
     constructor(n) {
         this.arcs = []
+        this.state = new ArcAngleLineContainer(n)
         this.init(n)
     }
     init(n) {
@@ -83,10 +84,20 @@ class ArcAngleLineContainer {
         })
     }
     update(stopcb) {
-
+        this.executeFuncOnCurrentJ((j)=>{
+            this.arcs[j].update(stopcb)
+        })
     }
-    startUpdating(stopcb) {
-
+    startUpdating(startcb) {
+        this.executeFuncOnCurrentJ((j)=>{
+            this.arcs[j].startUpdating(startcb)
+        })
+    }
+    executeFuncOnCurrentJ(cb) {
+        const j = this.state.j
+        if(j < this.arcs.length) {
+            cb(j)
+        }
     }
 }
 class ArcAngleLineContainerState {
