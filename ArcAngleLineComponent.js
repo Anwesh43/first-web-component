@@ -83,9 +83,23 @@ class ArcAngleLineContainer {
         })
     }
     update(stopcb) {
-      
+
     }
     startUpdating(stopcb) {
 
+    }
+}
+class ArcAngleLineContainerState {
+    constructor(n) {
+        this.dir = 1
+        this.j = 0
+        this.n = n
+    }
+    incrementCounter() {
+        this.j += this.dir
+        if(this.j == this.n || this.j == -1) {
+            this.dir *= -1
+            this.j += this.dir
+        }
     }
 }
