@@ -19,3 +19,27 @@ class ArcAngleLineComponent extends HTMLElement {
         this.render()
     }
 }
+class ArcAngle {
+    constructor(i) {
+        this.i = i
+    }
+    draw(context,size,deg) {
+        context.save()
+        context.translate(size/2,size/2)
+        context.rotate(deg*this.i*Math.PI/180)
+        context.beginPath()
+        context.moveTo(0,0)
+        for(var i=0;i<=deg;i++) {
+            const px = (size/2)+(size/2)*Math.cos(i*Math.PI/180), py = (size/2)*Math.sin(i*Math.PI/180)
+            context.lineTo(px,py)
+        }
+        context.fill()
+        context.restore()
+    }
+    update(stopcb) {
+
+    }
+    startUpdating(startcb) {
+
+    }
+}
