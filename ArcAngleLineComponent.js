@@ -126,3 +126,26 @@ class ArcAngleLineContainerState {
         }
     }
 }
+class ArcAngleLineAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimating() {
+        if(!this.animated) {
+            this.component.startUpdating(()=>{
+                this.startInterval()
+            })
+        }
+    }
+    startInterval() {
+        this.animated = true
+        const interval = setInterval(()=>{
+            this.component.render()
+            this.component.update(()=>{
+                this.animated = false
+                clearInterval(interval)
+            })
+        },50)
+    }
+}
