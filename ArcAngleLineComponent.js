@@ -5,6 +5,8 @@ class ArcAngleLineComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.n = this.getAttribute('n')||6
+        this.container = new ArcAngleLineContainer(this.n)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +15,17 @@ class ArcAngleLineComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,size,size)
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+    }
+    update(stopcb) {
+        this.container.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.container.startUpdating(startcb)
     }
 }
 class ArcAngle {
@@ -85,7 +94,10 @@ class ArcAngleLineContainer {
     }
     update(stopcb) {
         this.executeFuncOnCurrentJ((j)=>{
-            this.arcs[j].update(stopcb)
+            this.arcs[j].update(()=>{
+                stopcb()
+                this.state.incrementCounter()
+            })
         })
     }
     startUpdating(startcb) {
