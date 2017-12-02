@@ -44,7 +44,7 @@ class ArcAngle {
         context.beginPath()
         context.moveTo(0,0)
         for(var i=0;i<=deg;i++) {
-            const px = (size/2)+((size/2)*this.state.scale)*Math.cos(i*Math.PI/180), py = (size/2)*Math.sin(i*Math.PI/180)
+            const px = ((size/2)*this.state.scale)+(size/4)*Math.cos(i*Math.PI/180), py = (size/4)*Math.sin(i*Math.PI/180)
             context.lineTo(px,py)
         }
         context.fill()
@@ -92,8 +92,18 @@ class ArcAngleLineContainer {
     }
     draw(context) {
         const n = this.arcs.length,deg = (n>0)?(360/n):0
+        context.fillStyle = '#673ab7'
         this.arcs.forEach((arc)=>{
             arc.draw(context,deg)
+        })
+        context.strokeStyle = '#4caf50'
+        this.executeFuncOnCurrentJ((j)=>{
+            const arc = this.arcs[j]
+            const scale = arc.state.scale
+            context.beginPath()
+            context.moveTo(size/10,size/10)
+            context.lineTo(9*size/10,size/10)
+            context.stroke()
         })
     }
     update(stopcb) {
