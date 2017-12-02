@@ -7,6 +7,7 @@ class ArcAngleLineComponent extends HTMLElement {
         shadow.appendChild(this.img)
         this.n = this.getAttribute('n')||6
         this.container = new ArcAngleLineContainer(this.n)
+        this.animator = new ArcAngleLineAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -20,6 +21,9 @@ class ArcAngleLineComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.click = ()=>{
+            this.animator.startAnimating()
+        }
     }
     update(stopcb) {
         this.container.update(stopcb)
