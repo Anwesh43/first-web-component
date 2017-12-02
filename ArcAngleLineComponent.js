@@ -24,7 +24,7 @@ class ArcAngle {
         this.i = i
         this.state = new ArcLineState()
     }
-    draw(context,size,deg) {
+    draw(context,deg) {
         context.save()
         context.translate(size/2,size/2)
         context.rotate(deg*this.i*Math.PI/180)
@@ -64,5 +64,28 @@ class ArcLineState {
             this.dir = 1-2*this.scale
             startcb()
         }
+    }
+}
+class ArcAngleLineContainer {
+    constructor(n) {
+        this.arcs = []
+        this.init(n)
+    }
+    init(n) {
+        for(var i=0;i<n;i++) {
+            this.arcs.push(new ArcAngle(i))
+        }
+    }
+    draw(context) {
+        const n = this.arcs.length,deg = (n>0)?(360/n):0
+        this.arcs.forEach((arc)=>{
+            arc.draw(context,deg)
+        })
+    }
+    update(stopcb) {
+      
+    }
+    startUpdating(stopcb) {
+
     }
 }
