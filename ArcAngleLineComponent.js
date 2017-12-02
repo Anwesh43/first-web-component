@@ -1,4 +1,4 @@
-const size = Math.min(w,h)/3
+const w = window.innerWidth, h = window.innerHeight, size = Math.min(w,h)/3
 class ArcAngleLineComponent extends HTMLElement {
     constructor() {
         super()
@@ -21,7 +21,7 @@ class ArcAngleLineComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
-        this.img.click = ()=>{
+        this.img.onclick = ()=>{
             this.animator.startAnimating()
         }
     }
@@ -38,16 +38,18 @@ class ArcAngle {
         this.state = new ArcLineState()
     }
     draw(context,deg) {
+        const gap = (2*size/3)*(1-this.state.scale)
         context.save()
         context.translate(size/2,size/2)
         context.rotate(deg*this.i*Math.PI/180)
         context.beginPath()
-        context.moveTo(0,0)
-        for(var i=0;i<=deg;i++) {
-            const px = ((size/2)*this.state.scale)+(size/4)*Math.cos(i*Math.PI/180), py = (size/4)*Math.sin(i*Math.PI/180)
+        context.moveTo(gap,0)
+        for(var i=15;i<=deg+15;i++) {
+            const px = gap + (size/4)*Math.cos(i*Math.PI/180), py = (size/4)*Math.sin(i*Math.PI/180)
             context.lineTo(px,py)
         }
         context.fill()
+        context.stroke()
         context.restore()
     }
     update(stopcb) {
@@ -64,11 +66,11 @@ class ArcLineState {
         this.prevScale = 0
     }
     update(stopcb) {
-        this.scale = this.dir * 0.1
+        this.scale += this.dir * 0.1
         if(Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = this.prevScale + this.dir
             this.dir = 0
-            this.prevScale = 0
+            this.prevScale = this.scale
             stopcb()
         }
     }
@@ -82,7 +84,7 @@ class ArcLineState {
 class ArcAngleLineContainer {
     constructor(n) {
         this.arcs = []
-        this.state = new ArcAngleLineContainer(n)
+        this.state = new ArcAngleLineContainerState(n)
         this.init(n)
     }
     init(n) {
@@ -93,16 +95,21 @@ class ArcAngleLineContainer {
     draw(context) {
         const n = this.arcs.length,deg = (n>0)?(360/n):0
         context.fillStyle = '#673ab7'
+        context.strokeStyle = '#673ab7'
+        context.lineWidth = 1.5
+        context.lineCap = 'round'
         this.arcs.forEach((arc)=>{
             arc.draw(context,deg)
         })
         context.strokeStyle = '#4caf50'
         this.executeFuncOnCurrentJ((j)=>{
+            context.lineWidth = size/50
             const arc = this.arcs[j]
             const scale = arc.state.scale
+            const gap = (0.8*size)/n
             context.beginPath()
             context.moveTo(size/10,size/10)
-            context.lineTo(9*size/10,size/10)
+            context.lineTo(size/10+gap*j+(gap)*scale,size/10)
             context.stroke()
         })
     }
@@ -163,3 +170,4 @@ class ArcAngleLineAnimator {
         },50)
     }
 }
+customElements.define('arc-angle-line-comp',ArcAngleLineComponent)
