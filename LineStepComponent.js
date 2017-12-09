@@ -44,15 +44,16 @@ class LineStep {
 class LineStepContainer{
     constructor() {
         this.lineStep = new LineStep()
+        this.state = new LineStepContainerState()
     }
     draw(context) {
-        this.lineStep.draw(context)
+        this.lineStep.draw(context,this.state.scale)
     }
     startUpdating(startcb) {
-
+        this.state.startUpdating(startcb)
     }
     update(stopcb) {
-
+        this.state.update(stopcb)
     }
 }
 class LineStepContainerState {
