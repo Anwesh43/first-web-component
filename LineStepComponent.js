@@ -20,3 +20,24 @@ class LineStepView extends HTMLElement {
         this.render()
     }
 }
+class LineStep {
+    draw(context,scale) {
+        for(var i=0;i<2;i++) {
+            context.save()
+            context.scale(1-2*i,1)
+            this.drawStepLine(context,scale)
+            context.restore()
+        }
+    }
+    drawStepLine(context,scale) {
+        const py = (-size/3)*scale
+        context.beginPath()
+        context.moveTo(0,0)
+        context.lineTo(0,py)
+        context.stroke()
+        context.beginPath()
+        context.moveTo(0,py)
+        context.lineTo(-size/3,py)
+        context.stroke()
+    }
+}
