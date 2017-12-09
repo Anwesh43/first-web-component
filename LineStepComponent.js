@@ -6,6 +6,7 @@ class LineStepView extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
         this.container = new LineStepContainer()
+        this.animator = new LineStepAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -26,6 +27,9 @@ class LineStepView extends HTMLElement {
     }
     startUpdating(startcb) {
         this.container.startUpdating(startcb)
+        this.img.onclick = () => {
+            this.animator.startUpdating()
+        }
     }
 }
 class LineStep {
