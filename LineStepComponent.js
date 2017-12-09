@@ -14,30 +14,32 @@ class LineStepView extends HTMLElement {
         canvas.height = size
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
+        context.fillRect(0,0,size,size)
         context.lineWidth = size/30
         context.lineCap = 'round'
-        context.strokeColor = '#283593'
+        context.strokeStyle = '#283593'
         this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = () => {
+            this.animator.startUpdating()
+        }
     }
     update(stopcb) {
         this.container.update(stopcb)
     }
     startUpdating(startcb) {
         this.container.startUpdating(startcb)
-        this.img.onclick = () => {
-            this.animator.startUpdating()
-        }
     }
 }
 class LineStep {
     draw(context,scale) {
         for(var i=0;i<2;i++) {
+            const factor = 1-2*i
             context.save()
-            context.scale(1-2*i,1)
+            context.scale(factor,factor)
             this.drawStepLine(context,scale)
             context.restore()
         }
@@ -60,7 +62,15 @@ class LineStepContainer{
         this.state = new LineStepContainerState()
     }
     draw(context) {
+        context.save()
+        context.translate(size/2,size/2)
+        context.lineCap = 'round'
+        context.fillStyle = context.strokeStyle
+        context.beginPath()
+        context.arc(0,0,(size/10)*this.state.scale,0,2*Math.PI)
+        context.fill()
         this.lineStep.draw(context,this.state.scale)
+        context.restore()
     }
     startUpdating(startcb) {
         this.state.startUpdating(startcb)
@@ -99,6 +109,7 @@ class LineStepAnimator {
             this.component.startUpdating(()=>{
                 this.animated = true
             })
+            console.log("started")
             const interval = setInterval(()=>{
                 this.component.render()
                 this.component.update(()=>{
