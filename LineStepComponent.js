@@ -5,6 +5,7 @@ class LineStepView extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.container = new LineStepContainer()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -14,10 +15,17 @@ class LineStepView extends HTMLElement {
         context.fillStyle = '#212121'
         context.lineWidth = size/30
         context.lineCap = 'round'
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+    }
+    update(stopcb) {
+        this.container.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.container.startUpdating(startcb)
     }
 }
 class LineStep {
