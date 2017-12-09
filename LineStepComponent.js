@@ -84,3 +84,23 @@ class LineStepContainerState {
         startcb()
     }
 }
+class LineStepAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startUpdating(startcb) {
+        if(!this.animated) {
+            this.component.startUpdating(()=>{
+                this.animated = true
+            })
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update(()=>{
+                    this.animated = false
+                    clearInterval(interval)
+                })
+            },50)
+        }
+    }
+}
