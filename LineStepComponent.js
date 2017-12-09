@@ -16,6 +16,7 @@ class LineStepView extends HTMLElement {
         context.fillStyle = '#212121'
         context.lineWidth = size/30
         context.lineCap = 'round'
+        context.strokeColor = '#283593'
         this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -108,3 +109,4 @@ class LineStepAnimator {
         }
     }
 }
+customElements.define('line-step-view',LineStepView)
