@@ -41,3 +41,17 @@ class LineStep {
         context.stroke()
     }
 }
+class LineStepContainer{
+    constructor() {
+        this.lineStep = new LineStep()
+    }
+    draw(context) {
+        this.lineStep.draw(context)
+    }
+    startUpdating(startcb) {
+
+    }
+    update(stopcb) {
+
+    }
+}
