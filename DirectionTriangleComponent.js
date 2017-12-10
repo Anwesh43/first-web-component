@@ -6,6 +6,7 @@ class DirectionTriangleComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.container = new DirectionTriangleContainer()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -15,6 +16,12 @@ class DirectionTriangleComponent extends HTMLElement {
         context.fillStyle = '#212121'
         context.fillRect(0,0,size,size)
         this.img.src = canvas.toDataURL()
+    }
+    update(stopcb) {
+        this.container.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.container.startUpdating(startcb)
     }
     connectedCallback() {
         this.render()
