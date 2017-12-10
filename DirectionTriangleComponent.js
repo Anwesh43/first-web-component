@@ -1,5 +1,5 @@
-const size = Math.min(window.innerWidth,window.innerHeight)/3
-const n = 5
+const size = Math.min(window.innerWidth,window.innerHeight)/2
+const n = 8
 class DirectionTriangleComponent extends HTMLElement {
     constructor() {
         super()
@@ -16,7 +16,7 @@ class DirectionTriangleComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,size,size)
-        this.animator.draw(context)
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     update(stopcb) {
@@ -38,13 +38,14 @@ class DirectionTriangle {
         this.state = new DirectionTriangleState()
     }
     draw(context) {
-        var gap = size/n
-        const oy = (i%2)*(size+gap/2)
+        const i = this.i
+        var gap = size/(n+1)
+        const oy = -gap/2+(i%2)*(size+gap)
         const diff = size/2 - oy
         context.fillStyle = '#2979FF'
         context.save()
-        context.translate(this.i*gap,oy+diff*state.scale)
-        context.rotate((i%2)*Math.PI)
+        context.translate(gap/2+this.i*gap,oy+diff*this.state.scale)
+        context.rotate(((i+1)%2)*Math.PI)
         context.beginPath()
         context.moveTo(-gap/2,gap/2)
         context.lineTo(0,-gap/2)
@@ -53,23 +54,24 @@ class DirectionTriangle {
         context.restore()
     }
     update(stopcb) {
-        state.update(stopcb)
+        this.state.update(stopcb)
     }
     startUpdating(startcb) {
-        state.startUpdating(startcb)
+        this.state.startUpdating(startcb)
     }
 }
 class DirectionTriangleContainer {
-    constructor(n) {
-        this.n = n
+    constructor() {
         this.triangles = []
-        this.init(n)
+        this.init()
         this.state = new DirectionTriangleContainerState()
     }
-    init(n) {
+    init() {
         for(var i=0;i<n;i++) {
+            console.log(n)
             this.triangles.push(new DirectionTriangle(i))
         }
+        console.log(this.triangles)
     }
     draw(context) {
         this.triangles.forEach((triangle)=>{
@@ -78,7 +80,10 @@ class DirectionTriangleContainer {
     }
     update(stopcb) {
         this.state.executeFn((j)=>{
-            this.triangles[j].update(stopcb)
+            this.triangles[j].update(()=>{
+              this.state.update()
+              stopcb()
+            })
         })
     }
     startUpdating(startcb) {
@@ -96,13 +101,16 @@ class DirectionTriangleState {
     update(startcb) {
         this.scale += this.dir*0.1
         if(Math.abs(this.scale - this.prevScale) > 1) {
-            this.scale = this.scale +this.dir
+            this.scale = this.prevScale +this.dir
             this.dir = 0
             this.prevScale = this.scale
+            console.log(`scale is ${this.scale}`)
+            startcb()
         }
     }
     startUpdating(stopcb) {
         this.dir = 1-2*this.scale
+        stopcb()
     }
 }
 class DirectionTriangleContainerState {
@@ -111,11 +119,11 @@ class DirectionTriangleContainerState {
         this.dir = 1
     }
     executeFn(cb) {
-        cb(j)
+        cb(this.j)
     }
     update() {
         this.j += this.dir
-        if(this.j == n && this.j == -1) {
+        if(this.j == n || this.j == -1) {
             this.dir *= -1
             this.j += this.dir
         }
@@ -127,6 +135,7 @@ class DirectionTriangleAnimator {
         this.component = component
     }
     startAnimation() {
+        console.log(this.animated)
         if(!this.animated) {
             this.component.startUpdating(()=>{
                 this.animated = true
@@ -135,7 +144,7 @@ class DirectionTriangleAnimator {
                 this.component.render()
                 this.component.update(()=>{
                     this.animated = false
-                    clearInterval(this.interval)
+                    clearInterval(interval)
                 })
             },50)
         }
