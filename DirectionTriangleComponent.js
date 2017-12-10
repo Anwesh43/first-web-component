@@ -116,3 +116,23 @@ class DirectionTriangleContainerState {
         }
     }
 }
+class DirectionTriangleAnimator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    startAnimation() {
+        if(!this.animated) {
+            this.component.startUpdating(()=>{
+                this.animated = true
+            })
+            const interval = setInterval(()=>{
+                this.component.render()
+                this.component.update(()=>{
+                    this.animated = false
+                    clearInterval(this.interval)
+                })
+            },50)
+        }
+    }
+}
