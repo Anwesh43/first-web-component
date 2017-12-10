@@ -7,6 +7,7 @@ class DirectionTriangleComponent extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
         this.container = new DirectionTriangleContainer()
+        this.animator = new DirectionTriangleAnimator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -15,6 +16,7 @@ class DirectionTriangleComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,size,size)
+        this.animator.draw(context)
         this.img.src = canvas.toDataURL()
     }
     update(stopcb) {
@@ -25,6 +27,9 @@ class DirectionTriangleComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = ()=>{
+            this.animator.startAnimation()
+        }
     }
 }
 class DirectionTriangle {
@@ -136,3 +141,4 @@ class DirectionTriangleAnimator {
         }
     }
 }
+customElements.define('direc-tri-comp',DirectionTriangleComponent)
