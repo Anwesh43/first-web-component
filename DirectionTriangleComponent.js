@@ -23,6 +23,7 @@ class DirectionTriangleComponent extends HTMLElement {
 class DirectionTriangle {
     constructor(i) {
         this.i = i
+        this.state = new DirectionTriangleState()
     }
     draw(context) {
         var gap = size/n
@@ -30,7 +31,7 @@ class DirectionTriangle {
         const diff = size/2 - oy
         context.fillStyle = '#2979FF'
         context.save()
-        context.translate(this.i*gap,oy+diff)
+        context.translate(this.i*gap,oy+diff*state.scale)
         context.rotate((i%2)*Math.PI)
         context.beginPath()
         context.moveTo(-gap/2,gap/2)
@@ -40,10 +41,10 @@ class DirectionTriangle {
         context.restore()
     }
     update(stopcb) {
-
+        state.update(stopcb)
     }
     startUpdating(startcb) {
-
+        state.startUpdating(startcb)
     }
 }
 class DirectionTriangleContainer {
@@ -51,6 +52,7 @@ class DirectionTriangleContainer {
         this.n = n
         this.triangles = []
         this.init(n)
+        this.state = new DirectionTriangleContainerState()
     }
     init(n) {
         for(var i=0;i<n;i++) {
@@ -58,13 +60,19 @@ class DirectionTriangleContainer {
         }
     }
     draw(context) {
-
+        this.triangles.forEach((triangle)=>{
+            triangle.draw(context)
+        })
     }
     update(stopcb) {
-
+        this.state.executeFn((j)=>{
+            this.triangles[j].update(stopcb)
+        })
     }
     startUpdating(startcb) {
-
+        this.state.executeFn((j)=>{
+            this.triangles[j].startUpdating(startcb)
+        })
     }
 }
 class DirectionTriangleState {
@@ -89,6 +97,9 @@ class DirectionTriangleContainerState {
     constructor() {
         this.j = 0
         this.dir = 1
+    }
+    executeFn(cb) {
+        cb(j)
     }
     update() {
         this.j += this.dir
