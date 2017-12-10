@@ -85,3 +85,16 @@ class DirectionTriangleState {
         this.dir = 1-2*this.scale
     }
 }
+class DirectionTriangleContainerState {
+    constructor() {
+        this.j = 0
+        this.dir = 1
+    }
+    update() {
+        this.j += this.dir
+        if(this.j == n && this.j == -1) {
+            this.dir *= -1
+            this.j += this.dir
+        }
+    }
+}
