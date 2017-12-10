@@ -46,3 +46,24 @@ class DirectionTriangle {
 
     }
 }
+class DirectionTriangleContainer {
+    constructor(n) {
+        this.n = n
+        this.triangles = []
+        this.init(n)
+    }
+    init(n) {
+        for(var i=0;i<n;i++) {
+            this.triangles.push(new DirectionTriangle(i))
+        }
+    }
+    draw(context) {
+
+    }
+    update(stopcb) {
+
+    }
+    startUpdating(startcb) {
+
+    }
+}
