@@ -1,6 +1,7 @@
 const w = window.innerWidth,h = window.innerHeight, size = Math.min(w,h)/3
 class RotatingTextComponent extends HTMLElement {
     constructor(){
+        super()
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
@@ -23,9 +24,12 @@ class RotatingTextComponent extends HTMLElement {
     connectedCallback() {
         this.render()
         this.img.onmousedown = (event) => {
-            this.rotatingText.update(()=>{
-                this.animator.stop()
-            })
+            const updateRotatingText = ()=>{
+                this.rotatingText.update(()=>{
+                    this.animator.stop()
+                })
+            }
+            this.animator.start(updateRotatingText)
         }
     }
 }
@@ -40,7 +44,7 @@ class RotatingText {
     }
     draw(context,scale) {
         var deg = 0
-        const scale
+        const n = this.n
         if(n > 0) {
             deg = 360/n
         }
@@ -50,7 +54,7 @@ class RotatingText {
             context.rotate(((i*deg)*Math.PI/180)*scale)
             context.fillStyle = 'white'
             context.font = context.font.replace(/\d{2}/,size/8)
-            context.fillText(this.text,0,0)
+            context.fillText(this.text,0,size/16)
             context.restore()
         }
     }
@@ -80,16 +84,18 @@ class Animator {
     }
     start(updatecb) {
         if(!this.animated) {
+            this.animated = true
+            console.log("start")
             this.interval = setInterval(()=>{
                 this.component.render()
-                updatcb()
-            },50)
+                updatecb()
+            },120)
         }
     }
     stop() {
         if(this.animated) {
-            this.animated = true
-            clearInterval(interval)
+            this.animated = false
+            clearInterval(this.interval)
         }
     }
 
