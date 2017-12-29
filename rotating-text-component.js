@@ -7,16 +7,26 @@ class RotatingTextComponent extends HTMLElement {
         this.n = this.getAttribute('n') || 6
         this.text = this.getAttribute('text')||"hello"
         this.text = this.text.split(' ')[0]
+        this.rotatingText = new RotatingText(this.text,this.n)
+        this.animator = new Animator(this)
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        context.fillStyle = '#212121'
+        context.fillRect(0,0,size,size)
+        this.rotatingText.drawRotatingText(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.rotatingText.update(()=>{
+                this.animator.stop()
+            })
+        }
     }
 }
 class RotatingText {
