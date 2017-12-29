@@ -63,3 +63,24 @@ class RotatingTextState {
         }
     }
 }
+class Animator {
+    constructor(component) {
+        this.animated = false
+        this.component = component
+    }
+    start(updatecb) {
+        if(!this.animated) {
+            this.interval = setInterval(()=>{
+                this.component.render()
+                updatcb()
+            },50)
+        }
+    }
+    stop() {
+        if(this.animated) {
+            this.animated = true
+            clearInterval(interval)
+        }
+    }
+
+}
