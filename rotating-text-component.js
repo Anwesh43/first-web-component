@@ -23,9 +23,14 @@ class RotatingText {
     constructor(text,n) {
         this.text = text
         this.n = n
+        this.state = new RotatingTextState()
+    }
+    drawRotatingText(context) {
+        this.draw(context,this.state.scale)
     }
     draw(context,scale) {
         var deg = 0
+        const scale
         if(n > 0) {
             deg = 360/n
         }
@@ -38,6 +43,9 @@ class RotatingText {
             context.fillText(this.text,0,0)
             context.restore()
         }
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
     }
 }
 class RotatingTextState {
