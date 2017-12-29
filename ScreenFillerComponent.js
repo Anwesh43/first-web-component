@@ -9,12 +9,15 @@ class ScreenFillerComponent extends HTMLElement {
     constructor() {
         super()
         const shadow = this.attachShadow({mode:'open'})
+        this.screen = new ScreenFiller(shadow)
+        this.circle = new Circle(shadow)
     }
-    render() {
-
+    update(scale) {
+        this.screen.update(scale)
+        this.circle.update(scale)
     }
     connectedCallback() {
-        this.render()
+
     }
 }
 class ScreenFiller {
@@ -56,5 +59,25 @@ class Circle {
     update(scale) {
         this.div.style.width = (2*w/15)*scale
         this.div.style.height = (2*w/15)*scale
+    }
+}
+class FillingAnimator {
+    constructor() {
+        this.animated = false
+        this.dir = 0
+    }
+    startUpdating(updatecb) {
+        if(!this.animated) {
+            this.animated = true
+            this.interval = setInterval(()=>{
+                updatecb()
+            },50)
+        }
+    }
+    stop() {
+        if(this.animated) {
+            this.animated = false
+            clearInterval(interval)
+        }
     }
 }
