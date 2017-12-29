@@ -11,13 +11,18 @@ class ScreenFillerComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.screen = new ScreenFiller(shadow)
         this.circle = new Circle(shadow)
+        this.animator = new FillingAnimator()
     }
     update(scale) {
         this.screen.update(scale)
         this.circle.update(scale)
     }
     connectedCallback() {
-
+        this.circle.handleMouseEvent(()=>{
+            this.animator.startUpdating()
+        },()=>{
+            this.animator.changeDir()
+        })
     }
 }
 class ScreenFiller {
@@ -60,18 +65,44 @@ class Circle {
         this.div.style.width = (2*w/15)*scale
         this.div.style.height = (2*w/15)*scale
     }
+    handleMouseEvent(cbdown,cbup)  {
+        this.isDown = false
+        this.backDiv.onmousedown = () => {
+            if(!this.isDown) {
+                this.isDown = true
+                cbdown()
+            }
+        }
+        this.backDiv.onmouseup = () => {
+            if(this.isDown) {
+                this.isDown = false
+                cbup()
+            }
+        }
+    }
 }
 class FillingAnimator {
     constructor() {
         this.animated = false
         this.dir = 0
+        this.scale = 0
     }
     startUpdating(updatecb) {
         if(!this.animated) {
             this.animated = true
+            this.dir = 1
             this.interval = setInterval(()=>{
-                updatecb()
+                this.scale += 0.04*this.dir
+                updatecb(this.scale)
+                if(this.scale == 0) {
+                    this.stop()
+                }
             },50)
+        }
+    }
+    changeDir() {
+        if(this.animated) {
+            this.dir = -1
         }
     }
     stop() {
