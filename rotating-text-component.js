@@ -1,4 +1,4 @@
-const w = window.innerWidth,h = window.innerHeight, size = Math.min(w,h)/3
+const w = window.innerWidth,h = window.innerHeight, size = Math.min(w,h)
 class RotatingTextComponent extends HTMLElement {
     constructor(){
         super()
