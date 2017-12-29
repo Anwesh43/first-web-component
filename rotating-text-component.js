@@ -94,3 +94,4 @@ class Animator {
     }
 
 }
+customElements.define('rotating-text-comp',RotatingTextComponent)
