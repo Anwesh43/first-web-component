@@ -2,7 +2,7 @@ const w = window.innerWidth,h = window.innerHeight
 const createCircularDiv = (div) => {
     div.style.position = 'absolute'
     div.style.left = w/2-w/15
-    div.style.top = 4*h/5
+    div.style.top = 7*h/10
     div.style.borderRadius = '50%'
 }
 class ScreenFillerComponent extends HTMLElement {
@@ -19,7 +19,9 @@ class ScreenFillerComponent extends HTMLElement {
     }
     connectedCallback() {
         this.circle.handleMouseEvent(()=>{
-            this.animator.startUpdating()
+            this.animator.startUpdating((scale)=>{
+                this.update(scale)
+            })
         },()=>{
             this.animator.changeDir()
         })
@@ -36,7 +38,7 @@ class ScreenFiller {
         this.div.style.top = 0
         this.div.style.left = 0
         this.div.style.height = 3*h/5
-        this.div.style.background = 'yellow'
+        this.div.style.background = '#F9A825'
         shadow.appendChild(this.div)
     }
     update(scale) {
@@ -52,18 +54,19 @@ class Circle {
         this.backDiv = document.createElement('div')
         createCircularDiv(this.div)
         createCircularDiv(this.backDiv)
-        this.div.style.background = 'yellow'
-        this.backDiv.style.border = '5px solid yellow'
+        this.div.style.background = '#F9A825'
+        this.backDiv.style.border = '5px solid #F9A825'
         this.backDiv.style.width = 2*w/15
         this.backDiv.style.height = 2*w/15
-        this.div.style.height = 0
-        this.div.style.width = 0
+        this.div.style.height = 2*w/15
+        this.div.style.width = 2*w/15
         shadow.appendChild(this.div)
         shadow.appendChild(this.backDiv)
+        this.div.style.transform = 'scale(0,0)'
+        this.div.style.transform = this.div.style.transform || this.div.style.webkitTransform || this.div.style.oTransform || this.div.style.mozTransform
     }
     update(scale) {
-        this.div.style.width = (2*w/15)*scale
-        this.div.style.height = (2*w/15)*scale
+        this.div.style.transform = `scale(${scale},${scale})`
     }
     handleMouseEvent(cbdown,cbup)  {
         this.isDown = false
@@ -94,7 +97,11 @@ class FillingAnimator {
             this.interval = setInterval(()=>{
                 this.scale += 0.04*this.dir
                 updatecb(this.scale)
-                if(this.scale == 0) {
+                if(this.scale > 1) {
+                    this.scale = 1
+                }
+                if(this.scale < 0) {
+                    this.scale = 0
                     this.stop()
                 }
             },50)
@@ -108,8 +115,8 @@ class FillingAnimator {
     stop() {
         if(this.animated) {
             this.animated = false
-            clearInterval(interval)
+            clearInterval(this.interval)
         }
     }
 }
-customElements.define('screen-fill',ScreenFillerComponent)
+customElements.define('screen-filler',ScreenFillerComponent)
