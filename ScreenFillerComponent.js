@@ -7,6 +7,6 @@ class ScreenFillerComponent extends HTMLElement {
 
     }
     connectedCallback() {
-        
+        this.render()
     }
 }
