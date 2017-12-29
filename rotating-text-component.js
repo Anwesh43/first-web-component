@@ -40,3 +40,18 @@ class RotatingText {
         }
     }
 }
+class RotatingTextState {
+    constructor() {
+        this.deg = 0
+        this.scale = 0
+    }
+    update(stopcb) {
+        this.deg += 10
+        this.scale = Math.sin(this.deg*Math.PI/180)
+        if(this.deg > 180) {
+            this.deg = 0
+            this.scale = 0
+            stopcb()
+        }
+    }
+}
