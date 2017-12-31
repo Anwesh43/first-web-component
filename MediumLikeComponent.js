@@ -1,4 +1,4 @@
-const w = window.innerWidth, h = window.innerHeight,size = Math.min(w,h)/3
+const w = window.innerWidth, h = window.innerHeight,size = Math.min(w,h)/2
 class MediumLikeComponent extends HTMLElement {
     constructor() {
         super()
@@ -23,7 +23,11 @@ class MediumLikeComponent extends HTMLElement {
               this.button.incrementCount()
             },()=>{
                 this.render()
-                this.button.update()
+                this.button.update(()=>{
+                    this.animator.stop()
+                    this.render()
+                    console.log("try stopping")
+                })
             })
         }
     }
@@ -78,7 +82,9 @@ class LikeCount  {
         context.fill()
         context.fillStyle='white'
         context.font = context.font.replace(/\d{2}/,size/25)
-        context.fillText(`${count}`,0,0)
+        const text = `${count}`
+        const tw = context.measureText(text).width/2
+        context.fillText(`${count}`,-tw,size/50)
         context.restore()
     }
 }
@@ -117,3 +123,4 @@ class Animator {
         }
     }
 }
+customElements.define('med-like-comp',MediumLikeComponent)
