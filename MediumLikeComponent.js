@@ -4,6 +4,8 @@ class MediumLikeComponent extends HTMLElement {
         super()
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
+        this.animator = new Animator()
+        this.button = new MediumLikeButton()
         shadow.appendChild(this.img)
     }
     render() {
@@ -11,10 +13,19 @@ class MediumLikeComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.button.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = (event) => {
+            this.animator.startAnimating(()=>{
+              this.button.incrementCount()
+            },()=>{
+                this.render()
+                this.button.update()
+            })
+        }
     }
 }
 class MediumLikeButton {
@@ -52,8 +63,8 @@ class MediumLikeButton {
         LikeCount.draw(context,this.state.scale,this.count)
         context.restore()
     }
-    update() {
-        this.state.update()
+    update(stopcb) {
+        this.state.update(stopcb)
     }
 }
 class LikeCount  {
@@ -90,8 +101,9 @@ class Animator {
     constructor() {
         this.animated = false
     }
-    startAnimating(updatecb) {
+    startAnimating(startcb,updatecb) {
         if(!this.animated) {
+            startcb()
             this.animated = true
             this.interval = setInterval(()=>{
                 updatecb()
