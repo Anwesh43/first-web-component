@@ -20,6 +20,7 @@ class MediumLikeComponent extends HTMLElement {
 class MediumLikeButton {
     constructor() {
         this.count = 0
+        this.state = new State()
     }
     incrementCount() {
         this.count++
@@ -32,7 +33,7 @@ class MediumLikeButton {
         var alpha = 1
         context.fillStyle = 'teal'
         context.save()
-        for(var i=0;i<20;i++) {
+        for(var i=0;i<Math.floor(20*this.state.scale);i++) {
             context.globalAlpha = alpha
             context.beginPath()
             context.arc(0,0,r,0,2*Math.PI)
@@ -48,8 +49,11 @@ class MediumLikeButton {
         context.fill()
         context.strokeStyle = 'teal'
         context.stroke()
-        LikeCount.draw(context,1,this.count)
+        LikeCount.draw(context,this.state.scale,this.count)
         context.restore()
+    }
+    update() {
+        this.state.update()
     }
 }
 class LikeCount  {
@@ -65,5 +69,20 @@ class LikeCount  {
         context.font = context.font.replace(/\d{2}/,size/25)
         context.fillText(`${count}`,0,0)
         context.restore()
+    }
+}
+class State {
+    constructor() {
+        this.scale = 0
+        this.deg = 0
+    }
+    update(stopcb) {
+        this.scale = Math.sin(this.deg*Math.PI/180)
+        this.deg += 10
+        if(this.deg > 180) {
+            this.deg = 0
+            this.scale = 0
+            stopcb()
+        }
     }
 }
