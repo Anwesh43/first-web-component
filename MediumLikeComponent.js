@@ -19,12 +19,15 @@ class MediumLikeComponent extends HTMLElement {
 }
 class MediumLikeButton {
     constructor() {
-
+        this.count = 0
+    }
+    incrementCount() {
+        this.count++
     }
     draw(context) {
         context.save()
         context.translate(size/2,size/2)
-        const gap = (size/3-size/8)/20
+        const gap = (size/4-size/8)/20
         var r = size/8+gap
         var alpha = 1
         context.fillStyle = 'teal'
@@ -45,6 +48,22 @@ class MediumLikeButton {
         context.fill()
         context.strokeStyle = 'teal'
         context.stroke()
+        LikeCount.draw(context,1,this.count)
+        context.restore()
+    }
+}
+class LikeCount  {
+    static draw(context,scale,count) {
+        context.fillStyle = 'teal'
+        context.save()
+        context.globalAlpha = scale
+        context.translate(0,-2*size/5*scale)
+        context.beginPath()
+        context.arc(0,0,size/20,0,2*Math.PI)
+        context.fill()
+        context.fillStyle='white'
+        context.font = context.font.replace(/\d{2}/,size/25)
+        context.fillText(`${count}`,0,0)
         context.restore()
     }
 }
