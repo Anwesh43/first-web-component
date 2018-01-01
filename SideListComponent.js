@@ -105,3 +105,4 @@ class Animator {
         }
     }
 }
+customElements.define('side-list',SideListComponent)
