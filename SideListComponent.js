@@ -54,3 +54,20 @@ class Arrow {
         context.restore()
     }
 }
+class State {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+        this.prevScale = 0
+    }
+    update() {
+        if(Math.abs(this.scale - this.prevScale) > 1) {
+            this.scale = this.prevScale + this.dir
+            this.dir = 0
+            this.prevScale = this.scale
+        }
+    }
+    startUpdating() {
+        this.dir = 1-2*this.scale
+    }
+}
