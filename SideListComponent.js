@@ -7,6 +7,8 @@ class SideListComponent extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(this.div)
         shadow.appendChild(this.img)
+        this.state = new State()
+        this.animator = new Animator()
     }
     createStyle() {
         this.img.style.position = 'absolute'
@@ -30,12 +32,24 @@ class SideListComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,size,size)
+        Arrow.draw(context,scale)
         this.img.src = canvas.toDataURL()
         this.update(scale)
     }
+    connectedCallback() {
+        this.render(0)
+        this.img.onclick = () => {
+            this.animator.startUpdating(()=>{
+                this.state.update(()=>{
+                    this.animator.stop()
+                })
+                this.render(this.state.scale)
+            })
+        }
+    }
 }
 class Arrow {
-    static create(context,scale) {
+    static draw(context,scale) {
         context.strokeStyle = 'white'
         context.lineCap = 'round'
         context.lineWidth = size/20
