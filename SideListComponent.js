@@ -34,3 +34,23 @@ class SideListComponent extends HTMLElement {
         this.update(scale)
     }
 }
+class Arrow {
+    static create(context,scale) {
+        context.strokeStyle = 'white'
+        context.lineCap = 'round'
+        context.lineWidth = size/20
+        context.save()
+        context.translate(size/2,size/2)
+        context.rotate(Math.PI*scale)
+        for(var i=0;i<2;i++) {
+            context.save()
+            context.scale(1,1-2*i)
+            context.beginPath()
+            context.moveTo(size/3,0)
+            context.lineTo(0,-size/3)
+            context.stroke()
+            context.restore()
+        }
+        context.restore()
+    }
+}
