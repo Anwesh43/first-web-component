@@ -9,6 +9,7 @@ class SideListComponent extends HTMLElement {
         shadow.appendChild(this.img)
         this.state = new State()
         this.animator = new Animator()
+        this.createStyle()
     }
     createStyle() {
         this.img.style.position = 'absolute'
@@ -40,10 +41,13 @@ class SideListComponent extends HTMLElement {
         this.render(0)
         this.img.onclick = () => {
             this.animator.startUpdating(()=>{
+                this.state.startUpdating()
+            },()=>{
                 this.state.update(()=>{
                     this.animator.stop()
                 })
                 this.render(this.state.scale)
+                console.log(this.state.scale)
             })
         }
     }
@@ -75,6 +79,7 @@ class State {
         this.prevScale = 0
     }
     update(stopcb) {
+        this.scale += this.dir*0.1
         if(Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = this.prevScale + this.dir
             this.dir = 0
@@ -90,9 +95,11 @@ class Animator {
     constructor() {
         this.animated = false
     }
-    startUpdating(updatecb) {
+    startUpdating(startcb,updatecb) {
         if(!this.animated) {
             this.animated = true
+            startcb()
+            console.log("started")
             this.interval = setInterval(()=>{
                 updatecb()
             })
