@@ -60,14 +60,34 @@ class State {
         this.dir = 0
         this.prevScale = 0
     }
-    update() {
+    update(stopcb) {
         if(Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = this.prevScale + this.dir
             this.dir = 0
             this.prevScale = this.scale
+            stopcb()
         }
     }
     startUpdating() {
         this.dir = 1-2*this.scale
+    }
+}
+class Animator {
+    constructor() {
+        this.animated = false
+    }
+    startUpdating(updatecb) {
+        if(!this.animated) {
+            this.animated = true
+            this.interval = setInterval(()=>{
+                updatecb()
+            })
+        }
+    }
+    stop() {
+        if(!this.animated) {
+            this.animated = true
+            clearInterval(this.interval)
+        }
     }
 }
