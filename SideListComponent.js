@@ -1,4 +1,4 @@
-const w = window.innerWidth,h = window.innerHeight,size = Math.min(w,h)/8
+const w = window.innerWidth,h = window.innerHeight,size = Math.min(w,h)/12
 class SideListComponent extends HTMLElement {
     constructor(){
         super()
@@ -13,7 +13,7 @@ class SideListComponent extends HTMLElement {
     }
     createStyle() {
         this.img.style.position = 'absolute'
-        this.img.style.top = h/2-size/2
+        this.img.style.top = h/2-size
         this.img.style.left = 0
         this.div.style.width = w/4
         this.div.style.height = h
@@ -29,10 +29,10 @@ class SideListComponent extends HTMLElement {
     render(scale) {
         const canvas = document.createElement('canvas')
         canvas.width = size
-        canvas.height = size
+        canvas.height = 2*size
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
-        context.fillRect(0,0,size,size)
+        HalfArc.draw(context)
         Arrow.draw(context,scale)
         this.img.src = canvas.toDataURL()
         this.update(scale)
@@ -58,7 +58,7 @@ class Arrow {
         context.lineCap = 'round'
         context.lineWidth = size/20
         context.save()
-        context.translate(size/2,size/2)
+        context.translate(2*size/5,size)
         context.rotate(Math.PI*scale)
         for(var i=0;i<2;i++) {
             context.save()
@@ -102,14 +102,21 @@ class Animator {
             console.log("started")
             this.interval = setInterval(()=>{
                 updatecb()
-            })
+            },30)
         }
     }
     stop() {
-        if(!this.animated) {
-            this.animated = true
+        if(this.animated) {
+            this.animated = false
             clearInterval(this.interval)
         }
+    }
+}
+class HalfArc {
+    static draw(context) {
+        context.beginPath()
+        context.arc(0,size,size,-Math.PI/2,Math.PI/2)
+        context.fill()
     }
 }
 customElements.define('side-list',SideListComponent)
