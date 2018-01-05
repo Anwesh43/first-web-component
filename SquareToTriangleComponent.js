@@ -17,3 +17,23 @@ class SquareToTriangleComponent extends HTMLElement {
         this.render()
     }
 }
+class SquareToTriangle {
+    constructor() {
+
+    }
+    draw(context) {
+        context.beginPath()
+        context.moveTo(size/4,3*size/4)
+        context.lineTo(3*size/4,3*size/4)
+        for(var i=0;i<2;i++) {
+            context.lineTo(size/2+size/4*(i*2-1),size/4)
+        }
+        context.fill()
+    }
+    update(stopcb) {
+
+    }
+    startUpdating(startcb) {
+
+    }
+}
