@@ -35,11 +35,12 @@ class SquareToTriangle {
         this.state = new State()
     }
     draw(context) {
+        context.fillStyle = '#512DA8'
         context.beginPath()
         context.moveTo(size/4,3*size/4)
         context.lineTo(3*size/4,3*size/4)
         for(var i=0;i<2;i++) {
-            context.lineTo(size/2+size/4*(i*2-1),size/4)
+            context.lineTo(size/2+(size/4)*(1-2*i)*this.state.scale,size/4)
         }
         context.fill()
     }
@@ -58,7 +59,7 @@ class State {
     }
     update(stopcb) {
         this.deg += (Math.PI/20)*this.dir
-        this.scale = Math.sin(this.deg*Math.PI/180)
+        this.scale = Math.sin(this.deg)
         if(this.deg > Math.PI) {
             this.deg = 0
             this.scale = 0
