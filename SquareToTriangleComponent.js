@@ -37,3 +37,25 @@ class SquareToTriangle {
 
     }
 }
+class State {
+    constructor() {
+        this.deg = 0
+        this.dir = 0
+        this.scale = 0
+    }
+    update(stopcb) {
+        this.deg += (Math.PI/20)*this.dir
+        this.scale = Math.sin(this.deg*Math.PI/180)
+        if(this.deg > Math.PI) {
+            this.deg = 0
+            this.scale = 0
+            this.dir = 0
+        }
+    }
+    startUpdating(startcb) {
+        if(this.dir == 0) {
+            this.dir = 1
+            startcb()
+        }
+    }
+}
