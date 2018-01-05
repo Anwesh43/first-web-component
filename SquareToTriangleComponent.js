@@ -19,7 +19,7 @@ class SquareToTriangleComponent extends HTMLElement {
 }
 class SquareToTriangle {
     constructor() {
-
+        this.state = new State()
     }
     draw(context) {
         context.beginPath()
@@ -31,10 +31,10 @@ class SquareToTriangle {
         context.fill()
     }
     update(stopcb) {
-
+        this.state.update(stopcb)
     }
     startUpdating(startcb) {
-
+        this.state.startUpdating(startcb)
     }
 }
 class State {
