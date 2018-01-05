@@ -91,3 +91,4 @@ class Animator {
         }
     }
 }
+customElements.define('sqt-tri-comp',SquareToTriangleComponent)
