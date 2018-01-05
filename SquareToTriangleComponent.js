@@ -5,16 +5,29 @@ class SquareToTriangleComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.animator = new Animator()
+        this.sqtTri = new SquareToTriangle()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.sqtTri.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = ()=>{
+            this.sqtTri.startUpdating(()=>{
+                this.animator.update(()=>{
+                    this.render()
+                    this.sqtTri.update(()=>{
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class SquareToTriangle {
