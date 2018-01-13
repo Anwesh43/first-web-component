@@ -13,6 +13,8 @@ class HalfArcCircleComponent extends HTMLElement {
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
+        context.fillStyle = '#212121'
+        context.fillRect(0,0,w,h)
         this.halfArcCircle.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -34,7 +36,7 @@ class HalfArcCircle {
     constructor() {
         this.x = w/2
         this.y = h/2
-        this.r = Math.min(w,h)/2
+        this.r = Math.min(w,h)/3
         this.state = new HalfArcCircleState()
     }
     draw(context) {
@@ -59,6 +61,7 @@ class HalfArcCircle {
                 context.lineTo(x,y)
             }
         }
+        context.strokeStyle = '#FF9800'
         context.stroke()
     }
     update(stopcb) {
@@ -75,6 +78,7 @@ class HalfArcCircleState {
         this.prevScale = 0
     }
     update(stopcb) {
+        this.scale += 0.1*this.dir
         if(Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = this.prevScale + this.dir
             this.dir = 0
