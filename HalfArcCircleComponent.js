@@ -108,3 +108,4 @@ class HalfArcCircleAnimator {
         }
     }
 }
+customElements.define('half-arc-circle-comp',HalfArcCircleComponent)
