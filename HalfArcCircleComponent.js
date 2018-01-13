@@ -5,16 +5,29 @@ class HalfArcCircleComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.animator = new HalfArcCircleAnimator(this)
+        this.halfArcCircle = new HalfArcCircle()
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
+        this.halfArcCircle.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = (event) => {
+            this.halfArcCircle.startUpdating(()=>{
+                this.animator.start(()=>{
+                    this.halfArcCircle.update(()=>{
+                        this.animator.stop()
+                    })
+                    this.render()
+                })
+            })
+        }
     }
 }
 class HalfArcCircle {
