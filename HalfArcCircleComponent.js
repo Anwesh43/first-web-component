@@ -22,6 +22,7 @@ class HalfArcCircle {
         this.x = w/2
         this.y = h/2
         this.r = Math.min(w,h)/2
+        this.state = new HalfArcCircleState()
     }
     draw(context) {
         context.save()
@@ -29,7 +30,7 @@ class HalfArcCircle {
         for(var i=0;i<2;i++) {
             context.save()
             context.scale(1,1-2*i)
-            this.drawArc(context,this.r*(1-2*i))
+            this.drawArc(context,this.r*(1-2*i)*this.state.scale)
             context.restore()
         }
         context.restore()
@@ -48,10 +49,10 @@ class HalfArcCircle {
         context.stroke()
     }
     update(stopcb) {
-
+        this.state.update(stopcb)
     }
     startUpdating(startcb) {
-
+        this.state.startUpdating(startcb)
     }
 }
 class HalfArcCircleState {
