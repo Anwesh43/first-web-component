@@ -47,6 +47,9 @@ class SineWave {
         this.deg = 0
     }
     draw(context) {
+        context.lineCap = 'round'
+        context.lineWidth = Math.min(w,h)/40
+        context.strokeStyle = '#FF5722'
         context.save()
         context.translate(this.x,this.y)
         context.beginPath()
@@ -64,7 +67,7 @@ class SineWave {
     addPoints() {
         if(this.n < this.maxN) {
             this.deg += 90/this.maxN
-            this.points.push(SineWavePoint.createSineWavePoint(h/3,this.deg,w/5))
+            this.points.push(SineWavePoint.createSineWavePoint(h/3,this.deg,w/12))
             this.n++
         }
     }
