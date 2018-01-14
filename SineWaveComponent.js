@@ -126,3 +126,4 @@ class Animation  {
         return this.stopcb()
     }
 }
+customElements.define('sine-wave-comp',SineWaveComponent)
