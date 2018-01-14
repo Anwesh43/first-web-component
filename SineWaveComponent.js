@@ -7,16 +7,18 @@ class SineWaveComponent extends HTMLElement {
         shadow.appendChild(this.img)
         this.animatorQueue = new AnimatorQueue(this)
         this.sineWave = new SineWave()
+        console.log(this.sineWave)
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w
-        canvas.heigh = h
+        canvas.height = h
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,w,h)
         this.sineWave.draw(context)
         this.img.src = canvas.toDataURL()
+        console.log(canvas.width)
     }
     connectedCallback() {
         this.render()
@@ -40,34 +42,47 @@ class SineWave {
         this.x = 0
         this.y = h/2
         this.points = []
-        this.n = 1
+        this.n = 0
         this.maxN = 10
+        this.deg = 0
     }
     draw(context) {
         context.save()
         context.translate(this.x,this.y)
         context.beginPath()
-        context.moveTo()
-        context.lineTo()
-        cotntext.stroke()
+        this.points.forEach((point,i) => {
+            if(i == 0) {
+                context.moveTo(point.x,point.y)
+            }
+            else {
+                context.lineTo(point.x,point.y)
+            }
+        })
+        context.stroke()
         context.restore()
     }
     addPoints() {
-        if(this.n < this.maxK) {
-            this.points.push(SineWavePoint.createSineWavePoint(h/3,this.n*(90/this.maxK),w/5))
+        if(this.n < this.maxN) {
+            this.deg += 90/this.maxN
+            this.points.push(SineWavePoint.createSineWavePoint(h/3,this.deg,w/5))
             this.n++
         }
     }
     stoppedAddingPoints() {
-        return this.n == this.maxK
+        return this.n == this.maxN
     }
     stoppedRemovingPoints() {
-        return this.n == 1
+        return this.n == 0
     }
     removePoints() {
-        if(this.n > 1 && this.points.size > 0) {
-            this.points.splice(0,1)
+        if(this.n >= 1 && this.points.length > 0) {
+            var lastPoints = this.points.splice(0,1)
             this.n --
+            console.log(this.n)
+            if(this.n == 0 && lastPoints.length == 1 && this.deg >= 360) {
+                this.x += lastPoints[0].x
+                this.deg = 0
+            }
         }
     }
 }
@@ -88,6 +103,7 @@ class AnimatorQueue {
     }
     addAnimation(updatecb,stopcb) {
         this.queues.push(new Animation(updatecb,stopcb))
+        console.log(this.queues)
     }
     startUpdating() {
         if(!this.animated) {
@@ -99,6 +115,7 @@ class AnimatorQueue {
                     animation.animate()
                     if(animation.stopped()) {
                         this.queues.splice(0,1)
+                        console.log(this.queues.length)
                         if(this.queues.length == 0) {
                             this.stop()
                         }
