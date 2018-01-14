@@ -71,14 +71,30 @@ class AnimatorQueue {
         this.component = component
     }
     addingAnimation(updatecb,stopcb) {
-
+        this.queues.push(new Animation(updatecb,stopcb))
     }
     startUpdating() {
         if(!this.animated) {
             this.animated = true
             this.interval = setInterval(()=>{
                 this.component.render()
+                if(this.queues.length > 0) {
+                    const animation = this.queues[0]
+                    animation.animate()
+                    if(animation.stopped()) {
+                        this.queues.splice(0,1)
+                        if(this.queues.length == 0) {
+                            this.stop()
+                        }
+                    }
+                }
             },50)
+        }
+    }
+    stop() {
+        if(this.animated) {
+            this.animated = false
+            clearInterval(this.interval)
         }
     }
 }
