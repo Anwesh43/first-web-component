@@ -82,3 +82,15 @@ class AnimatorQueue {
         }
     }
 }
+class Animation  {
+    constructor(updatecb,stopcb) {
+        this.updatecb = updatecb
+        this.stopcb = stopcb
+    }
+    animate() {
+        this.updatecb()
+    }
+    stopped() {
+        return this.stopcb()
+    }
+}
