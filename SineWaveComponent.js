@@ -42,6 +42,12 @@ class SineWave {
             this.n++
         }
     }
+    stoppedAddingPoints() {
+        return this.n == this.maxK
+    }
+    stoppedRemovingPoints() {
+        return this.n == 1
+    }
     removePoints() {
         if(this.n > 1 && this.points.size > 0) {
             this.points.splice(0,1)
@@ -56,5 +62,23 @@ class SineWavePoint {
     }
     static createSineWavePoint(a,deg,x) {
         return new SineWavePoint(x*(deg/90),a*Math.sin(deg*Math.PI/180))
+    }
+}
+class AnimatorQueue {
+    constructor(component) {
+        this.queues = []
+        this.animated = false
+        this.component = component
+    }
+    addingAnimation(updatecb,stopcb) {
+
+    }
+    startUpdating() {
+        if(!this.animated) {
+            this.animated = true
+            this.interval = setInterval(()=>{
+                this.component.render()
+            },50)
+        }
     }
 }
