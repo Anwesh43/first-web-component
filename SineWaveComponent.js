@@ -5,6 +5,8 @@ class SineWaveComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.animatorQueue = new AnimatorQueue(this)
+        this.sineWave = new SineWave()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +15,24 @@ class SineWaveComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,w,h)
+        this.sineWave.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = () => {
+            this.animatorQueue.addAnimation(()=>{
+                this.sineWave.addPoints()
+            },()=>{
+                return this.sineWave.stoppedAddingPoints()
+            })
+            this.animatorQueue.addAnimation(()=>{
+                this.sineWave.removePoints()
+            },()=>{
+                return this.sineWave.stoppedRemovingPoints()
+            })
+            this.animatorQueue.startUpdating()
+        }
     }
 }
 class SineWave {
@@ -70,7 +86,7 @@ class AnimatorQueue {
         this.animated = false
         this.component = component
     }
-    addingAnimation(updatecb,stopcb) {
+    addAnimation(updatecb,stopcb) {
         this.queues.push(new Animation(updatecb,stopcb))
     }
     startUpdating() {
