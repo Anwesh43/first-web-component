@@ -19,3 +19,42 @@ class SineWaveComponent extends HTMLElement {
         this.render()
     }
 }
+class SineWave {
+    constructor() {
+        this.x = 0
+        this.y = h/2
+        this.points = []
+        this.n = 1
+        this.maxN = 10
+    }
+    draw(context) {
+        context.save()
+        context.translate(this.x,this.y)
+        context.beginPath()
+        context.moveTo()
+        context.lineTo()
+        cotntext.stroke()
+        context.restore()
+    }
+    addPoints() {
+        if(this.n < this.maxK) {
+            this.points.push(SineWavePoint.createSineWavePoint(h/3,this.n*(90/this.maxK),w/5))
+            this.n++
+        }
+    }
+    removePoints() {
+        if(this.n > 1 && this.points.size > 0) {
+            this.points.splice(0,1)
+            this.n --
+        }
+    }
+}
+class SineWavePoint {
+    constructor(x,y) {
+        this.x = x
+        this.y = y
+    }
+    static createSineWavePoint(a,deg,x) {
+        return new SineWavePoint(x*(deg/90),a*Math.sin(deg*Math.PI/180))
+    }
+}
