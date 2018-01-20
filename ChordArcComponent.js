@@ -20,10 +20,12 @@ class ChordArcComponent extends HTMLElement {
 class ChordArc {
     constructor(i) {
         this.i = i
+        this.state = new ChordArcState()
     }
     draw(context) {
         context.save()
         context.translate(size/2,size/2)
+        context.rotate(i*Math.PI/2+(Math.PI/2)*this.state.scale)
         context.beginPath()
         for(var i = -45;i<=45;i++) {
             const x = (size/3)*Math.cos(i*Math.PI/180),y = (size/3)*Math.sin(i*Math.PI/180)
@@ -38,10 +40,10 @@ class ChordArc {
         context.restore()
     }
     update(stopcb) {
-
+        this.state.update(stopcb)
     }
     startUpdating(startcb) {
-
+        this.state.startUpdating(startcb)
     }
 }
 class ChordArcState {
