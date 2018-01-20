@@ -71,6 +71,7 @@ class ChordArcState {
 class ChordArcContainer {
     constructor() {
         this.chordArcs = []
+        this.state = new ChordArcContainerState()
         for(var i=0;i<4;i++) {
             this.chordArcs.push(new ChordArc(i))
         }
@@ -83,10 +84,17 @@ class ChordArcContainer {
         }
     }
     update(stopcb) {
-
+        if(this.j <= 4 || this.j >= 1) {
+            this.chordArc[this.j - 1].update(()=>{
+                this.state.incrementJ()
+                stopcb()
+            })
+        }
     }
     startUpdating(startcb) {
-
+      if(this.j <= 4 || this.j >= 1) {
+          this.chordArc[this.j - 1].startUpdating(startcb)
+      }
     }
 }
 class ChordArcContainerState {
