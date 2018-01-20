@@ -141,3 +141,4 @@ class Animator {
         }
     }
 }
+customElements.define('chord-arc-comp',ChordArcComponent)
