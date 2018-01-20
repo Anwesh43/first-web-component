@@ -68,3 +68,24 @@ class ChordArcState {
         }
     }
 }
+class ChordArcContainer {
+    constructor() {
+        this.chordArcs = []
+        for(var i=0;i<4;i++) {
+            this.chordArcs.push(new ChordArc(i))
+        }
+    }
+    draw(context) {
+        for(var i=0;i<4;i++) {
+            this.chordArcs.forEach((chordArc) => {
+                chordArc.draw(context)
+            })
+        }
+    }
+    update(stopcb) {
+
+    }
+    startUpdating(startcb) {
+
+    }
+}
