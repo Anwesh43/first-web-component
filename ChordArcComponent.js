@@ -89,3 +89,15 @@ class ChordArcContainer {
 
     }
 }
+class ChordArcContainerState {
+    constructor() {
+        this.j = 0
+        this.dir = 0
+    }
+    incrementJ() {
+        this.j+=this.dir
+        if(this.j == 4 || this.j == 0) {
+            this.dir = -1
+        }
+    }
+}
