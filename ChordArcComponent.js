@@ -5,16 +5,29 @@ class ChordArcComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.animator = new Animator()
+        this.container = new ChordArcContainer()
     }
     render() {
         const canvas = document.createElement('canvas')
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,size,size)
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.container.startUpdating(()=>{
+                this.animator.startAnimation(()=>{
+                    this.render()
+                    this.container.update(()=>{
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class ChordArc {
@@ -118,7 +131,6 @@ class Animator {
             this.animated = true
             this.interval = setInterval(()=>{
                 updatecb()
-
             }),50
         }
     }
