@@ -45,8 +45,9 @@ class ImageHighlight {
         this.state = new ImageHighlightState()
     }
     draw(context) {
-        const gap = this.img.width/this.n
+        const gap = (this.img.width)/this.n
         this.w = gap * this.j + gap*this.state.scale
+        console.log(this.w)
         context.save()
         context.drawImage(this.img,0,0)
         context.restore()
@@ -55,7 +56,6 @@ class ImageHighlight {
         context.fillStyle = '#212121'
         context.fillRect(this.w,0,this.img.width-this.w,this.img.height)
         context.restore()
-        console.log(this.w)
     }
     update(stopcb) {
         this.state.update(()=>{
@@ -87,7 +87,7 @@ class ImageHighlightState {
         }
     }
     setScale() {
-        this.scale = 1-2*this.prevScale
+        this.scale = (this.scale+1)%2
         this.prevScale = this.scale
     }
     startUpdating(startcb) {
