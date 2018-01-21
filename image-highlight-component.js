@@ -25,6 +25,7 @@ class ImageHighlight {
         this.w = 0
         this.j = 0
         this.dir = 1
+        this.state = new ImageHighlightState()
     }
     draw(context) {
         const gap = this.img.width/this.n
@@ -39,10 +40,10 @@ class ImageHighlight {
         context.restore()
     }
     update(stopcb) {
-
+        this.state.update(stopcb)
     }
     startUpdating(startcb) {
-
+        this.state.startUpdating(startcb)
     }
 }
 class ImageHighlightState {
