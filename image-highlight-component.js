@@ -5,17 +5,29 @@ class ImageHighlightComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
-        this.src = this.getAttribute('src')
+        const src = this.getAttribute('src')
+        this.animator = new Animator()
+        this.imageHighlight = new ImageHighlight(src)
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        this.imageHighlight.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.imageHighlight.startUpdating(()=>{
+                this.animator.start(()=>{
+                    this.imageHighlight.update(()=>{
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class ImageHighlight {
@@ -71,7 +83,7 @@ class Animator {
     constructor() {
         this.animated = false
     }
-    animate(updatecb) {
+    start(updatecb) {
         if(!this.animated) {
             this.animated = true
             this.interval = setInterval(()=>{
@@ -79,4 +91,11 @@ class Animator {
             },50)
         }
     }
+    stop() {
+        if(this.animated) {
+            this.animated = false
+            clearInteral(this.interval)
+        }
+    }
 }
+customElements.define('image-highlight-comp',ImageHighlightComponent)
