@@ -67,3 +67,16 @@ class ImageHighlightState {
         }
     }
 }
+class Animator {
+    constructor() {
+        this.animated = false
+    }
+    animate(updatecb) {
+        if(!this.animated) {
+            this.animated = true
+            this.interval = setInterval(()=>{
+                updatecb()
+            },50)
+        }
+    }
+}
