@@ -36,6 +36,7 @@ class AlternateBarContainer {
     constructor() {
         this.n = 10
         this.init()
+        this.state = new AlternateBarState()
     }
     init() {
         this.bars = []
@@ -56,10 +57,10 @@ class AlternateBarContainer {
         context.restore()
     }
     update(stopcb) {
-
+        this.state.update(stopcb)
     }
     startUpdating(startcb) {
-
+        this.state.startUpdating(startcb)
     }
 }
 class AlternateBarState{
