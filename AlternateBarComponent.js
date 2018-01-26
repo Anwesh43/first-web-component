@@ -1,4 +1,4 @@
-const w = window.innerWidth
+const w = Math.min(window.innerWidth,window.innerHeight)
 const alternatingBarColors = ['#673AB7','#FF5722']
 class AlternateBarComponent extends HTMLElement {
     constructor() {
@@ -14,6 +14,8 @@ class AlternateBarComponent extends HTMLElement {
         this.img.onmousedown = () => {
             this.container.startUpdating(()=>{
                 this.animator.animate(()=>{
+                    this.render()
+                    console.log("rendered")
                     this.container.update(()=>{
                         this.animator.stop()
                     })
@@ -23,11 +25,12 @@ class AlternateBarComponent extends HTMLElement {
     }
     render() {
         const canvas = document.createElement('canvas')
-        canvas.width = Math.min(w,h)
-        canvas.height = Math.min(w,h)
+        canvas.width = w
+        canvas.height = w
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,w,w)
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
 }
@@ -37,9 +40,9 @@ class AlternateBar {
     }
     draw(context,x_size,y_size,scale) {
         const x = x_size * this.i
-        const y = y_size*(1-scale)*(i%2)
+        const y = y_size*(1-scale)*(this.i%2)
         const h = y_size*scale
-        context.fillStyle = alternatingBarColors[i%2]
+        context.fillStyle = alternatingBarColors[this.i%2]
         context.fillRect(x,y,x_size,h)
     }
 }
@@ -83,7 +86,7 @@ class AlternateBarState{
         this.j = 0
     }
     update(stopcb) {
-        this.scales[this.j] += this.dir*0.1
+        this.scales[this.j] += this.scaleDir*0.1
         if(Math.abs(this.scales[this.j] - this.prevScale) > 1) {
             this.scales[this.j] = this.prevScale + this.scaleDir
             this.j += this.dir
@@ -117,7 +120,7 @@ class Animator {
     }
     stop() {
         if(this.animated) {
-            this.animated = true
+            this.animated = false
             clearInterval(this.interval)
         }
     }
