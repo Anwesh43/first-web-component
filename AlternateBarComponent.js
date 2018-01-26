@@ -92,3 +92,22 @@ class AlternateBarState{
         }
     }
 }
+class Animator {
+    constructor() {
+        this.animated = false
+    }
+    animate(updatecb) {
+        if(!this.animated) {
+            this.animated = true
+            this.interval = setInterval(()=>{
+                updatecb()
+            },50)
+        }
+    }
+    stop() {
+        if(this.animated) {
+            this.animated = true
+            clearInterval(this.interval)
+        }
+    }
+}
