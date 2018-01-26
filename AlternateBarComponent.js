@@ -32,3 +32,33 @@ class AlternateBar {
         context.fillRect(x,y,x_size,h)
     }
 }
+class AlternateBarContainer {
+    constructor() {
+        this.n = 10
+        this.init()
+    }
+    init() {
+        this.bars = []
+        for(var i=0;i<this.n;i++) {
+            this.bars.push(new AlternateBar(i))
+        }
+    }
+    draw(context) {
+        context.save()
+        context.translate(w/2,w/2)
+        context.rotate(Math.PI/2)
+        context.save()
+        context.translate(-w/2,-w/2)
+        this.bars.forEach((bar)=>{
+            bar.draw(context,w/10,w,1)
+        })
+        context.restore()
+        context.restore()
+    }
+    update(stopcb) {
+
+    }
+    startUpdating(startcb) {
+
+    }
+}
