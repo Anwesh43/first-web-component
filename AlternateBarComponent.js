@@ -6,9 +6,20 @@ class AlternateBarComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.animator = new Animator()
+        this.container = new AlternateBarContainer()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.container.startUpdating(()=>{
+                this.animator.animate(()=>{
+                    this.container.update(()=>{
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -47,11 +58,11 @@ class AlternateBarContainer {
     draw(context) {
         context.save()
         context.translate(w/2,w/2)
-        context.rotate(Math.PI/2)
+        context.rotate(Math.PI/2*this.state.scales[1])
         context.save()
         context.translate(-w/2,-w/2)
         this.bars.forEach((bar)=>{
-            bar.draw(context,w/10,w,1)
+            bar.draw(context,w/10,w,this.state.scales[0])
         })
         context.restore()
         context.restore()
