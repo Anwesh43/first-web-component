@@ -62,3 +62,32 @@ class AlternateBarContainer {
 
     }
 }
+class AlternateBarState{
+    constructor() {
+        this.scales = [0,0]
+        this.dir = 1
+        this.scaleDir = 0
+        this.prevScale = 0
+        this.j = 0
+    }
+    update(stopcb) {
+        this.scales[this.j] += this.dir*0.1
+        if(Math.abs(this.scales[this.j] - this.prevScale) > 1) {
+            this.scales[this.j] = this.prevScale + this.scaleDir
+            this.j += this.dir
+            if(this.j == 2 || this.j == -1) {
+                this.dir *= -1
+                this.j += this.dir
+                this.prevScale = this.scales[this.j]
+                this.scaleDir = 0
+                stopcb()
+            }
+        }
+    }
+    startUpdating(startcb) {
+        if(this.scaleDir == 0) {
+            this.scaleDir = 1 - 2*this.prevScale
+            startcb()
+        }
+    }
+}
