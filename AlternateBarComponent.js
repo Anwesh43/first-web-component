@@ -122,3 +122,4 @@ class Animator {
         }
     }
 }
+customElements.define('alternate-bar',AlternateBarComponent)
