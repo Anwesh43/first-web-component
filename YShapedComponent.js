@@ -23,6 +23,7 @@ class YShapedComponent extends HTMLElement {
         this.img.onmousedown = () => {
             this.yShaped.startUpdating(()=>{
                 this.animator.start(()=>{
+                    this.render()
                     this.yShaped.update(()=>{
                         this.animator.stop()
                     })
@@ -36,6 +37,8 @@ class YShaped {
         this.state = new YShapedState()
     }
     draw(context) {
+        context.lineWidth = size/40
+        context.lineCap = 'round'
         context.strokeStyle = '#FDD835'
         context.save()
         context.translate(size/2,size/2)
@@ -46,7 +49,8 @@ class YShaped {
         for(var i=0;i<2;i++) {
             context.save()
             context.translate(0,0)
-            context.rotate(2*Math.PI/3*(i%2-1))
+            const deg =3*Math.PI/4*(2*i-1)
+            context.rotate(deg*this.state.scale)
             context.beginPath()
             context.moveTo(0,0)
             context.lineTo(0,size/4)
@@ -103,3 +107,4 @@ class YShapedAnimator {
         }
     }
 }
+customElements.define('y-shaped-comp',YShapedComponent)
