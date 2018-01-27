@@ -5,6 +5,8 @@ class YShapedComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.yShaped = new YShaped()
+        this.animator = new YShapedAnimator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +15,20 @@ class YShapedComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,size,size)
+        this.yShaped.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.yShaped.startUpdating(()=>{
+                this.animator.start(()=>{
+                    this.yShaped.update(()=>{
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class YShaped {
