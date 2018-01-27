@@ -21,7 +21,7 @@ class YShapedComponent extends HTMLElement {
 }
 class YShaped {
     constructor() {
-
+        this.state = new YShapedState()
     }
     draw(context) {
         context.strokeStyle = '#FDD835'
@@ -44,10 +44,10 @@ class YShaped {
         context.restore()
     }
     update(stopcb) {
-
+        this.state.update(stopcb)
     }
     startUpdating(startcb) {
-
+        this.state.startUpdating(startcb)
     }
 }
 class YShapedState {
