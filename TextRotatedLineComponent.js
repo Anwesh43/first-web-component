@@ -33,7 +33,7 @@ class State {
                 this.j -= Math.floor(this.dir)
                 this.dir = 0
                 this.prevScale = this.scales[this.j]
-                stopcb(this.prevScale) 
+                stopcb(this.prevScale)
             }
         }
     }
@@ -42,5 +42,45 @@ class State {
             this.dir = 1-2*this.prevScale
             startcb()
         }
+    }
+}
+class TextRotatedLine {
+    constructor(text) {
+        this.state = new State()
+        this.text = text
+    }
+    draw(context) {
+        context.font = context.font.replace(/\d{2}/,size/10)
+        context.strokeStyle = '#1565C0'
+        context.fillStyle = 'white'
+        context.save()
+        context.translate(size/2,size/10)
+        for(var i=0;i<2;i++) {
+            const deg = (Math.PI/2)*this.state.scales[0]
+            context.save()
+            context.rotate(deg*(i*2-1))
+            context.beginPath()
+            context.moveTo(0,0)
+            context.lineTo(0,2*size/5)
+            context.restore()
+        }
+        const th = (size/5)*this.state.scales[1]
+        context.save()
+        context.beginPath()
+        context.moveTo(-2*size/5,0)
+        context.lineTo(2*size/5,0)
+        context.lineTo(2*size/5,th)
+        context.lineTo(-2*size/5,th)
+        context.clipPath()
+        const tw = context.measureText(this.text).width
+        context.fillText(this.text,-tw/2,size/10)
+        context.restore()
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
     }
 }
