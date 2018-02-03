@@ -11,6 +11,8 @@ class SmileyComponent extends HTMLElement {
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
+        context.fillStyle = '#212121'
+        context.fillRect(0,0,size,size)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
@@ -37,5 +39,55 @@ class State {
             this.dir = 1-2*this.scale
             startcb()
         }
+    }
+}
+class Smiley {
+    constructor() {
+        this.state = new State()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+    draw(context) {
+        context.fillStyle = '#F9A825'
+        context.save()
+        context.translate(size/2,size/2)
+        context.beginPath()
+        context.arc(0,0,size/3,0,2*Math.PI)
+        context.fill()
+        DegArc.draw(context,0,-size/4,0,180,size/8,size/20,0)
+        for(var i=0;i<2;i++) {
+            const eye_x = (size/8)*(i*2-1), eye_y = -size/5
+            DegArc.draw(context,eye_x,eye_y,0,360,size/20,size/20*this.state.scale,1)
+        }
+        context.restore()
+    }
+}
+class DegArc {
+    draw(context,x,y,start,sweep,rx,ry,mode) {
+        context.fillStyle = 'black'
+        context.strokeStyle = 'black'
+        context.lineWidth = r/15
+        context.save()
+        context.translate(x,y)
+        for(var i=start;i<=start+sweep;i++) {
+            const x = rx*Math.cos(i*Math.PI/180), y = ry*Math.sin(i*Math.PI/180)
+            if(i === start) {
+                context.moveTo(x,y)
+            }
+            else {
+                context.lineTo(x,y)
+            }
+        }
+        if(mode == 0) {
+            context.stroke()
+        }
+        else {
+            context.fill()
+        }
+        context.restore()
     }
 }
