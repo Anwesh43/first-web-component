@@ -118,3 +118,4 @@ class Animator {
         }
     }
 }
+customElements.define('text-rotated-line',TextRotatedLineComponent)
