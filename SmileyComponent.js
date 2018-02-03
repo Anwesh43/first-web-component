@@ -23,8 +23,10 @@ class SmileyComponent extends HTMLElement {
         this.img.onmousedown = () => {
             this.smiley.startUpdating(() => {
                 this.animator.start(() => {
+                    this.render()
                     this.smiley.update(()=>{
                         this.animator.stop()
+                        this.render()
                     })
                 })
             })
@@ -69,22 +71,24 @@ class Smiley {
         context.translate(size/2,size/2)
         context.beginPath()
         context.arc(0,0,size/3,0,2*Math.PI)
+        context.fillStyle = '#F9A825'
         context.fill()
-        DegArc.draw(context,0,-size/4,0,180,size/8,size/20,0)
+        DegArc.draw(context,0,(size/5*Math.sin(Math.PI/4))*(1-this.state.scale),45,90,size/5,(size/5)*this.state.scale,0)
         for(var i=0;i<2;i++) {
-            const eye_x = (size/8)*(i*2-1), eye_y = -size/5
+            const eye_x = (size/8)*(i*2-1), eye_y = -size/7
             DegArc.draw(context,eye_x,eye_y,0,360,size/20,size/20*this.state.scale,1)
         }
         context.restore()
     }
 }
 class DegArc {
-    draw(context,x,y,start,sweep,rx,ry,mode) {
+    static draw(context,x,y,start,sweep,rx,ry,mode) {
         context.fillStyle = 'black'
         context.strokeStyle = 'black'
-        context.lineWidth = r/15
+        context.lineWidth = 5
         context.save()
         context.translate(x,y)
+        context.beginPath()
         for(var i=start;i<=start+sweep;i++) {
             const x = rx*Math.cos(i*Math.PI/180), y = ry*Math.sin(i*Math.PI/180)
             if(i === start) {
@@ -94,7 +98,7 @@ class DegArc {
                 context.lineTo(x,y)
             }
         }
-        if(mode == 0) {
+        if(mode == 0 || ry == 0) {
             context.stroke()
         }
         else {
@@ -112,7 +116,7 @@ class Animator {
             this.animated = true
             this.interval = setInterval(()=>{
                 updatecb()
-            })
+            },50)
         }
     }
     stop() {
