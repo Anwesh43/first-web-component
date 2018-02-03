@@ -5,7 +5,7 @@ class TextRotatedLineComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
-        const text = this.getAtribute('text') || 'Hello World'
+        const text = this.getAttribute('text') || 'Hello World'
         this.textRotatedLine = new TextRotatedLine(text)
         this.animator = new Animator()
     }
@@ -15,15 +15,18 @@ class TextRotatedLineComponent extends HTMLElement {
         canvas.height = size
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
+        context.lineWidth = size/30
+        context.lineCap = 'round'
         context.fillRect(0,0,size,size)
         this.textRotatedLine.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
-        super.render()
-        this.canvas.onmousedown = (event) => {
-            this.textRotatedLine(() => {
-                this.animator.animate(() => {
+        this.render()
+        this.img.onmousedown = (event) => {
+            this.textRotatedLine.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
                     this.textRotatedLine.update(()=>{
                         this.animator.stop()
                     })
@@ -77,6 +80,7 @@ class TextRotatedLine {
             context.beginPath()
             context.moveTo(0,0)
             context.lineTo(0,2*size/5)
+            context.stroke()
             context.restore()
         }
         const th = (size/5)*this.state.scales[1]
@@ -86,7 +90,7 @@ class TextRotatedLine {
         context.lineTo(2*size/5,0)
         context.lineTo(2*size/5,th)
         context.lineTo(-2*size/5,th)
-        context.clipPath()
+        context.clip()
         const tw = context.measureText(this.text).width
         context.fillText(this.text,-tw/2,size/10)
         context.restore()
@@ -108,7 +112,7 @@ class Animator {
             this.animated = true
             this.interval = setInterval(()=>{
                 updatecb()
-            })
+            },50)
         }
     }
     stop() {
