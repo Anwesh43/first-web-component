@@ -5,6 +5,8 @@ class SmileyComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.animator = new Animator()
+        this.smiley = new Smiley()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +15,20 @@ class SmileyComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0,0,size,size)
+        this.smiley.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.smiley.startUpdating(() => {
+                this.animator.start(() => {
+                    this.smiley.update(()=>{
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class State {
@@ -110,3 +122,4 @@ class Animator {
         }
     }
 }
+customElements.define('smiley-comp',SmileyComponent)
