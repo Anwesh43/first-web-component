@@ -72,9 +72,6 @@ class FoldingLine {
     draw(context,gap) {
         const i = this.i
         const state = this.state
-        context.strokeStyle = '#4527A0'
-        context.lineWidth = size/15
-        context.lineCap = 'round'
         context.save()
         context.translate(gap*i,0)
         context.rotate(180*(1-state.scale))
@@ -100,6 +97,41 @@ class FoldingLineContainerState {
         }
     }
     execute(cb) {
-        cb(this.j)
+        if(this.j < this.n) {
+            cb(this.j)
+        }
+    }
+}
+class FoldingLineContainer {
+    constructor(n) {
+        this.state = new FoldingLineContainerState(n)
+        this.lines = []
+        this.initLines(n)
+    }
+    initLines(n) {
+        for(var i=0;i<n;i++) {
+            this.lines.push(new FoldingLine(i))
+        }
+    }
+    update(stopcb) {
+        this.state.execute((j)=>{
+            this.lines[j].update(stopcb)
+        })
+    }
+    startUpdating(startcb) {
+        this.state.execute((j)=>{
+            this.lines[j].startUpdating(startcb)
+        })
+    }
+    draw(context) {
+        context.strokeStyle = '#4527A0'
+        context.lineWidth = size/35
+        context.lineCap = 'round'
+        this.state.execute((j)=>{
+            for(var i=0;i<=j;i++) {
+                const line = this.lines[i]
+                line.draw(context)
+            }
+        })
     }
 }
