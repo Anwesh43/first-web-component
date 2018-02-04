@@ -85,3 +85,21 @@ class FoldingLine {
         context.restore()
     }
 }
+class FoldingLineContainerState {
+    constructor(n) {
+        this.j = n - 1
+        this.n = n
+        this.l = 1
+        this.dir = -1
+    }
+    increment() {
+        this.j += this.dir
+        if(this.j < this.l || this.j == this.n) {
+            this.dir*=-1
+            this.j += this.dir
+        }
+    }
+    execute(cb) {
+        cb(this.j)
+    }
+}
