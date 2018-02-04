@@ -5,15 +5,29 @@ class FoldingLineComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'true'})
         this.img = document.createElement('img')
         this.n = this.getAttibute('n')||5
+        this.foldingLineContainer = new FoldingLineContainer(this.n)
+        this.animator = new Animator()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.foldingLineContainer.startUpdating(() => {
+                this.animator.start(() => {
+                    this.foldingLineContainer.update(()=>{
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
     render() {
         const canvas = document.createElement('img')
-        canvas.width = w
-        canvas.height = h
+        canvas.width = size
+        canvas.height = size
         const context = canvas.getContext('2d')
+        context.fillStyle = '#212121'
+        context.fillRect(0,0,size,size)
+        this.foldingLineContainer.draw(context)
         this.img.src = canvas.toDataURL()
     }
 }
