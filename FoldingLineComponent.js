@@ -149,3 +149,4 @@ class FoldingLineContainer {
         })
     }
 }
+customElements.define('folding-line-comp',FoldingLineComponent)
