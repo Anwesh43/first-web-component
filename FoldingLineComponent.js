@@ -88,7 +88,7 @@ class FoldingLine {
         const state = this.state
         context.save()
         context.translate(gap*i,0)
-        context.rotate(180*(1-state.scale))
+        context.rotate(Math.PI*(state.scale))
         context.beginPath()
         context.moveTo(0,0)
         context.lineTo(gap,0)
@@ -141,12 +141,19 @@ class FoldingLineContainer {
         context.strokeStyle = '#4527A0'
         context.lineWidth = size/35
         context.lineCap = 'round'
-        this.state.execute((j)=>{
-            for(var i=0;i<=j;i++) {
-                const line = this.lines[i]
-                line.draw(context)
-            }
-        })
+        for(var p=0;p<2;p++) {
+            context.save()
+            context.translate(size/2,size/2)
+            context.scale(1-2*p,1)
+            this.state.execute((j)=>{
+                const gap = size/(2*this.lines.length)
+                for(var i=0;i<=j;i++) {
+                    const line = this.lines[i]
+                    line.draw(context,gap)
+                }
+            })
+            context.restore()
+        }
     }
 }
 customElements.define('folding-line-comp',FoldingLineComponent)
