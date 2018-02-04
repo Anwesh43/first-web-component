@@ -1,18 +1,21 @@
-const size = Math.min(window.innerWidth,window.innerHeight)/2
+const size = Math.min(window.innerWidth,window.innerHeight)
+console.log(size)
 class FoldingLineComponent extends HTMLElement {
     constructor() {
         super()
-        const shadow = this.attachShadow({mode:'true'})
+        const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
-        this.n = this.getAttibute('n')||5
+        this.n = this.getAttribute('n')||5
         this.foldingLineContainer = new FoldingLineContainer(this.n)
         this.animator = new Animator()
+        shadow.appendChild(this.img)
     }
     connectedCallback() {
         this.render()
         this.img.onmousedown = () => {
             this.foldingLineContainer.startUpdating(() => {
                 this.animator.start(() => {
+                    this.render()
                     this.foldingLineContainer.update(()=>{
                         this.animator.stop()
                     })
@@ -21,7 +24,7 @@ class FoldingLineComponent extends HTMLElement {
         }
     }
     render() {
-        const canvas = document.createElement('img')
+        const canvas = document.createElement('canvas')
         canvas.width = size
         canvas.height = size
         const context = canvas.getContext('2d')
@@ -40,15 +43,16 @@ class State {
     update(stopcb) {
         this.scale += this.dir*0.1
         if(Math.abs(this.scale - this.prevScale) > 1) {
-            this.prevScale = this.scale + this.dir
+            this.scale = this.prevScale + this.dir
             this.dir = 0
-            this.scale = this.prevScale
+            this.prevScale = this.scale
             stopcb(this.scale)
         }
     }
     startUpdating(startcb) {
         if(this.dir == 0) {
             this.dir = 1-2*this.scale
+
             startcb()
         }
     }
@@ -88,7 +92,7 @@ class FoldingLine {
         const state = this.state
         context.save()
         context.translate(gap*i,0)
-        context.rotate(Math.PI*(state.scale))
+        context.rotate(-Math.PI*(state.scale))
         context.beginPath()
         context.moveTo(0,0)
         context.lineTo(gap,0)
@@ -129,7 +133,10 @@ class FoldingLineContainer {
     }
     update(stopcb) {
         this.state.execute((j)=>{
-            this.lines[j].update(stopcb)
+            this.lines[j].update((scale) => {
+                this.state.increment()
+                stopcb(scale)
+            })
         })
     }
     startUpdating(startcb) {
@@ -146,7 +153,7 @@ class FoldingLineContainer {
             context.translate(size/2,size/2)
             context.scale(1-2*p,1)
             this.state.execute((j)=>{
-                const gap = size/(2*this.lines.length)
+                const gap = (0.95*size)/(2*this.lines.length)
                 for(var i=0;i<=j;i++) {
                     const line = this.lines[i]
                     line.draw(context,gap)
