@@ -58,3 +58,30 @@ class Animator {
         }
     }
 }
+class FoldingLine {
+    constructor(i) {
+        this.i = i
+        this.state = new State()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+    draw(context,gap) {
+        const i = this.i
+        const state = this.state
+        context.strokeStyle = '#4527A0'
+        context.lineWidth = size/15
+        context.lineCap = 'round'
+        context.save()
+        context.translate(gap*i,0)
+        context.rotate(180*(1-state.scale))
+        context.beginPath()
+        context.moveTo(0,0)
+        context.lineTo(gap,0)
+        context.stroke()
+        context.restore()
+    }
+}
