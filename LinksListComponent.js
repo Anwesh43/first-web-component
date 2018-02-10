@@ -24,6 +24,28 @@ class Link {
     }
     update(scale) {
         this.a.style.borderLeft = this.w/2*scale
-        this.a.style.borderRight = this.w/2*scale  
+        this.a.style.borderRight = this.w/2*scale
+    }
+}
+class LinkContainer {
+    constructor(words) {
+        this.links = []
+        this.addLinks(words)
+    }
+    addLinks(words) {
+        for(var i=0;i<words.length;i++) {
+            this.links.push(words[i])
+        }
+    }
+    addToParent(shadow) {
+        this.links.forEach((link) => {
+            link.addToParent(shadow)
+        })
+    }
+    update(stopcb) {
+
+    }
+    startUpdating(startcb) {
+
     }
 }
