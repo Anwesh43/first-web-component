@@ -15,16 +15,16 @@ class Link {
     constructor(word) {
         this.a = document.createElement('a')
         this.a.href = word
-        this.a.style.borderLeft = 0
-        this.a.style.borderRight = 0
+        this.a.style.borderLeftWidth = 0
+        this.a.style.borderRightHeight = 0
     }
     addToParent(shadow) {
         shadow.appendChild(this.a)
         this.w = this.a.offsetWidth
     }
     update(scale) {
-        this.a.style.borderLeft = this.w/2*scale
-        this.a.style.borderRight = this.w/2*scale
+        this.a.style.borderLeftWidth = this.w/2*scale
+        this.a.style.borderRightWidth = this.w/2*scale
     }
 }
 class LinkContainer {
@@ -47,5 +47,18 @@ class LinkContainer {
     }
     startUpdating(startcb) {
 
+    }
+}
+class LinkState {
+    constructor() {
+        this.scale = 0
+        this.dir = 0
+    }
+    update(stopcb) {
+        this.scale += this.dir*0.1
+        if(this.scale > 1) {
+            this.scale = 0
+            this.dir = 0
+        }
     }
 }
