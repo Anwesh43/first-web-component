@@ -20,17 +20,26 @@ class LinksListComponent extends HTMLElement {
 class Link {
     constructor(word) {
         this.a = document.createElement('span')
+        this.div = document.createElement('div')
+        this.div.style.width = 0
+        this.div.style.height = 0
+        this.div.style.position = 'absolute'
+        this.div.style.borderRadius = '2px'
+        this.a.style.marginLeft = '20px'
         this.a.innerHTML = word
-        this.a.style.borderLeftWidth = 0
-        this.a.style.borderRightHeight = 0
     }
     addToParent(shadow) {
         shadow.appendChild(this.a)
         this.w = this.a.offsetWidth
+        this.x = this.a.offsetLeft + this.w/2
+        this.div.style.left = this.a.offsetLeft + this.a
+        this.div.style.top = this.a.offsetTop + this.a.offsetHeight
+        shadow.appendChild(this.div)
+        this.div.style.border = '5px solid teal'
     }
     update(scale) {
-        this.a.style.borderLeftWidth = this.w/2*scale
-        this.a.style.borderRightWidth = this.w/2*scale
+        this.div.style.width = this.w*scale
+        this.div.style.left = this.x - (this.w/2)*scale
     }
     handleTap(cb) {
         this.a.onclick = (event) => {
@@ -46,7 +55,7 @@ class LinkContainer {
     }
     addLinks(words) {
         for(var i=0;i<words.length;i++) {
-            this.links.push(words[i])
+            this.links.push(new Link(words[i]))
         }
     }
     addToParent(shadow) {
@@ -55,13 +64,20 @@ class LinkContainer {
         })
     }
     update(stopcb) {
-        this.state.update(startcb)
-        this.curr.update(this.state.scale)
-        this.prev.update(1-this.state.scale)
+      this.curr.update(this.state.scale)
+      if(this.prev) {
+          this.prev.update(1-this.state.scale)
+      }
+        this.state.update(() => {
+            this.prev = this.curr
+            stopcb()
+        })
+
     }
     startUpdating(startcb) {
         this.links.forEach((link)=>{
             link.handleTap(()=>{
+                this.curr = link
                 this.state.startUpdating(startcb)
             })
         })
@@ -75,12 +91,14 @@ class LinkState {
     update(stopcb) {
         this.scale += this.dir*0.1
         if(this.scale > 1) {
-            this.scale = 0
+            this.scale = 1
             this.dir = 0
+            stopcb()
         }
     }
     startUpdating(startcb) {
         if(this.dir == 0) {
+            this.scale = 0
             this.dir = 1
             startcb()
         }
