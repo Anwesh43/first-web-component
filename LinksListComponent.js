@@ -1,14 +1,20 @@
 class LinksListComponent extends HTMLElement {
     constructor() {
         super()
-        this.words = this.getAttribute('words').split(" ")
+        this.words = (this.getAttribute('words')||"hello world").split(" ")
         const shadow = this.attachShadow({mode:'open'})
-    }
-    addElements(shadow,words) {
-
+        this.container = new LinkContainer(this.words)
+        this.animator = new Animator()
+        this.container.addToParent(shadow)
     }
     connectedCallback() {
-
+        this.container.startUpdating(() => {
+            this.animator.start(() => {
+                this.container.update(() => {
+                    this.animator.stop()
+                })
+            })
+        })
     }
 }
 class Link {
@@ -99,3 +105,4 @@ class Animator {
         }
     }
 }
+customElements.define('links-list-comp',LinksListComponent)
