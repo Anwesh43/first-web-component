@@ -13,8 +13,8 @@ class LinksListComponent extends HTMLElement {
 }
 class Link {
     constructor(word) {
-        this.a = document.createElement('a')
-        this.a.href = word
+        this.a = document.createElement('span')
+        this.a.innerHTML = word
         this.a.style.borderLeftWidth = 0
         this.a.style.borderRightHeight = 0
     }
@@ -26,11 +26,17 @@ class Link {
         this.a.style.borderLeftWidth = this.w/2*scale
         this.a.style.borderRightWidth = this.w/2*scale
     }
+    handleTap(cb) {
+        this.a.onclick = (event) => {
+            cb()
+        }
+    }
 }
 class LinkContainer {
     constructor(words) {
         this.links = []
         this.addLinks(words)
+        this.state = new LinkState()
     }
     addLinks(words) {
         for(var i=0;i<words.length;i++) {
@@ -43,10 +49,16 @@ class LinkContainer {
         })
     }
     update(stopcb) {
-
+        this.state.update(startcb)
+        this.curr.update(this.state.scale)
+        this.prev.update(1-this.state.scale)
     }
     startUpdating(startcb) {
-
+        this.links.forEach((link)=>{
+            link.handleTap(()=>{
+                this.state.startUpdating(startcb)
+            })
+        })
     }
 }
 class LinkState {
@@ -59,6 +71,12 @@ class LinkState {
         if(this.scale > 1) {
             this.scale = 0
             this.dir = 0
+        }
+    }
+    startUpdating(startcb) {
+        if(this.dir == 0) {
+            this.dir = 1
+            startcb()
         }
     }
 }
