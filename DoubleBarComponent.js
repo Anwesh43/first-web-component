@@ -5,6 +5,8 @@ class DoubleBarComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.animator = new DoubleBarAnimator()
+        this.doubleBar = new DoubleBar()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +15,21 @@ class DoubleBarComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, size, size)
+        this.doubleBar.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onclick = (event) => {
+            this.doubleBar.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.doubleBar.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class DoubleBar {
@@ -86,3 +99,4 @@ class DoubleBarAnimator {
         }
     }
 }
+customElements.define('double-bar-comp',DoubleBarComponent)
