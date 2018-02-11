@@ -45,7 +45,7 @@ class DoubleBar {
             context.save()
             context.translate(size/2,size)
             context.fillStyle = '#E0E0E0'
-            context.fillRect((bar_size/2) * (i * 2 - 1), -bar_size*this.state.scales[i], bar_size/2, bar_size*this.state.scales[i])
+            context.fillRect((bar_size/2) * (i-1), -bar_size*this.state.scales[i], bar_size/2, bar_size*this.state.scales[i])
             context.restore()
         }
     }
@@ -64,9 +64,9 @@ class DoubleBarState {
         this.scales[this.j] += 0.1*this.dir
         if(Math.abs(this.scales[this.j] - this.prevScale) > 1) {
             this.scales[this.j] = this.prevScale + this.dir
-            this.j += this.dir
-            if(this.j == this.scales.length || this.j == -1) {
-                this.j -= this.dir
+            this.j++
+            if(this.j == this.scales.length) {
+                this.j = 0
                 this.dir = 0
                 this.prevScale = this.scales[this.j]
                 stopcb()
