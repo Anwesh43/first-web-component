@@ -21,10 +21,10 @@ class DoubleBarComponent extends HTMLElement {
 }
 class DoubleBar {
     constructor() {
-
+        this.state = new DoubleBarState()
     }
     update(stopcb) {
-
+        this.state.update(stopcb)
     }
     draw(context) {
         const bar_size = size/2
@@ -32,32 +32,37 @@ class DoubleBar {
             context.save()
             context.translate(size/2,size)
             context.fillStyle = '#E0E0E0'
-            context.fillRect((bar_size/2) * (i * 2 - 1), -bar_size, bar_size/2, bar_size)
+            context.fillRect((bar_size/2) * (i * 2 - 1), -bar_size*this.state.scales[i], bar_size/2, bar_size*this.state.scales[i])
             context.restore()
         }
     }
     startUpdating(startcb) {
-
+        this.state.startUpdating(startcb)
     }
 }
 class DoubleBarState {
     constructor() {
-        this.scale = 0
+        this.scales = [0,0]
         this.prevScale = 0
+        this.j = 0
         this.dir = 0
     }
     update(stopcb) {
-        this.scale += 0.1*this.dir
-        if(Math.abs(this.scale - this.prevScale) > 1) {
-            this.scale = this.prevScale + this.dir
-            this.dir = 0
-            this.prevScale = this.scale
-            stopcb(this.scale)
+        this.scales[this.j] += 0.1*this.dir
+        if(Math.abs(this.scales[this.j] - this.prevScale) > 1) {
+            this.scales[this.j] = this.prevScale + this.dir
+            this.j += this.dir
+            if(this.j == this.scales.length || this.j == -1) {
+                this.j -= this.dir
+                this.dir = 0
+                this.prevScale = this.scales[this.j]
+                stopcb()
+            }
         }
     }
     startUpdating(startcb) {
         if(this.dir == 0) {
-            this.dir = 1 - 2*this.scale
+            this.dir = 1 - 2*this.prevScale
             startcb()
         }
     }
