@@ -19,3 +19,24 @@ class DoubleBarComponent extends HTMLElement {
         this.render()
     }
 }
+class DoubleBar {
+    constructor() {
+
+    }
+    update(stopcb) {
+
+    }
+    draw(context) {
+        const bar_size = size/2
+        for(var i=0; i<2; i++) {
+            context.save()
+            context.translate(size/2,size)
+            context.fillStyle = '#E0E0E0'
+            context.fillRect((bar_size/2) * (i * 2 - 1), -bar_size, bar_size/2, bar_size)
+            context.restore()
+        }
+    }
+    startUpdating(startcb) {
+
+    }
+}
