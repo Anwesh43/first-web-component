@@ -5,6 +5,8 @@ class CircleToCircleComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
+        this.animator = new Animator()
+        this.circleToCircle = new CircleToCircle()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +15,21 @@ class CircleToCircleComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
+        this.circleToCircle.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.circleToCircle.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.circleToCircle.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class State {
