@@ -47,17 +47,18 @@ class State {
         if(Math.abs(this.prevScale - this.scales[this.j]) > 1) {
             this.scales[this.j] = this.prevScale + this.dir
             this.j += this.jDir
-            if(this.j == this.scales.length || this.j == -1) {
+            if(this.j == this.scales.length) {
                 this.jDir *= -1
                 this.dir = 0
                 this.j += this.jDir
-                this.prevScale = this.scales[this.j]
                 stopcb()
             }
         }
     }
     startUpdating(startcb) {
         if(this.dir == 0) {
+            this.scales = [0,0]
+            this.j = 0
             this.dir = 1 - 2 * this.prevScale
             startcb()
         }
