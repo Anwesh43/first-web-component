@@ -67,3 +67,49 @@ class Animator {
         }
     }
 }
+class CircleToCircle {
+    constructor() {
+        this.state = new State()
+        this.x = size/2
+        this.y = size/2
+        this.r = size/8
+        this.dir = 0
+    }
+    drawArc(start, end) {
+      context.beginPath()
+      for(var i = start; i <= end; i++) {
+          const x = this.r * Math.cos(i * Math.PI/180), y = this.r * Math.sin(i * Math.PI/180)
+          if(i == start) {
+              context.moveTo(x, y)
+          }
+          else {
+              context.lineTo(x, y)
+          }
+      }
+      context.stroke()
+    }
+    draw(context) {
+        const startDeg1 = 90 * (1 - this.dir), startDeg2 = 90 * (1 + this.dir)
+        const sweep1 = 360 * (1 - this.state.scales[0]), sweep2 = 360 * this.state.scales[1]
+        context.save()
+        context.translate(this.x, this.y)
+        this.drawArc(startDeg1, startDeg1 + sweep1)
+        contexxt.save()
+        context.translate(2 * this.r, 0)
+        this.drawArc(startDeg2, startDeg1 + sweep2)
+        context.restore()
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(() => {
+            this.x += 2 * this.r
+            stopcb()
+        })
+    }
+    startUpdating(dir, startcb) {
+        if(this.dir == 0) {
+            this.dir = dir
+            this.state.startUpdating(startcb)
+        }
+    }
+}
