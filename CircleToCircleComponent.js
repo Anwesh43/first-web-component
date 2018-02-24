@@ -37,20 +37,19 @@ class CircleToCircleComponent extends HTMLElement {
 class State {
     constructor() {
         this.scales = [0, 0]
-        this.prevScale = 0
         this.dir = 0
         this.j = 0
         this.jDir = 1
     }
     update(stopcb) {
+        console.log(this.scales)
         this.scales[this.j] += this.dir * 0.1
-        if(Math.abs(this.prevScale - this.scales[this.j]) > 1) {
-            this.scales[this.j] = this.prevScale + this.dir
+        if(this.scales[this.j] > 1) {
+            this.scales[this.j] = 1
             this.j += this.jDir
             if(this.j == this.scales.length) {
-                this.jDir *= -1
                 this.dir = 0
-                this.j += this.jDir
+                this.j = 0
                 stopcb()
             }
         }
@@ -58,8 +57,7 @@ class State {
     startUpdating(startcb) {
         if(this.dir == 0) {
             this.scales = [0,0]
-            this.j = 0
-            this.dir = 1 - 2 * this.prevScale
+            this.dir = 1
             startcb()
         }
     }
