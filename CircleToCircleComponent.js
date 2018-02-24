@@ -10,8 +10,8 @@ class CircleToCircleComponent extends HTMLElement {
     }
     render() {
         const canvas = document.createElement('canvas')
-        canvas.width = size
-        canvas.height = size
+        canvas.width = w
+        canvas.height = h
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
@@ -20,8 +20,10 @@ class CircleToCircleComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
-        this.img.onmousedown = () => {
-            this.circleToCircle.startUpdating(() => {
+        this.img.onmousedown = (event) => {
+            const diff = event.offsetX - this.circleToCircle.x
+            const dir = (diff != 0) ? diff/Math.abs(diff) : 1
+            this.circleToCircle.startUpdating(dir, () => {
                 this.animator.start(() => {
                     this.render()
                     this.circleToCircle.update(() => {
@@ -43,7 +45,7 @@ class State {
     update(stopcb) {
         this.scales[this.j] += this.dir * 0.1
         if(Math.abs(this.prevScale - this.scales[this.j]) > 1) {
-            this.scales[this.j] = 0
+            this.scales[this.j] = this.prevScale + this.dir
             this.j += this.jDir
             if(this.j == this.scales.length || this.j == -1) {
                 this.jDir *= -1
@@ -67,7 +69,7 @@ class Animator {
     }
     start(updatecb) {
         if( !this.animated ) {
-            animated = true
+            this.animated = true
             this.interval = setInterval(() => {
                 updatecb()
             }, 50)
@@ -88,7 +90,7 @@ class CircleToCircle {
         this.r = size/8
         this.dir = 0
     }
-    drawArc(start, end) {
+    drawArc(context, start, end) {
       context.beginPath()
       for(var i = start; i <= end; i++) {
           const x = this.r * Math.cos(i * Math.PI/180), y = this.r * Math.sin(i * Math.PI/180)
@@ -104,18 +106,21 @@ class CircleToCircle {
     draw(context) {
         const startDeg1 = 90 * (1 - this.dir), startDeg2 = 90 * (1 + this.dir)
         const sweep1 = 360 * (1 - this.state.scales[0]), sweep2 = 360 * this.state.scales[1]
+        context.strokeStyle = '#009688'
+        context.lineWidth = this.r/20
         context.save()
         context.translate(this.x, this.y)
-        this.drawArc(startDeg1, startDeg1 + sweep1)
-        contexxt.save()
-        context.translate(2 * this.r, 0)
-        this.drawArc(startDeg2, startDeg1 + sweep2)
+        this.drawArc(context, startDeg1, startDeg1 + sweep1)
+        context.save()
+        context.translate(2 * this.r * this.dir , 0)
+        this.drawArc(context, startDeg2, startDeg2 + sweep2)
         context.restore()
         context.restore()
     }
     update(stopcb) {
         this.state.update(() => {
-            this.x += 2 * this.r
+            this.x += 2 * this.r * this.dir
+            this.dir = 0
             stopcb()
         })
     }
@@ -126,3 +131,4 @@ class CircleToCircle {
         }
     }
 }
+customElements.define('circ-to-circ', CircleToCircleComponent)
