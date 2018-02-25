@@ -5,6 +5,7 @@ class FillPlusComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.fillPlus = new FillPlus()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +14,19 @@ class FillPlusComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, size, size)
+        this.fillPlus.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.fillPlus.startUpdating(() => {
+            this.animator.start(() => {
+                this.render()
+                this.fillPlus.update(() => {
+                    this.animator.stop()
+                })
+            })
+        })
     }
 }
 class State {
@@ -36,6 +46,7 @@ class State {
                 this.jDir *= -1
                 this.j += this.jDir
                 this.dir = 0
+                this.prevScale = this.scales[this.j]
                 stopcb()
             }
         }
