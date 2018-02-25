@@ -66,3 +66,38 @@ class Animator {
         }
     }
 }
+class FillPlus {
+    constructor() {
+        this.state = new State()
+    }
+    drawPlus(context, scale) {
+      for(var i = 0; i < 2; i++) {
+          context.save()
+          context.rotate(i * Math.PI/2)
+          context.beginPath()
+          context.moveTo(0, -(size / 4) * scale)
+          context.lineTo(0, (size / 4) * scale)
+          context.stroke()
+          context.restore()
+      }
+    }
+    draw(context) {
+        const scales = this.state.scales
+        context.save()
+        context.tranlsate(size / 2, size / 2)
+        context.rotate(Math.PI/4 * scales[1])
+        context.save()
+        context.strokeStyle = '#757575'
+        this.drawPlus(context, 1)
+        context.strokeStyle = '#e53935'
+        this.drawPlus(context, scales[0])
+        context.restore()
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
