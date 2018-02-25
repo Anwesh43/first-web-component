@@ -6,6 +6,7 @@ class FillPlusComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
         this.fillPlus = new FillPlus()
+        this.animator = new Animator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -19,14 +20,19 @@ class FillPlusComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
-        this.fillPlus.startUpdating(() => {
-            this.animator.start(() => {
-                this.render()
-                this.fillPlus.update(() => {
-                    this.animator.stop()
-                })
-            })
-        })
+        this.img.onmousedown = (event) => {
+            this.handleTap()
+        }
+    }
+    handleTap() {
+      this.fillPlus.startUpdating(() => {
+          this.animator.start(() => {
+              this.render()
+              this.fillPlus.update(() => {
+                  this.animator.stop()
+              })
+          })
+      })
     }
 }
 class State {
@@ -93,9 +99,11 @@ class FillPlus {
       }
     }
     draw(context) {
+        context.lineWidth = size/20
+        context.lineCap = 'round'
         const scales = this.state.scales
         context.save()
-        context.tranlsate(size / 2, size / 2)
+        context.translate(size / 2, size / 2)
         context.rotate(Math.PI/4 * scales[1])
         context.save()
         context.strokeStyle = '#757575'
@@ -112,3 +120,4 @@ class FillPlus {
         this.state.startUpdating(startcb)
     }
 }
+customElements.define('fill-plus', FillPlusComponent)
