@@ -19,3 +19,31 @@ class FillPlusComponent extends HTMLElement {
         this.render()
     }
 }
+class State {
+    constructor() {
+        this.scales = [0, 0]
+        this.dir = 0
+        this.j = 0
+        this.jDir = 1
+        this.prevScale = 0
+    }
+    update(stopcb) {
+        this.scales[this.j] += this.dir * 0.1
+        if(Math.abs(this.scales[this.j] - this.prevScale) > 1) {
+            this.scales[this.j] = this.prevScale + this.dir
+            this.j += this.jDir
+            if(this.j == this.scales.length || this.j == -1) {
+                this.jDir *= -1
+                this.j += this.jDir
+                this.dir = 0
+                stopcb()
+            }
+        }
+    }
+    startUpdating(startcb) {
+        if(this.dir == 0) {
+            this.dir = 1 - 2 * this.prevScale
+            startcb()
+        }
+    }
+}
