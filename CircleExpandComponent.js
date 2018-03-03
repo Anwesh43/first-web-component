@@ -110,3 +110,4 @@ class CircleExpandContainer {
         this.state.startUpdating(startcb)
     }
 }
+customElements.define('circle-expand-comp', CircleExpandComponent)
