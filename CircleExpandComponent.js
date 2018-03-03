@@ -5,6 +5,8 @@ class CircleExpandComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
+        this.container = new CircleExpandContainer()
+        this.animator = new Animator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +15,21 @@ class CircleExpandComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, size, size)
+        this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.container.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.container.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class State {
@@ -78,14 +91,15 @@ class CircleExpandContainer {
       context.stroke()
     }
     draw(context) {
-        const r = size/5
+        const r = size/10
         context.strokeStyle = '#009688'
+        context.lineWidth = r / 10
         context.save()
         context.translate(size/2, size/2)
         context.rotate(Math.PI * this.state.scales[2])
         for(var i = 0; i < 3; i++) {
-            this.drawArc(context, -i * size * this.state.scales[1], r * this.state.scales[0])
-            this.drawArc(context, i * size * this.state.scales[1], r * this.state.scales[0])
+            this.drawArc(context, -i * (2 * r) * this.state.scales[1], r * this.state.scales[0])
+            this.drawArc(context, i * (2 * r) * this.state.scales[1], r * this.state.scales[0])
         }
         context.restore()
     }
