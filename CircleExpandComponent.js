@@ -68,3 +68,31 @@ class Animator {
         }
     }
 }
+class CircleExpandContainer {
+    constructor() {
+        this.state = new State()
+    }
+    drawArc(context, x, r) {
+      context.beginPath()
+      context.arc(x, 0, r, 0, 2 * Math.PI)
+      context.stroke()
+    }
+    draw(context) {
+        const r = size/5
+        context.strokeStyle = '#009688'
+        context.save()
+        context.translate(size/2, size/2)
+        context.rotate(Math.PI * this.state.scales[2])
+        for(var i = 0; i < 3; i++) {
+            this.drawArc(context, -i * size * this.state.scales[1], r * this.state.scales[0])
+            this.drawArc(context, i * size * this.state.scales[1], r * this.state.scales[0])
+        }
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
