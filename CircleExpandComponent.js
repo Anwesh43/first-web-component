@@ -1,4 +1,4 @@
-const size = Math.min(window.innerWidth, window.innerHeight)/2
+const w = window.innerWidth, h = window.innerHeight
 class CircleExpandComponent extends HTMLElement {
     constructor() {
         super()
@@ -10,11 +10,11 @@ class CircleExpandComponent extends HTMLElement {
     }
     render() {
         const canvas = document.createElement('canvas')
-        canvas.width = size
-        canvas.height = size
+        canvas.width = w
+        canvas.height = h
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
-        context.fillRect(0, 0, size, size)
+        context.fillRect(0, 0, w, h)
         this.container.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -40,7 +40,7 @@ class State {
         this.j = 0
     }
     update(stopcb) {
-        this.scales += this.dir * 0.1
+        this.scales[this.j] += this.dir * 0.1
         if(Math.abs(this.scales[this.j] - this.prevScale) > 1) {
             this.scales[this.j] = this.prevScale + this.dir
             this.j += this.dir
@@ -49,7 +49,7 @@ class State {
                 this.j += this.dir
                 this.prevScale = this.scales[this.j]
                 if(this.dir == 1) {
-                    this.j = 0
+                    this.dir = 0
                     stopcb()
                 }
             }
@@ -71,7 +71,7 @@ class Animator {
             this.animated = true
             this.interval = setInterval(() => {
                 updatecb()
-            }, 50)
+            }, 60)
         }
     }
     stop() {
@@ -91,11 +91,11 @@ class CircleExpandContainer {
       context.stroke()
     }
     draw(context) {
-        const r = size/10
+        const r = w/20
         context.strokeStyle = '#009688'
         context.lineWidth = r / 10
         context.save()
-        context.translate(size/2, size/2)
+        context.translate(w/2, h/2)
         context.rotate(Math.PI * this.state.scales[2])
         for(var i = 0; i < 3; i++) {
             this.drawArc(context, -i * (2 * r) * this.state.scales[1], r * this.state.scales[0])
