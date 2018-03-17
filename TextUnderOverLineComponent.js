@@ -40,7 +40,7 @@ class State {
         this.prevScale = 0
         this.j = 0
     }
-    startUpdatig(startcb) {
+    startUpdating(startcb) {
         if(this.dir == 0) {
             this.dir = 1 - 2 * this.prevScale
             startcb()
@@ -51,7 +51,7 @@ class State {
         if(Math.abs(this.scales[this.j] - this.prevScale) > 1){
             this.scales[this.j] = this.prevScale + this.dir
             this.j += this.dir
-            if(this.j == this.scales.lenght || this.j == -1) {
+            if(this.j == this.scales.length || this.j == -1) {
                 this.j -= this.dir
                 this.dir = 0
                 this.prevScale = this.scales[this.j]
@@ -95,16 +95,16 @@ class TextUnderOverLine {
         context.save()
         context.beginPath()
         context.rect(-tw * this.state.scales[0], -size/5, 2 * tw * this.state.scales[0], 2*size/5)
-        context.clipPath()
-        context.fillText(this.text,-tw/2,0)
+        context.clip()
+        context.fillText(this.text,-tw/2,size/15)
         context.restore()
         for(var i = 0; i < 2; i++) {
             context.save()
             const sc = 1 - 2 * i
             context.scale(sc, sc)
             context.beginPath()
-            context.moveTo(-tw/2, size/5)
-            context.lineTo(-tw/2 + tw * this.state.scales[1], size/5)
+            context.moveTo(-tw/2, size/6)
+            context.lineTo(-tw/2 + tw * this.state.scales[1], size/6)
             context.stroke()
             context.restore()
         }
