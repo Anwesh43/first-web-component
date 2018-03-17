@@ -117,3 +117,4 @@ class TextUnderOverLine {
         this.state.startUpdating(startcb)
     }
 }
+customElements.define('text-under-over-line', TextUnderOverLineComponent)
