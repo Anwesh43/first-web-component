@@ -5,16 +5,31 @@ class TextUnderOverLineComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
-        this.text = this.getAttribute('text')
+        const text = this.getAttribute('text')
+        this.textUnderLine = new TextUnderOverLine(text)
+        this.animator = new Animator()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.textUnderLine.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.textUnderLine.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
     render() {
         const canvas = document.createElement('canvas')
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
+        context.fillStyle = '#212121'
+        context.fillRect(0, 0, w, h)
+        this.textUnderLine.draw(context)
         this.img.src = canvas.toDataURL()
     }
 }
