@@ -64,3 +64,41 @@ class Animator {
         }
     }
 }
+class TextUnderOverLine {
+    constructor(text) {
+        this.text = text
+        this.state = new State()
+    }
+    draw(context) {
+        context.fillStyle = 'white'
+        context.strokeStyle = 'white'
+        context.lineCap = 'round'
+        context.font = context.font.replace(/\d{2}/,size/5)
+        const tw = context.measureText(this.text).width
+        context.save()
+        context.translate(w/2, h/2)
+        context.save()
+        context.beginPath()
+        context.rect(-tw * this.state.scales[0], -size/5, 2 * tw * this.state.scales[0], 2*size/5)
+        context.clipPath()
+        context.fillText(this.text,-tw/2,0)
+        context.restore()
+        for(var i = 0; i < 2; i++) {
+            context.save()
+            const sc = 1 - 2 * i
+            context.scale(sc, sc)
+            context.beginPath()
+            context.moveTo(-tw/2, size/5)
+            context.lineTo(-tw/2 + tw * this.state.scales[1], size/5)
+            context.stroke()
+            context.restore()
+        }
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
