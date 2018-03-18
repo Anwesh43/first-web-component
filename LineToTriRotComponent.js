@@ -19,3 +19,24 @@ class LineToTriRotComponent extends HTMLElement {
         this.render()
     }
 }
+class State {
+    constructor() {
+        this.scale = 0
+        this.prevScale = 0
+        this.dir = 0
+    }
+    startUpdating(startcb) {
+        if (this.dir == 0) {
+            this.dir = 1 - 2 * this.prevScale
+            startcb()
+        }
+    }
+    update(stopcb) {
+        this.scale += 0.1 * this.dir
+        if (Math.abs(this.scale - this.prevScale) > 1) {
+            this.prevScale = this.scale + this.dir
+            this.dir = 0
+            stopcb()
+        }
+    }
+}
