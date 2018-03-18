@@ -16,7 +16,8 @@ class LineToTriRotComponent extends HTMLElement {
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
         context.strokeStyle = '#e74c3c'
-        context.lineWidth = Math.min(w, h)/30
+        context.lineWidth = Math.min(w, h)/50
+        context.lineCap = 'round'
         this.lineToTriRot.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -49,8 +50,9 @@ class State {
     update(stopcb) {
         this.scale += 0.1 * this.dir
         if (Math.abs(this.scale - this.prevScale) > 1) {
-            this.prevScale = this.scale + this.dir
+            this.scale = this.prevScale + this.dir
             this.dir = 0
+            this.prevScale = this.scale
             stopcb()
         }
     }
@@ -81,19 +83,19 @@ class LineToTriRot {
     draw(context) {
         context.save()
         context.translate(w/2 - size/2, h/2)
-        this.drawLine(context, 0, 0)
+        this.drawLine(context, 0, 0, 1)
         for(var i = 0; i < 2; i++) {
-            this.drawLine(context, i, 300 * this.state.scale)
+            this.drawLine(context, i, 300 * this.state.scale, this.state.scale)
         }
         context.restore()
     }
-    drawLine(context, i, deg) {
+    drawLine(context, i, deg, scale) {
         context.save()
         context.translate(size * i, 0)
         context.rotate(deg * (1 - 2 * i) * Math.PI/180)
         context.beginPath()
         context.moveTo(0, 0)
-        context.lineTo(size * i + (size) * (1 - 2 * i), 0)
+        context.lineTo((size/2 + size/2 * scale) * (1 - 2 * i), 0)
         context.stroke()
         context.restore()
     }
