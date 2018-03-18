@@ -5,6 +5,8 @@ class LineToTriRotComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
         shadow.appendChild(this.img)
+        this.lineToTriRot = new LineToTriRot()
+        this.animator = new Animator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +15,23 @@ class LineToTriRotComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
+        context.strokeStyle = '#e74c3c'
+        context.lineWidth = Math.min(w, h)/30
+        this.lineToTriRot.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.lineToTriRot.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.lineToTriRot.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class State {
