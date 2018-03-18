@@ -59,3 +59,33 @@ class Animator {
         }
     }
 }
+class LineToTriRot {
+    constructor() {
+        this.state = new State()
+    }
+    draw(context) {
+        context.save()
+        context.translate(w/2 - size/2, h/2)
+        this.drawLine(context, 0, 0)
+        for(var i = 0; i < 2; i++) {
+            this.drawLine(context, i, 300 * this.state.scale)
+        }
+        context.restore()
+    }
+    drawLine(context, i, deg) {
+        context.save()
+        context.translate(size * i, 0)
+        context.rotate(deg * (1 - 2 * i) * Math.PI/180)
+        context.beginPath()
+        context.moveTo(0, 0)
+        context.lineTo(size * i + (size) * (1 - 2 * i), 0)
+        context.stroke()
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
