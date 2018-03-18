@@ -104,3 +104,4 @@ class LineToTriRot {
         this.state.startUpdating(startcb)
     }
 }
+customElements.define('line-to-tri-rot', LineToTriRotComponent)
