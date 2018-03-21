@@ -4,6 +4,7 @@ class TicTacLineComponent extends HTMLElement {
         super()
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
+        this.ticTacLine = new TicTacLine()
         shadow.appendChild(this.img)
     }
     render() {
@@ -13,10 +14,21 @@ class TicTacLineComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
+        this.ticTacLine.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.ticTacLine.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.ticTacLine.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class State {
@@ -92,3 +104,4 @@ class TicTacLine {
         this.state.startUpdating(startcb)
     }
 }
+customElements.define('tic-tac-line', TicTacLineComponent)
