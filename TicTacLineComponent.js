@@ -60,3 +60,35 @@ class Animator {
         }
     }
 }
+class TicTacLine {
+    constructor() {
+        this.state = new State()
+    }
+    draw(context) {
+        val size = Math.min(w, h) / 3
+        context.strokeStyle = 'white'
+        context.lineWidth = Math.min(w, h)/60
+        context.lineCap = 'round'
+        for(var i = 0; i < 2; i ++) {
+            context.save()
+            context.translate(w/2, h/2)
+            context.rotate(Math.PI/2 * i * this.state.scale)
+            for(var j = 0; j < 2; j++) {
+                context.save()
+                context.translate(-size/2 * (1 - 2 * i), -size/2)
+                context.beginPath()
+                context.moveTo(0, 0)
+                context.lineTo(0 , size)
+                context.stroke()
+                context.restore()
+            }
+            context.restore()
+        }
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
