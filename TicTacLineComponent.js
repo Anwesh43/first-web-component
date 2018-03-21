@@ -5,6 +5,7 @@ class TicTacLineComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
         this.ticTacLine = new TicTacLine()
+        this.animator = new Animator()
         shadow.appendChild(this.img)
     }
     render() {
@@ -60,7 +61,7 @@ class Animator {
     start(updatecb) {
         if (!this.animated) {
             this.animated = true
-            this.interval = clearInterval(() => {
+            this.interval = setInterval(() => {
                 updatecb()
             }, 50)
         }
@@ -77,7 +78,7 @@ class TicTacLine {
         this.state = new State()
     }
     draw(context) {
-        val size = Math.min(w, h) / 3
+        const size = Math.min(w, h) / 3
         context.strokeStyle = 'white'
         context.lineWidth = Math.min(w, h)/60
         context.lineCap = 'round'
@@ -87,7 +88,7 @@ class TicTacLine {
             context.rotate(Math.PI/2 * i * this.state.scale)
             for(var j = 0; j < 2; j++) {
                 context.save()
-                context.translate(-size/2 * (1 - 2 * i), -size/2)
+                context.translate(-size/6 * (1 - 2 * j), -size/2)
                 context.beginPath()
                 context.moveTo(0, 0)
                 context.lineTo(0 , size)
