@@ -1,4 +1,4 @@
-const w = window.innerWidth, h = window.innerHeight, size = Math.min(w,h)/15
+const w = window.innerWidth, h = window.innerHeight, size = Math.min(w,h)/25
 class CircleBallRotComponent extends HTMLElement {
     constructor() {
         super()
@@ -22,7 +22,7 @@ class CircleBallRotComponent extends HTMLElement {
 }
 class CBRState {
     constructor() {
-        this.scales = [0,0]
+        this.scales = [0, 0, 0]
         this.prevScale = 0
         this.j = 0
         this.dir = 0
@@ -64,5 +64,30 @@ class CBRAnimator {
             this.animated = false
             clearInterval(this.interval)
         }
+    }
+}
+class CircleBallRot {
+    constructor() {
+        this.state = new CBRState()
+    }
+    draw(context) {
+        context.save()
+        context.translate(w/2, -size + (h/2 - size) * this.state.scales[0])
+        context.rotate(Math.PI/2 * this.state.scales[2])
+        for(var i = 0; i< 6; i++) {
+            context.save()
+            context.rotate(i * Math.PI/3)
+            context.beginPath()
+            context.arc(Math.min(w, h)/3 * this.state.scales[1], 0, size, 0, 2 * Math.PI)
+            context.fill()
+            context.restore()
+        }
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
     }
 }
