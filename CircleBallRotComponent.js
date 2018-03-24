@@ -105,3 +105,4 @@ class CircleBallRot {
         this.state.startUpdating(startcb)
     }
 }
+customElements.define('circle-ball-rot', CircleBallRotComponent)
