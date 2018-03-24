@@ -85,9 +85,10 @@ class CircleBallRot {
         this.state = new CBRState()
     }
     draw(context) {
+        context.fillStyle = '#9b59b6'
         context.save()
         context.translate(w/2, -size + (h/2 - size) * this.state.scales[0])
-        context.rotate(Math.PI/2 * this.state.scales[2])
+        context.rotate((2 * Math.PI /3) * this.state.scales[2])
         for(var i = 0; i< 6; i++) {
             context.save()
             context.rotate(i * Math.PI/3)
