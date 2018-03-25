@@ -39,3 +39,17 @@ class State {
         }
     }
 }
+class ContainerState {
+    constructor(n) {
+        this.j = 0
+        this.dir = 1
+        this.n = n
+    }
+    incrementCounter() {
+        this.j += this.dir
+        if (this.j == this.n || this.j == -1) {
+            this.dir *= -1
+            this.j += this.dir
+        }
+    }
+}
