@@ -4,7 +4,10 @@ class ArcPartComponent extends HTMLElement {
         super()
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode:'open'})
+        const n = this.getAttribute('n') || 6
         shadow.appendChild(this.img)
+        this.animator = new Animator()
+        this.arcPartContainer = new ArcPartContainer(n)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +16,24 @@ class ArcPartComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
+        context.strokeStyle = '#FF5722'
+        context.lineWidth = size/10
+        context.lineCap = 'round'
+        this.arcPartContainer.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         render()
+        this.img.onmousedown = () => {
+            this.arcPartContainer.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.arcPartContainer.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class State {
