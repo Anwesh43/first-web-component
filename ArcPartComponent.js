@@ -53,3 +53,32 @@ class ContainerState {
         }
     }
 }
+class ArcPart {
+    constructor(i) {
+        this.state = new State()
+        this.i = i
+    }
+    draw(context, deg) {
+        context.save()
+        context.translate(-size *(1 - this.state.scale), 0)
+        context.rotate(this.i * deg * (Math.PI/180) * this.state.scale)
+        context.beginPath()
+        for (var i = 0; i < deg; i++) {
+            const x = size * Math.cos(i * Math.PI/180), y = size * Math.sin(i * Math.PI/180)
+            if (i == 0) {
+                context.moveTo(x, y)
+            }
+            else {
+                context.lineTo(x, y)
+            }
+        }
+        context.stroke()
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
