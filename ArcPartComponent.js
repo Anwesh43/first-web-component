@@ -159,3 +159,4 @@ class Animator {
         }
     }
 }
+customElements.define('arc-part-comp', ArcPartComponent)
