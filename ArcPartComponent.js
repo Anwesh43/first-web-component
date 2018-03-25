@@ -52,6 +52,11 @@ class ContainerState {
             this.j += this.dir
         }
     }
+    execute(cb) {
+        if(this. j < this.n) {
+            cb(this.j)
+        }
+    }
 }
 class ArcPart {
     constructor(i) {
@@ -80,5 +85,41 @@ class ArcPart {
     }
     startUpdating(startcb) {
         this.state.startUpdating(startcb)
+    }
+}
+class ArcPartContainer {
+    constructor(n) {
+        this.n = n
+        this.containerState = new ContainerState(n)
+        this.initArcParts()
+    }
+    initArcParts() {
+        this.arcParts = []
+        for (var i = 0; i< this.n; i++) {
+            this.arcParts.push(new ArcPart(i))
+        }
+    }
+    draw(context) {
+        if (this.n > 0) {
+            context.save()
+            context.translate(w/2, h/2)
+            this.arcParts.forEach((arcPart) => {
+                arcPart.draw(context)
+            })
+            context.restore()
+        }
+    }
+    update(stopcb) {
+        this.containerState.execute((j) => {
+            this.arcParts[j].update(() => {
+                this.containerState.incrementCounter()
+                stopcb()
+            })
+        })
+    }
+    startUpdating(startcb) {
+        this.containerState.execute((j) => {
+            this.arcParts[j].startUpdating(startcb)
+        })
     }
 }
