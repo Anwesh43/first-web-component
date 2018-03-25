@@ -23,7 +23,7 @@ class ArcPartComponent extends HTMLElement {
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
-        render()
+        this.render()
         this.img.onmousedown = () => {
             this.arcPartContainer.startUpdating(() => {
                 this.animator.start(() => {
@@ -42,17 +42,21 @@ class State {
         this.dir = 0
         this.prevScale = 0
     }
-    update(startcb) {
+    update(stopcb) {
         this.scale += this.dir * 0.1
         if (Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = this.prevScale + this.dir
             this.dir = 0
             this.prevScale = this.scale
+            stopcb()
         }
     }
-    startUpdating() {
+    startUpdating(startcb) {
         if (this.dir == 0) {
+            console.log("started")
             this.dir = 1 - 2 * this.prevScale
+            startcb()
+            console.log(this.dir)
         }
     }
 }
@@ -121,16 +125,18 @@ class ArcPartContainer {
             context.save()
             context.translate(w/2, h/2)
             this.arcParts.forEach((arcPart) => {
-                arcPart.draw(context)
+                arcPart.draw(context, 360/this.n)
             })
             context.restore()
         }
     }
     update(stopcb) {
         this.containerState.execute((j) => {
+            console.log(this.arcParts[j].state.scale)
             this.arcParts[j].update(() => {
                 this.containerState.incrementCounter()
                 stopcb()
+                console.log(this.containerState.j)
             })
         })
     }
@@ -146,6 +152,7 @@ class Animator {
     }
     start(updatecb) {
         if (!this.animated) {
+            console.log("anim started")
             this.animated = true
             this.interval = setInterval(() => {
                 updatecb()
@@ -154,7 +161,7 @@ class Animator {
     }
     stop() {
         if (this.animated) {
-            this.aniamted = false
+            this.animated = false
             clearInterval(this.interval)
         }
     }
