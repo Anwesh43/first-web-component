@@ -19,3 +19,4 @@ class LeftRightBallComponent extends HTMLElement {
         this.render()
     }
 }
+customElements.define('left-right-ball', LeftRightBallComponent)
