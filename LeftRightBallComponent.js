@@ -63,7 +63,7 @@ class LRBAnimator {
             this.animated = true
             this.interval = setInterval(() => {
                 updatecb()
-            }, 50)
+            }, 60)
         }
     }
     stop() {
@@ -89,11 +89,11 @@ class LeftRightBall {
         context.arc(0, 0, r, 0, 2 * Math.PI)
         context.fill()
         context.save()
-        context.rotate(Math.PI * this.state.scale)
+        context.rotate(3 * Math.PI * this.state.scale)
         for (var i = 0; i < 2; i++) {
             context.beginPath()
-            context.moveTo(0, 0)
-            context.lineTo(-size/10, -size/10 * (1 - 2 * i))
+            context.moveTo(size/10, 0)
+            context.lineTo(0, -size/10 * (1 - 2 * i))
             context.stroke()
         }
         context.restore()
