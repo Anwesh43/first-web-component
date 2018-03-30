@@ -60,4 +60,37 @@ class LRBAnimator {
         }
     }
 }
+class LeftRightBall {
+    constructor() {
+        this.state = new LRBState()
+    }
+    draw(context) {
+        const r = size / 3
+        context.lineWidth = size/30
+        context.strokeStyle = 'white'
+        context.lineCap = 'round'
+        context.save()
+        context.translate(r + (w - 2 * r) * this.state.scale, size/2)
+        context.fillStyle = '#283593'
+        context.beginPath()
+        context.arc(0, 0, r, 0, 2 * Math.PI)
+        context.fill()
+        context.save()
+        context.rotate(Math.PI * this.state.scale)
+        for (var i = 0; i < 2; i++) {
+            context.beginPath()
+            context.moveTo(0, 0)
+            context.lineTo(-size/10, -size/10 * (1 - 2 * i))
+            context.stroke()
+        }
+        context.restore()
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
 customElements.define('left-right-ball', LeftRightBallComponent)
