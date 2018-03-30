@@ -5,6 +5,8 @@ class LeftRightBallComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
+        this.leftRightBall = new LeftRightBall()
+        this.animator = new LRBAnimator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +15,21 @@ class LeftRightBallComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, size)
+        this.leftRightBall.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.leftRightBall.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.leftRightBall.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class LRBState {
