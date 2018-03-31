@@ -41,4 +41,19 @@ class BAMState {
         }
     }
 }
+class BAMTransformState {
+    constructor(o, d, executecb) {
+        this.state = new State()
+        this.o = o
+        this.d = d
+        this.executecb = executecb
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+        this.executecb(this.o + (this.d - this.o) * this.state.scale)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
 customElements.define('ball-arrow-mover', BallArrowMoverComponent)
