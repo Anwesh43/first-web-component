@@ -3,7 +3,7 @@ class BallArrowMoverComponent extends HTMLElement {
     constructor() {
         super()
         this.img = document.createElement('img')
-        const shadow = this.attachShadpw({mode : 'open'})
+        const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
         this.ballArrowMover = new BallArrowMover()
         this.animator = new BAMAnimator()
@@ -49,14 +49,18 @@ class BAMState {
     }
     startUpdating(startcb) {
         if (this.dir == 0) {
-            this.dir = 1 - 2 * this.prevScale
-            startcb()
+            this.dir = 1
+            this.scale = 0
+            this.prevScale = 0
+            if (startcb) {
+                startcb()
+            }
         }
     }
 }
 class BAMTransformState {
     constructor(o, d, executecb) {
-        this.state = new State()
+        this.state = new BAMState()
         this.o = o
         this.d = d
         this.executecb = executecb
@@ -70,7 +74,7 @@ class BAMTransformState {
             }
             this.executecb(obj)
         }
-        else (typeof(this.o) == "number") {
+        else if(typeof(this.o) == "number") {
             this.executecb(this.o + (this.d - this.o) * this.state.scale)
         }
     }
@@ -93,10 +97,16 @@ class TransformStateQueue {
                 this.j = 0
                 stopcb()
             }
+            else {
+                this.states[this.j].startUpdating()
+            }
         })
     }
     startUpdating(startcb) {
-        this.state.startUpdating(startcb)
+        if (this.states.length > 0) {
+            this.states[this.j].startUpdating(startcb)
+        }
+
     }
 }
 class BallArrowMover {
@@ -109,8 +119,9 @@ class BallArrowMover {
         this.x = r
         this.y = h / 2
         this.r = r
-        const angles = [0, Math.PI/4 , -Math.PI/4, Math.PI/4 + Math.PI/2, Math.PI + Math.PI/4, 0]
-        const points = [{x : r, y : h/2}, {x : w/2, y : h - r}, {x : w - r, y : h - r}, {x : w/2, y : h - r}, {x : r, y : h/2}]
+        var angle = Math.atan((h/2 - r*1.1)/(w/2 - r))
+        const angles = [0, angle , -angle, Math.PI -  angle, Math.PI + angle, 0]
+        const points = [{x : r, y : h/2}, {x : w/2, y : h - r*1.1}, {x : w - r, y : h/2}, {x : w/2, y : h - r*1.1}, {x : r, y : h/2}]
         for(var i = 0; i < angles.length - 1; i++) {
             this.queue.push(angles[i], angles[i+1],(val) => {
                 this.rot = val
@@ -149,10 +160,15 @@ class BallArrowMover {
         context.restore()
     }
     update(stopcb) {
-        this.state.update(stopcb)
+        this.queue.update(()=> {
+            this.rot = 0
+            this.x = r
+            this.y = h/2
+            stopcb()
+        })
     }
     startUpdating(startcb) {
-        this.state.startUpdating(startcb)
+        this.queue.startUpdating(startcb)
     }
 }
 class BAMAnimator {
