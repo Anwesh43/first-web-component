@@ -19,3 +19,4 @@ class BallArrowMoverComponent extends HTMLElement {
         this.render()
     }
 }
+customElements.define('ball-arrow-mover', BallArrowMoverComponent)
