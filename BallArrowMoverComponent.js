@@ -56,4 +56,25 @@ class BAMTransformState {
         this.state.startUpdating(startcb)
     }
 }
+class TransformStateQueue {
+    constructor() {
+        this.states = []
+        this.j = 0
+    }
+    push(o, d, executecb) {
+        this.states.push(new BAMTransformState(o, d, executecb))
+    }
+    update(stopcb) {
+        this.states[this.j].update(() => {
+            this.j ++
+            if (this.j == this.states.length) {
+                this.j = 0
+                stopcb()
+            }
+        })
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
 customElements.define('ball-arrow-mover', BallArrowMoverComponent)
