@@ -1,4 +1,4 @@
-const w = window.innerWidth, h = window.innerHeight
+const w = window.innerWidth, h = window.innerHeight, r = Math.min(w, h)/10
 class BallArrowMoverComponent extends HTMLElement {
     constructor() {
         super()
@@ -50,7 +50,16 @@ class BAMTransformState {
     }
     update(stopcb) {
         this.state.update(stopcb)
-        this.executecb(this.o + (this.d - this.o) * this.state.scale)
+        if (typeof(this.o) == "object") {
+            var obj = {}
+            for (let key of Object.keys(this.o)) {
+                obj[key] = this.o[key] + (this.d[key] - this.o[key]) * this.state.scale
+            }
+            this.executecb(obj)
+        }
+        else (typeof(this.o) == "number") {
+            this.executecb(this.o + (this.d - this.o) * this.state.scale)
+        }
     }
     startUpdating(startcb) {
         this.state.startUpdating(startcb)
@@ -72,6 +81,62 @@ class TransformStateQueue {
                 stopcb()
             }
         })
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
+class BallArrowMover {
+    constructor() {
+        this.queue = new TransformStateQueue()
+        this.pushToQueue()
+    }
+    pushToQueue() {
+        this.rot  = 0
+        this.x = r
+        this.y = h / 2
+        this.r = r
+        const angles = [0, Math.PI/4 , -Math.PI/4, Math.PI/4 + Math.PI/2, Math.PI + Math.PI/4, 0]
+        const points = [{x : r, y : h/2}, {x : w/2, y : h - r}, {x : w - r, y : h - r}, {x : w/2, y : h - r}, {x : r, y : h/2}]
+        for(var i = 0; i < angles.length - 1; i++) {
+            this.queue.push(angles[i], angles[i+1],(val) => {
+                this.rot = val
+            })
+            if (i + 1 < points.length) {
+                this.queue.push(points[i], points[i+1], (val) => {
+                    this.x = val.x
+                    this.y = val.y
+                })
+            }
+        }
+    }
+    draw(context) {
+        context.save()
+        context.translate(this.x, this.y)
+        context.fillStyle = '#283593'
+        context.strokeStyle = 'white'
+        context.lineWidth = Math.min(w, h)/60
+        context.lineCap = 'round'
+        context.beginPath()
+        context.arc(0, 0, r, 0, 2 * Math.PI)
+        context.fill()
+        context.save()
+        context.rotate(this.rot)
+        context.beginPath()
+        context.moveTo(-r/2, 0)
+        context.lineTo(r/2, 0)
+        context.stroke()
+        for( var i = 0; i< 2; i++) {
+            context.beginPath()
+            context.moveTo(r/2, 0)
+            context.lineTo(r/4, r/4 * (1 - 2 * i))
+            context.stroke()
+        }
+        context.restore()
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
     }
     startUpdating(startcb) {
         this.state.startUpdating(startcb)
