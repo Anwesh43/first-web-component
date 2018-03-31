@@ -5,6 +5,8 @@ class BallArrowMoverComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadpw({mode : 'open'})
         shadow.appendChild(this.img)
+        this.ballArrowMover = new BallArrowMover()
+        this.animator = new BAMAnimator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +15,21 @@ class BallArrowMoverComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
+        this.ballArrowMover.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.ballArrowMover.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.ballArrowMover.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class BAMState {
