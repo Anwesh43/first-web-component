@@ -5,6 +5,8 @@ class HShapedComponent extends HTMLElement {
         this.img = document.createElement('canvas')
         const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
+        this.animator = new HShapeAnimator()
+        this.hShape = new HShape()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -12,10 +14,20 @@ class HShapedComponent extends HTMLElement {
         canvas.height = h
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
+        this.hShape.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = (event) => {
+            this.hShape.startUpdating(() => {
+                this.animator.start(() => {
+                    this.hShape.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 class HShapeState {
