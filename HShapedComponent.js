@@ -20,7 +20,7 @@ class HShapedComponent extends HTMLElement {
 }
 class HShapeState {
     constructor() {
-        this.scales = [0, 0]
+        this.scales = [0, 0, 0]
         this.prevScale = 0
         this.dir = 0
         this.j = 0
@@ -62,5 +62,37 @@ class HShapeAnimator {
             this.animated = false
             clearInterval(this.interval)
         }
+    }
+}
+class HShape {
+    constructor() {
+        this.state = new HShapeState()
+    }
+    draw(context) {
+        context.strokeStyle = 'white'
+        context.strokeWidth = Math.min(w, h) / 60
+        context.strokeCap = 'round'
+        const Hw = Math.min(w,h)/20, Hh = Math.min(w, h)/8
+        context.save()
+        context.translate(w/2, h/2)
+        context.rotate(Math.PI * this.state.scales[2])
+        for(var i = 0; i < 2; i++) {
+            const Hx = -Hw * this.state.scales[1] * (1 - 2 * i), Hy = Hh/2  * (this.state.scales[1])
+            context.beginPath()
+            context.moveTo(0, 0)
+            context.lineTo(Hx, 0)
+            context.stroke()
+            context.beginPath()
+            context.moveTo(Hx, -Hy)
+            context.lineTo(Hx, Hy)
+            context.stroke()
+        }
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
     }
 }
