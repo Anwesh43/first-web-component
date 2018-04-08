@@ -5,6 +5,8 @@ class FullTComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
+        this.fullT = new FullT()
+        this.animator = new Animator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -17,6 +19,16 @@ class FullTComponent extends HTMLElement {
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.fullT.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.fullT.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 
@@ -103,3 +115,5 @@ class FullT {
         context.restore()
     }
 }
+
+customElements.define('fullt-comp', FullTComponent)
