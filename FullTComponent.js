@@ -1,4 +1,4 @@
-const w = window.innerHeight, h = window.innerHeight , size = Math.min(w, h)/3
+const w = window.innerHeight, h = window.innerHeight , size = Math.min(w, h) * 0.8
 class FullTComponent extends HTMLElement {
     constructor() {
         super()
@@ -15,7 +15,8 @@ class FullTComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, size, size)
-        this.img.src = canvas.toDataUrl()
+        this.fullT.draw(context)
+        this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
@@ -35,17 +36,19 @@ class FullTComponent extends HTMLElement {
 class State {
     constructor() {
         this.scales = [0, 0, 0]
-        this.preScale = 0
+        this.prevScale = 0
         this.dir = 0
         this.j = 0
     }
     update(stopcb) {
         this.scales[this.j] += 0.1 * this.dir
-        if (Math.abs(this.scales[this.j] - prevScale) > 1) {
+        console.log(this.scales[this.j])
+        if (Math.abs(this.scales[this.j] - this.prevScale) > 1) {
             this.scales[this.j] = this.prevScale + this.dir
             this.j += this.dir
+
             if (this.j == this.scales.length || this.j == -1) {
-                this.j += this.dir
+                this.j -= this.dir
                 this.dir = 0
                 this.prevScale = this.scales[this.j]
                 stopcb()
@@ -68,7 +71,7 @@ class Animator {
         if (!this.animated) {
             this.animated = true
             this.interval = setInterval(() => {
-                updatebcb()
+                updatecb()
             }, 50)
         }
     }
@@ -92,17 +95,18 @@ class FullT {
     }
     draw(context) {
         const tSize = size/5
-        context.strokeStyle = 'emerald'
+        const l = (tSize/2) * this.state.scales[0]
+        context.strokeStyle = 'teal'
         context.lineWidth = size/20
         context.lineCap = 'round'
         context.save()
         context.translate(size/2, size/2)
         context.rotate(Math.PI * this.state.scales[2])
         context.beginPath()
-        context.moveTo(0, -tSize/2 * this.state.scales[0])
-        context.lineTo(0, tSize/2 * this.state.scales[0])
+        context.moveTo(0, -l)
+        context.lineTo(0, l)
         context.stroke()
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 2 * Math.floor(this.state.scales[0]); i++) {
             context.save()
             context.translate(0, tSize/2)
             context.rotate(Math.PI/2 * (1 - 2 * i) * this.state.scales[1])
