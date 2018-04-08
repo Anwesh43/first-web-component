@@ -67,3 +67,39 @@ class Animator {
         }
     }
 }
+
+class FullT {
+    constructor() {
+        this.state = new State()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+    draw(context) {
+        const tSize = size/5
+        context.strokeStyle = 'emerald'
+        context.lineWidth = size/20
+        context.lineCap = 'round'
+        context.save()
+        context.translate(size/2, size/2)
+        context.rotate(Math.PI * this.state.scales[2])
+        context.beginPath()
+        context.moveTo(0, -tSize/2 * this.state.scales[0])
+        context.lineTo(0, tSize/2 * this.state.scales[0])
+        context.stroke()
+        for (var i = 0; i < 2; i++) {
+            context.save()
+            context.translate(0, tSize/2)
+            context.rotate(Math.PI/2 * (1 - 2 * i) * this.state.scales[1])
+            context.beginPath()
+            context.moveTo(0,0)
+            context.lineTo(0, -tSize/2)
+            context.stroke()
+            context.restore()
+        }
+        context.restore()
+    }
+}
