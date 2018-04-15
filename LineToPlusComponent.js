@@ -22,7 +22,7 @@ class LineToPlusComponent extends HTMLElement {
 
 class LineToPlusState {
     constructor() {
-        this.scales = [0. 0]
+        this.scales = [0, 0, 0]
         this.prevScale = 0
         this.dir = 0
         this.j = 0
@@ -66,6 +66,37 @@ class LineToPlusAnimator {
             this.animated = false
             clearInterval(this.interval)
         }
+    }
+}
+
+class LineToPlus {
+    constructor() {
+        this.state = new LineToPlusState()
+    }
+    draw(context) {
+        context.save()
+        context.translate(size/2, size/2)
+        for (var i = 0; i < 2; i++) {
+            context.save()
+            context.rotate(Math.PI/2 * this.state.scales[2] * (1 - 2 * i))
+            for (var j = 0; j < 2; j++) {
+                  context.save()
+                  context.translate(0, (0.8 * size) * (1 - 2 * i) * (1 - this.state.scales[1]))
+                  context.beginPath()
+                  context.moveTo(0, 0)
+                  context.lineTo((size/3) * this.state.scales[0] * (1 - 2 * j), 0)
+                  ccontext.stroke()
+                  context.restore()
+            }
+            context.restore()
+        }
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
     }
 }
 customElements.define('line-to-plus', LineToPlusComponent)
