@@ -1,4 +1,4 @@
-const w = window.innerWidth, h = window.innerHeight, size = Math.min(w, h)/2
+const w = window.innerWidth, h = window.innerHeight, size = Math.min(w, h)
 class LineToPlusComponent extends HTMLElement {
     constructor() {
         super()
@@ -10,11 +10,11 @@ class LineToPlusComponent extends HTMLElement {
     }
     render() {
         const canvas = document.createElement('canvas')
-        canvas.width = size
-        canvas.height = size
+        canvas.width = w
+        canvas.height = h
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
-        context.fillRect(0, 0, size, size)
+        context.fillRect(0, 0, w, h)
         this.lineToPlus.draw(context)
         this.img.src = canvas.toDataURL()
     }
@@ -23,6 +23,7 @@ class LineToPlusComponent extends HTMLElement {
         this.img.onmousedown = () => {
             this.lineToPlus.startUpdating(() => {
                 this.animator.start(() => {
+                    this.render()
                     this.lineToPlus.update(() => {
                         this.animator.stop()
                     })
@@ -42,7 +43,8 @@ class LineToPlusState {
 
     update(stopcb) {
         this.scales[this.j] += this.dir * 0.1
-        if (Math.abs(this.scales[this.j] - this.prevScale)) {
+        console.log(this.scales)
+        if (Math.abs(this.scales[this.j] - this.prevScale) > 1) {
             this.scales[this.j] = this.prevScale + this.dir
             this.j += this.dir
             if (this.j == -1 || this.j == this.scales.length) {
@@ -86,22 +88,41 @@ class LineToPlus {
         this.state = new LineToPlusState()
     }
     draw(context) {
+        context.strokeStyle = '#673AB7'
+        context.lineWidth = 8
+        context.lineCap = 'round'
         context.save()
-        context.translate(size/2, size/2)
+        context.translate(w/2, h/2)
         for (var i = 0; i < 2; i++) {
             context.save()
-            context.rotate(Math.PI/2 * this.state.scales[2] * (1 - 2 * i))
+            context.rotate(Math.PI/2 * this.state.scales[2] * (i))
             for (var j = 0; j < 2; j++) {
                   context.save()
-                  context.translate(0, (0.8 * size) * (1 - 2 * i) * (1 - this.state.scales[1]))
+                  context.translate(0, (0.4 * size) * (1 - 2 * i) * (1 - this.state.scales[1]))
                   context.beginPath()
-                  context.moveTo(0, 0)
-                  context.lineTo((size/3) * this.state.scales[0] * (1 - 2 * j), 0)
+                  context.moveTo( - (size/3) * Math.floor(this.state.scales[1]) * (1 - 2 * i), 0)
+                  context.lineTo((size/3) * this.state.scales[0] * (1 - 2 * i), 0)
                   context.stroke()
                   context.restore()
             }
             context.restore()
         }
+        context.strokeStyle = '#283593'
+        context.save()
+        context.translate(-0.45 * w, 0.45 * h)
+        var sf = 0
+        const n = this.state.scales.length
+        for (var i = 0; i < this.state.scales.length; i++) {
+            sf += this.state.scales[i]
+        }
+        if (n > 0) {
+            context.beginPath()
+            context.moveTo(0, 0)
+            context.lineTo( ((0.9 * w)/n) * sf, 0)
+            context.stroke()
+        }
+
+        context.restore()
         context.restore()
     }
     update(stopcb) {
