@@ -6,6 +6,7 @@ class LineToPlusComponent extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
         this.lineToPlus = new LineToPlus()
+        this.animator = new LineToPlusAnimator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -96,7 +97,7 @@ class LineToPlus {
                   context.beginPath()
                   context.moveTo(0, 0)
                   context.lineTo((size/3) * this.state.scales[0] * (1 - 2 * j), 0)
-                  ccontext.stroke()
+                  context.stroke()
                   context.restore()
             }
             context.restore()
