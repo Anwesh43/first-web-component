@@ -5,6 +5,7 @@ class LineToPlusComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.lineToPlus = new LineToPlus()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +14,20 @@ class LineToPlusComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, size, size)
+        this.lineToPlus.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.lineToPlus.startUpdating(() => {
+                this.animator.start(() => {
+                    this.lineToPlus.update(() => {
+                        this.animator.stop()
+                    })
+               })
+            })
+        }
     }
 }
 
