@@ -19,4 +19,33 @@ class LineToPlusComponent extends HTMLElement {
         this.render()
     }
 }
+
+class LineToPlusState {
+    constructor() {
+        this.scales = [0. 0]
+        this.prevScale = 0
+        this.dir = 0
+        this.j = 0
+    }
+
+    update(stopcb) {
+        this.scales[this.j] += this.dir * 0.1
+        if (Math.abs(this.scales[this.j] - this.prevScale)) {
+            this.scales[this.j] = this.prevScale + this.dir
+            this.j += this.dir
+            if (this.j == -1 || this.j == this.scales.length) {
+                this.j -= this.dir
+                this.prevScale = this.scales[this.j]
+                this.dir = 0
+            }
+        }
+    }
+
+    startUpdating(startcb) {
+        if (this.dir == 0) {
+            this.dir = 1 - 2 * this.prevScale
+            startcb()
+        }
+    }
+}
 customElements.define('line-to-plus', LineToPlusComponent)
