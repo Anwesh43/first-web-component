@@ -6,6 +6,7 @@ class CircleChordComponent extends HTMLElement {
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
         this.circleChord = new CircleChord()
+        this.animator = new CCAnimator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -86,7 +87,7 @@ class CircleChord {
     }
     draw(context) {
         context.strokeStyle = '#e74c3c'
-        context.lineWidth = Math.min(w, h)/60
+        context.lineWidth = Math.min(w, h)/80
         context.lineCap = 'round'
         context.save()
         context.translate(size/2, size/2)
@@ -95,7 +96,7 @@ class CircleChord {
         context.arc(0, 0, (size/6) * this.state.scales[0], 0, 2 * Math.PI)
         context.stroke()
         for (var i = 0; i < 2; i++) {
-            const r = (size/6) * this.state.scales[1], x = r * Math.cos(Math.PI/3), y = (1 - 2 * i) * r * Math.sin(Math.PI/3)
+            const r = (size/6) * this.state.scales[1], x = r * Math.cos(Math.PI/4), y = (1 - 2 * i) * r * Math.sin(Math.PI/4)
             context.beginPath()
             context.moveTo(x, y)
             context.lineTo(-x, y)
