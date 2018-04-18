@@ -5,6 +5,7 @@ class CircleChordComponent extends HTMLElement {
         const shadow = this.attachShadow({mode : 'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.circleChord = new CircleChord()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -13,10 +14,21 @@ class CircleChordComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, size, size)
+        this.circleChord.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.circleChord.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.circleChord.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 
@@ -74,6 +86,8 @@ class CircleChord {
     }
     draw(context) {
         context.strokeStyle = '#e74c3c'
+        context.lineWidth = Math.min(w, h)/60
+        context.lineCap = 'round'
         context.save()
         context.translate(size/2, size/2)
         context.rotate(Math.PI/2 * this.state.scales[2])
