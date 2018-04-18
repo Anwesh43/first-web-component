@@ -67,3 +67,32 @@ class CCAnimator {
         }
     }
 }
+
+class CircleChord {
+    constructor() {
+        this.state = new CCState()
+    }
+    draw(context) {
+        context.strokeStyle = '#e74c3c'
+        context.save()
+        context.translate(size/2, size/2)
+        context.rotate(Math.PI/2 * this.state.scales[2])
+        context.beginPath()
+        context.arc(0, 0, (size/6) * this.state.scales[0], 0, 2 * Math.PI)
+        context.stroke()
+        for (var i = 0; i < 2; i++) {
+            const r = (size/6) * this.state.scales[1], x = r * Math.cos(Math.PI/3), y = (1 - 2 * i) * r * Math.sin(Math.PI/3)
+            context.beginPath()
+            context.moveTo(x, y)
+            context.lineTo(-x, y)
+            context.stroke()
+        }
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
