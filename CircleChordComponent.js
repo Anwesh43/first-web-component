@@ -110,3 +110,5 @@ class CircleChord {
         this.state.startUpdating(startcb)
     }
 }
+
+customElements.define('circle-chord', CircleChordComponent)
