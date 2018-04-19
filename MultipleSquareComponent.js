@@ -113,3 +113,5 @@ class MultipleSquare {
         this.state.startUpdating(startcb)
     }
 }
+
+customElements.define('mult-square', MultipleSquareComponent)
