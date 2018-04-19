@@ -87,10 +87,12 @@ class MultipleSquare {
         this.state = new MSState()
     }
     draw(context) {
-        context.strokeStyle = 'white'
+        context.strokeStyle = '#f44336'
         context.lineWidth = Math.min(w,h)/60
         context.lineCap = 'round'
-        const size = h/5, gap = h/3
+        context.save()
+        context.translate(w/2, 0)
+        const size = h/4, gap = h/3
         var y = gap/2
         for (var i = 0; i < 3; i++) {
             const x = (size/2) * this.state.scales[0], oy = h/2 + (y - h/2) * this.state.scales[1]
@@ -105,6 +107,7 @@ class MultipleSquare {
             context.stroke()
             y += gap
         }
+        context.restore()
     }
     update(stopcb) {
         this.state.update(stopcb)
