@@ -2,6 +2,11 @@ const w = window.innerWidth, h = window.innerHeight
 class MultipleSquareComponent extends HTMLElement {
     constructor() {
         super()
+        this.multipleSquare = new MultipleSquare()
+        this.animator = new MSAnimator()
+        this.img = document.createElement('img')
+        const shadow = this.attachShadow({mode:'open'})
+        shadow.appendChild(this.img)
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -10,10 +15,21 @@ class MultipleSquareComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
+        this.multipleSquare.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.multipleSquare.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.multipleSquare.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 
