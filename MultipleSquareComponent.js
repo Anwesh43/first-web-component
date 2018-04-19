@@ -65,3 +65,35 @@ class MSAnimator {
         }
     }
 }
+
+class MultipleSquare {
+    constructor() {
+        this.state = new MSState()
+    }
+    draw(context) {
+        context.strokeStyle = 'white'
+        context.lineWidth = Math.min(w,h)/60
+        context.lineCap = 'round'
+        const size = h/5, gap = h/3
+        var y = gap/2
+        for (var i = 0; i < 3; i++) {
+            const x = (size/2) * this.state.scales[0], oy = h/2 + (y - h/2) * this.state.scales[1]
+            const dy1 = y - size/2, dy2 = y + size/2
+            const newY1 = oy + (dy1 - oy) * this.state.scales[2], newY2 = oy + (dy2 - oy) * this.state.scales[2]
+            context.beginPath()
+            context.moveTo(-x, newY1)
+            context.lineTo(x, newY1)
+            context.lineTo(x, newY2)
+            context.lineTo(-x, newY2)
+            context.lineTo(-x, newY1)
+            context.stroke()
+            y += gap
+        }
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
