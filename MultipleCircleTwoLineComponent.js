@@ -1,4 +1,4 @@
-const w = window.innerWidth, h = window.innerHeight, size = Math.min(w, h)/3
+const w = window.innerWidth, h = window.innerHeight, size = 0.6 * Math.min(w, h)
 class MultipleCircleTwoLineComponent extends HTMLElement {
     constructor() {
         super()
@@ -10,12 +10,13 @@ class MultipleCircleTwoLineComponent extends HTMLElement {
     }
 
     render() {
-        const canvas = documen.createElement('canvas')
+        const canvas = document.createElement('canvas')
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
+        this.mctl.draw(context)
         this.img.src = canvas.toDataURL()
     }
 
@@ -25,7 +26,7 @@ class MultipleCircleTwoLineComponent extends HTMLElement {
     }
 
     handleTap() {
-        this.canvas.onmousedown = () => {
+        this.img.onmousedown = () => {
             this.mctl.startUpdating(() => {
                 this.animator.start(() => {
                     this.render()
@@ -47,10 +48,11 @@ class MCTLState {
     }
     update(stopcb) {
         this.scales[this.j] += 0.1 * this.dir
+        console.log(this.scales)
         if (Math.abs(this.scales[this.j] - this.prevScale) > 1) {
             this.scales[this.j] = this.prevScale + this.dir
             this.j += this.dir
-            if (this.j == this.scales.size || this.j == -1) {
+            if (this.j == this.scales.length || this.j == -1) {
                 this.j -= this.dir
                 this.dir = 0
                 this.prevScale = this.scales[this.j]
@@ -91,7 +93,7 @@ class MultCircTl {
         this.state = new MCTLState()
     }
     draw(context) {
-        const color = '#9C27B0'
+        const color = '#4CAF50'
         context.strokeStyle = color
         context.fillStyle = color
         context.lineWidth = Math.min(w, h)/60
@@ -99,27 +101,31 @@ class MultCircTl {
         context.save()
         context.translate(w/2, h/2)
         for(var i = 0; i < 2; i++) {
+            const yUpd = (size/2) * this.state.scales[2] * (1 - 2 * i)
             context.save()
-            context.translate(0, h/6 * this.state.scales[2] * (1 - 2 * i))
+            context.translate(0, yUpd)
             context.beginPath()
             context.moveTo(-size/2 * this.state.scales[0], 0)
             context.lineTo(size/2 * this.state.scales[0], 0)
             context.stroke()
             const k = 6
             const gap = size/6, r = size/20
-            for (var i = 0; i < 6; i++) {
-                const xCircle = i * gap + gap/2
+            context.save()
+            context.translate(-size/2, 0)
+            for (var j = 0; j < 6 * Math.floor(this.state.scales[0]); j++) {
+                const xCircle = j * gap + gap/2
                 context.save()
                 context.translate(xCircle, 0)
                 context.beginPath()
-                context.arc(xCircle, 0, r * this.state.scales[1], 0, 2 * Math.PI)
+                context.arc(0, 0, r * this.state.scales[1], 0, 2 * Math.PI)
                 context.fill()
                 context.beginPath()
-                context.moveTo(0, -(h/6 * this.state.scales[2] * (1 - 2 * i)))
+                context.moveTo(0, -yUpd)
                 context.lineTo(0, 0)
                 context.stroke()
                 context.restore()
             }
+            context.restore()
             context.restore()
         }
         context.restore()
@@ -128,7 +134,7 @@ class MultCircTl {
         this.state.update(stopcb)
     }
     startUpdating(startcb) {
-        this.state.startUpdating(startcb)s
+        this.state.startUpdating(startcb)
     }
 }
 customElements.define('multiple-circ-two-line', MultipleCircleTwoLineComponent)
