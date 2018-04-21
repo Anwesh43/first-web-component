@@ -2,6 +2,11 @@ const w = window.innerWidth, h = window.innerHeight, size = Math.min(w, h)/3
 class MultipleCircleTwoLineComponent extends HTMLElement {
     constructor() {
         super()
+        this.mctl = new MultCircTl()
+        this.animator = new MCTLAnimator()
+        this.img = document.createElement('img')
+        const shadow = this.attachShadow({mode:'open'})
+        shadow.appendChild(this.img)
     }
 
     render() {
@@ -16,11 +21,19 @@ class MultipleCircleTwoLineComponent extends HTMLElement {
 
     connectedCallback() {
         this.render()
+        this.handleTap()
     }
 
     handleTap() {
         this.canvas.onmousedown = () => {
-
+            this.mctl.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.mctl.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
         }
     }
 }
