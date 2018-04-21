@@ -72,4 +72,45 @@ class MCTLAnimator {
         }
     }
 }
+
+class MultCircTl {
+    constructor() {
+        this.state = new MCTLState()
+    }
+    draw(context) {
+        context.save()
+        context.translate(w/2, h/2)
+        for(var i = 0; i < 2; i++) {
+            context.save()
+            context.translate(0, h/6 * this.state.scales[2] * (1 - 2 * i))
+            context.beginPath()
+            context.moveTo(-size/2 * this.state.scales[0], 0)
+            context.lineTo(size/2 * this.state.scales[0], 0)
+            context.stroke()
+            const k = 6
+            const gap = size/6, r = size/20
+            for (var i = 0; i < 6; i++) {
+                const xCircle = i * gap + gap/2
+                context.save()
+                context.translate(xCircle, 0)
+                context.beginPath()
+                context.arc(xCircle, 0, r * this.state.scales[1], 0, 2 * Math.PI)
+                context.fill()
+                context.beginPath()
+                context.moveTo(0, -(h/6 * this.state.scales[2] * (1 - 2 * i)))
+                context.lineTo(0, 0)
+                context.stroke()
+                context.restore()
+            }
+            context.restore()
+        }
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)s
+    }
+}
 customElements.define('multiple-circ-two-line', MultipleCircleTwoLineComponent)
