@@ -78,6 +78,11 @@ class MultCircTl {
         this.state = new MCTLState()
     }
     draw(context) {
+        const color = '#9C27B0'
+        context.strokeStyle = color
+        context.fillStyle = color
+        context.lineWidth = Math.min(w, h)/60
+        context.lineCap = 'round'
         context.save()
         context.translate(w/2, h/2)
         for(var i = 0; i < 2; i++) {
