@@ -97,4 +97,25 @@ class TriRot {
         context.restore()
     }
 }
+
+class TriRotWave {
+
+    constructor() {
+        this.state = new TRCState()
+    }
+
+    draw(context) {
+        for(var i = 0; i < n; i++) {
+            TriRot.draw(context, i, this.state.scales)
+        }
+    }
+
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
 customElements.define('tri-wave-rot', TriWaveRotComponent)
