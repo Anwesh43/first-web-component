@@ -25,6 +25,11 @@ class TriWaveRotComponent extends HTMLElement {
         canvas.height = h
         const context = canvas.getContext('2d')
         attachDrawLine(context)
+        context.fillStyle = '#212121'
+        context.fillRect(0, 0, w, h)
+        context.strokeStyle = '#2ecc71'
+        context.lineWidth = size/10
+        context.lineCap = 'round'
         this.img.src = canvas.toDataURL()
     }
 }
@@ -83,6 +88,7 @@ class TRCAnimator {
 }
 
 class TriRot {
+
     static draw(context, i, scales) {
         context.save()
         context.translate((i * 2 * size + size) * scales[0], h/2)
@@ -118,4 +124,5 @@ class TriRotWave {
         this.state.startUpdating(startcb)
     }
 }
+
 customElements.define('tri-wave-rot', TriWaveRotComponent)
