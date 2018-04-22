@@ -1,4 +1,14 @@
 const w = window.innerWidth, h = window.innerHeight, n = 5, size = Math.min(w,h)/(2 * n)
+
+const attachDrawLine = (context) => {
+    context.drawVerticalLine = (y1, y2) => {
+        context.beginPath()
+        context.moveTo(0, y1)
+        context.lineTo(0, y2)
+        context.stroke()
+    }
+}
+
 class TriWaveRotComponent extends HTMLElement {
     constructor() {
         super()
@@ -14,6 +24,7 @@ class TriWaveRotComponent extends HTMLElement {
         canvas.width = w
         canvas.height = h
         const context = canvas.getContext('2d')
+        attachDrawLine(context)
         this.img.src = canvas.toDataURL()
     }
 }
@@ -68,6 +79,22 @@ class TRCAnimator {
             this.animated = false
             clearInterval(this.interval)
         }
+    }
+}
+
+class TriRot {
+    static draw(context, i, scales) {
+        context.save()
+        context.translate((i * 2 * size + size) * scales[0], h/2)
+        context.drawVerticalLine(-size, size)
+        for (j = 0; j < 2; j++) {
+            context.save()
+            context.translate(0, size * (1 - 2 * j))
+            context.rotate(Math.PI/2 * scales[1])
+            context.drawLine(0, -2 * size * (1 - 2 * j))
+            context.restore()
+        }
+        context.restore()
     }
 }
 customElements.define('tri-wave-rot', TriWaveRotComponent)
