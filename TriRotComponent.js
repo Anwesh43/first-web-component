@@ -15,9 +15,21 @@ class TriWaveRotComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
+        this.triWave = new TriRotWave()
+        this.animator = new TRCAnimator()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.triWave.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.triWave.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -30,6 +42,7 @@ class TriWaveRotComponent extends HTMLElement {
         context.strokeStyle = '#2ecc71'
         context.lineWidth = size/10
         context.lineCap = 'round'
+        this.triWave.draw(context)
         this.img.src = canvas.toDataURL()
     }
 }
