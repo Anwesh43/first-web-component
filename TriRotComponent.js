@@ -1,4 +1,4 @@
-const w = window.innerWidth, h = window.innerHeight, n = 5, size = Math.min(w,h)/(2 * n)
+const w = window.innerWidth, h = window.innerHeight, n = 5, size = w/(4 * n)
 
 const attachDrawLine = (context) => {
     context.drawVerticalLine = (y1, y2) => {
@@ -103,14 +103,15 @@ class TRCAnimator {
 class TriRot {
 
     static draw(context, i, scales) {
+        const k = 1 - 2 * (i %2)
         context.save()
-        context.translate((i * 2 * size + size) * scales[0], h/2)
+        context.translate((i * 4 * size + 2 * size) * scales[0], h/2)
         context.drawVerticalLine(-size, size)
-        for (j = 0; j < 2; j++) {
+        for (var j = 0; j < 2; j++) {
             context.save()
-            context.translate(0, size * (1 - 2 * j))
-            context.rotate(Math.PI/2 * scales[1])
-            context.drawLine(0, -2 * size * (1 - 2 * j))
+            context.translate(0, size * (1 - 2 * j) * k)
+            context.rotate(Math.PI/2 * scales[1] * k)
+            context.drawVerticalLine(0, -2 * size * (1 - 2 * j) * k)
             context.restore()
         }
         context.restore()
