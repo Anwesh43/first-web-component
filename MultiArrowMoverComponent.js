@@ -4,6 +4,8 @@ class MultiArrowMoverComponent extends HTMLElement {
         super()
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
+        this.mover = new MultiArrowMover()
+        this.animator = new MAMAnimator()
         shadow.appendChild(this.img)
     }
     render() {
@@ -13,10 +15,24 @@ class MultiArrowMoverComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
+        context.strokeStyle = '#ecc371'
+        context.lineWidth = Math.min(w, h) / 60
+        context.lineCap = 'round'
+        this.mover.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.mover.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.mover.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 
