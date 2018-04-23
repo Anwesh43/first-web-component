@@ -29,6 +29,7 @@ class MultiArrowMoverComponent extends HTMLElement {
                     this.render()
                     this.mover.update(() => {
                         this.animator.stop()
+                        this.render()
                     })
                 })
             })
@@ -44,11 +45,12 @@ class MAMState {
     }
 
     update(stopcb) {
-        this.deg += this.dir * Math.PI/10
+        this.deg += this.dir * Math.PI/30
         this.scale = Math.sin(this.deg)
         if (this.deg > Math.PI) {
             this.deg = 0
             this.scale = 0
+            this.dir = 0
             stopcb()
         }
     }
@@ -92,7 +94,7 @@ class MultiArrowMover {
         context.translate(w/10 + 0.9 * w * this.state.scale, h/2)
         for(var i = 0; i < 3; i++) {
             context.save()
-            context.rotate(-Math.PI/4 + Math.PI/4 * i * this.state.scale)
+            context.rotate((-Math.PI/4 + Math.PI/4 * i ) * this.state.scale)
             context.beginPath()
             context.moveTo(0, 0)
             context.lineTo(-w/10, 0)
@@ -109,4 +111,4 @@ class MultiArrowMover {
     }
 }
 
-customElements.define('multi-arrow', MultiArrowMover)
+customElements.define('multi-arrow', MultiArrowMoverComponent)
