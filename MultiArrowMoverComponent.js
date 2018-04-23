@@ -20,4 +20,29 @@ class MultiArrowMoverComponent extends HTMLElement {
     }
 }
 
+class MAMState {
+    constructor() {
+        this.deg = 0
+        this.scale = 0
+        this.dir = 0
+    }
+
+    update(stopcb) {
+        this.deg += this.dir * Math.PI/10
+        this.scale = Math.sin(this.deg)
+        if (this.deg > Math.PI) {
+            this.deg = 0
+            this.scale = 0
+            stopcb()
+        }
+    }
+
+    startUpdating(startcb) {
+        if (this.dir == 0) {
+            this.dir = 1
+            startcb()
+        }
+    }
+
+}
 customElements.define('multi-arrow', MultiArrowMover)
