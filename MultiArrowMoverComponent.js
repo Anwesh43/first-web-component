@@ -67,4 +67,30 @@ class MAMAnimator {
     }
 }
 
+class MultiArrowMover {
+    constructor() {
+        this.state = new MAMState()
+    }
+    draw(context) {
+        context.save()
+        context.translate(w/10 + 0.9 * w * this.state.scale, h/2)
+        for(var i = 0; i < 3; i++) {
+            context.save()
+            context.rotate(-Math.PI/4 + Math.PI/4 * i * this.state.scale)
+            context.beginPath()
+            context.moveTo(0, 0)
+            context.lineTo(-w/10, 0)
+            context.stroke()
+            context.restore()
+        }
+        context.restore()
+    }
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
+
 customElements.define('multi-arrow', MultiArrowMover)
