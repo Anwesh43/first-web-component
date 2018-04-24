@@ -6,6 +6,7 @@ class CrossLinkedLineComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
+        this.cll = new CrossLinkedLine()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -14,10 +15,21 @@ class CrossLinkedLineComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, size, size)
+        this.cll.draw(context)
         this.img.src = canvas.toDataURL()
     }
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.cll.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.cll.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 
