@@ -20,3 +20,5 @@ class CrossLinkedLineComponent extends HTMLElement {
         this.render()
     }
 }
+
+customElements.define('cross-linked-line', CrossLinkedLineComponent)
