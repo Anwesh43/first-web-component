@@ -73,4 +73,53 @@ class CLLAnimator {
     }
 }
 
+class CLLNode {
+    constructor(i) {
+        this.state = new CLLState()
+        this.i = 0
+        if (i) {
+            this.i = i
+        }
+    }
+
+    addNeighbor() {
+        if (this.i < NUM_LINES - 1) {
+            const NODE = new CLLNode(this.i+1)
+            this.next = NODE
+            NODE.prev = this
+        }
+    }
+
+    draw(context) {
+        const gap = size/NUM_LINES
+        context.lineCap = 'round'
+        context.lineWidth = size/50
+        context.strokeStyle = '#e74c3c'
+        context.beginPath()
+        context.moveTo(this.i * gap + gap * this.state.scales[1], 0)
+        context.lineTo(this.i * gap + gap * this.state.scales[0], 0)
+        context.stroke()
+    }
+
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+
+    move(dir, cb) {
+        var curr = prev
+        if (dir == 1) {
+            curr = next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
+    }
+}
+
 customElements.define('cross-linked-line', CrossLinkedLineComponent)
