@@ -122,4 +122,56 @@ class CLLNode {
     }
 }
 
+class CrossLinkedLine {
+
+    constructor() {
+        this.init()
+        this.dir = 1
+    }
+
+    init() {
+        this.nodes = []
+        for (var i = 0; i < 4; i++) {
+            const root = new CLLNode()
+            root.addNeighbor()
+            this.nodes.push(root)
+        }
+    }
+
+    draw(context) {
+        context.save()
+        context.translate(size/2, size/2)
+        for (var i = 0; i < 4; i++) {
+            context.save()
+            context.rotate(Math.PI/2 * i)
+            this.nodes[i].draw(context)
+            context.restore()
+        }
+        context.restore()
+    }
+
+    update(stopcb) {
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].update(() => {
+                this.nodes[i] = this.nodes[i].move(this.dir, () => {
+                    this.dir *= -1
+                })
+                if (i == this.nodes.length - 1) {
+                    stopcb()
+                }
+            })
+        }
+    }
+
+    startUpdating(startcb) {
+        this.nodes.forEach((node, index) => {
+            node.startUpdating(() => {
+                if (index == this.nodes.length - 1) {
+                    startcb()
+                }
+            })
+        })
+    }
+}
+
 customElements.define('cross-linked-line', CrossLinkedLineComponent)
