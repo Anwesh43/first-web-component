@@ -1,4 +1,4 @@
-const w = window.innerWidth, h = window.innerHeight, size = Math.min(w,h)NUM_LINES = 4
+const w = window.innerWidth, h = window.innerHeight, size = Math.min(w,h), NUM_LINES = 4
 
 class CrossLinkedLineComponent extends HTMLElement {
     constructor() {
@@ -7,6 +7,7 @@ class CrossLinkedLineComponent extends HTMLElement {
         const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
         this.cll = new CrossLinkedLine()
+        this.animator = new CLLAnimator()
     }
     render() {
         const canvas = document.createElement('canvas')
@@ -44,7 +45,7 @@ class CLLState {
     update(stopcb) {
         this.scales[this.j] += 0.1 * this.dir
         if (Math.abs(this.scales[this.j] - this.prevScale) > 1) {
-            this.scales[this.j] = this.scales[this.j] + this.dir
+            this.scales[this.j] = this.prevScale + this.dir
             this.j += this.dir
             if (this.j == this.scales.length || this.j == -1) {
                 this.j -= this.dir
@@ -99,11 +100,12 @@ class CLLNode {
             const NODE = new CLLNode(this.i+1)
             this.next = NODE
             NODE.prev = this
+            NODE.addNeighbor()
         }
     }
 
     draw(context) {
-        const gap = size/NUM_LINES
+        const gap = (size/2)/NUM_LINES
         context.lineCap = 'round'
         context.lineWidth = size/50
         context.strokeStyle = '#e74c3c'
@@ -122,9 +124,9 @@ class CLLNode {
     }
 
     move(dir, cb) {
-        var curr = prev
+        var curr = this.prev
         if (dir == 1) {
-            curr = next
+            curr = this.next
         }
         if (curr) {
             return curr
@@ -166,7 +168,9 @@ class CrossLinkedLine {
         for (var i = 0; i < this.nodes.length; i++) {
             this.nodes[i].update(() => {
                 this.nodes[i] = this.nodes[i].move(this.dir, () => {
-                    this.dir *= -1
+                    if (i == this.nodes.length - 1) {
+                        this.dir *= -1
+                    }
                 })
                 if (i == this.nodes.length - 1) {
                     stopcb()
