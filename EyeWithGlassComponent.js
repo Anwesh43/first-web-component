@@ -87,6 +87,8 @@ class EyeWithGlass {
         context.strokeStyle = '#0D47A1'
         context.save()
         context.translate(size/2, size)
+        EyeShape.draw(context, state.scales[0], state.scales[1])
+        GlassShape.draw(context, state.scales[2], state.scales[3])
         context.restore()
     }
 
