@@ -117,7 +117,23 @@ class EyeShape {
             context.stroke()
             context.beginPath()
             context.arc(0, 0, size/40 * scale1, 0, 2 * Math.PI)
+            context.fill()
             context.restore()
+        }
+    }
+}
+
+class GlassShape {
+    static draw(context, scale1, scale2) {
+        for (var i = 0; i < 2; i++) {
+            context.beginPath()
+            context.arc(size/4 * scale2, 0, size/10 * scale1, 0, 2 * Math.PI)
+            context.stroke()
+            context.beginPath()
+            context.moveTo(0, 0)
+            context.lineTo((size/4 - size/10) * scale2, 0)
+            context.stroke()
+            context.beginPath()
         }
     }
 }
