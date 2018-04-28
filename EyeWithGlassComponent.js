@@ -26,4 +26,32 @@ class EyeWithGlassComponent extends HTMLElement {
     }
 }
 
+class EWGState {
+    constructor() {
+        this.scales = [0, 0, 0]
+        this.prevScale = 0
+        this.dir = 0
+        this.j = 0
+    }
+
+    update(stopcb) {
+        this.scales[this.j] += this.dir * 0.1
+        if (Math.abs(this.scales[this.j] - this.prevScale) > 1) {
+            this.scales[this.j] = this.prevScale + this.dir
+            this.j += this.dir
+            if (this.j == this.scaes.length || this.j == -1) {
+                this.j -= this.dir
+                this.dir = 0
+            }
+        }
+    }
+
+    startUpdating(startcb) {
+        if (this.dir == 0) {
+            this.dir = 1 - 2 * this.prevScale
+            startcb()
+        }
+    }
+}
+
 customElements.define('eye-with-glass', EyeWithGlassComponent)
