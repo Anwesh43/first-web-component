@@ -6,6 +6,8 @@ class EyeWithGlassComponent extends HTMLElement {
         const shadow = this.attachShadow({mode:'open'})
         this.img = document.createElement('img')
         shadow.appendChild(this.img)
+        this.eyeWithGlass = new EyeWithGlass()
+        this.animator = new EWGAnimator()
     }
 
     render() {
@@ -15,13 +17,21 @@ class EyeWithGlassComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, size, size)
+        this.eyeWithGlass.draw(context)
         this.img.src = canvas.toDataURL()
     }
 
     connectedCallback() {
         this.render()
         this.img.onmousedown = () => {
-
+            this.eyeWithGlass.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.eyeWithGlass.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
         }
     }
 }
@@ -39,9 +49,11 @@ class EWGState {
         if (Math.abs(this.scales[this.j] - this.prevScale) > 1) {
             this.scales[this.j] = this.prevScale + this.dir
             this.j += this.dir
-            if (this.j == this.scaes.length || this.j == -1) {
+            if (this.j == this.scales.length || this.j == -1) {
                 this.j -= this.dir
                 this.dir = 0
+                this.prevScale = this.scales[this.j]
+                stopcb()
             }
         }
     }
@@ -86,9 +98,9 @@ class EyeWithGlass {
         context.lineCap = 'round'
         context.strokeStyle = '#0D47A1'
         context.save()
-        context.translate(size/2, size)
-        EyeShape.draw(context, state.scales[0], state.scales[1])
-        GlassShape.draw(context, state.scales[2], state.scales[3])
+        context.translate(size/2, size/2)
+        EyeShape.draw(context, this.state.scales[0], this.state.scales[1])
+        GlassShape.draw(context, this.state.scales[2], this.state.scales[3])
         context.restore()
     }
 
@@ -103,12 +115,12 @@ class EyeWithGlass {
 
 class EyeShape {
     static draw(context, scale1, scale2) {
-        for (var i = 0; i < 2; i++) {
+        for (var j = 0; j < 2; j++) {
             context.save()
-            context.translate(size/4 * scale2 * (1 - 2 * i), 0)
+            context.translate(size/4 * scale2 * (1 - 2 * j), 0)
             context.beginPath()
             for (var i = 0; i <= 360; i++) {
-                const x = (size/15) * Math.cos(i * Math.PI/180), y = (size/25) * Math.sin(i * Math.PI/180) * scale1
+                const x = (size/20) * Math.cos(i * Math.PI/180) * scale1, y = (size/30) * Math.sin(i * Math.PI/180) * scale1
                 if (i == 0) {
                     context.moveTo(x, y)
                 }
@@ -118,7 +130,7 @@ class EyeShape {
             }
             context.stroke()
             context.beginPath()
-            context.arc(0, 0, size/40 * scale1, 0, 2 * Math.PI)
+            context.arc(0, 0, size/50 * scale1, 0, 2 * Math.PI)
             context.fill()
             context.restore()
         }
@@ -129,11 +141,11 @@ class GlassShape {
     static draw(context, scale1, scale2) {
         for (var i = 0; i < 2; i++) {
             context.beginPath()
-            context.arc(size/4 * scale2, 0, size/10 * scale1, 0, 2 * Math.PI)
+            context.arc(size/4 * scale2 * (1 - 2 * i), 0, size/10 * scale1, 0, 2 * Math.PI)
             context.stroke()
             context.beginPath()
             context.moveTo(0, 0)
-            context.lineTo((size/4 - size/10) * scale2, 0)
+            context.lineTo((size/4 - size/10) * scale2 * (1 - 2 * i), 0)
             context.stroke()
             context.beginPath()
         }
