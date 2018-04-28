@@ -28,7 +28,7 @@ class EyeWithGlassComponent extends HTMLElement {
 
 class EWGState {
     constructor() {
-        this.scales = [0, 0, 0]
+        this.scales = [0, 0, 0, 0]
         this.prevScale = 0
         this.dir = 0
         this.j = 0
@@ -85,6 +85,9 @@ class EyeWithGlass {
         context.lineWidth = size/32
         context.lineCap = 'round'
         context.strokeStyle = '#0D47A1'
+        context.save()
+        context.translate(size/2, size)
+        context.restore()
     }
 
     update(stopcb) {
@@ -93,6 +96,29 @@ class EyeWithGlass {
 
     startUpdating(startcb) {
         this.state.startUpdating(startcb)
+    }
+}
+
+class EyeShape {
+    static draw(context, scale1, scale2) {
+        for (var i = 0; i < 2; i++) {
+            context.save()
+            context.translate(size/4 * scale2 * (1 - 2 * i), 0)
+            context.beginPath()
+            for (var i = 0; i <= 360; i++) {
+                const x = (size/15) * Math.cos(i * Math.PI/180), y = (size/25) * Math.sin(i * Math.PI/180) * scale1
+                if (i == 0) {
+                    context.moveTo(x, y)
+                }
+                else {
+                    context.lineTo(x, y)
+                }
+            }
+            context.stroke()
+            context.beginPath()
+            context.arc(0, 0, size/40 * scale1, 0, 2 * Math.PI)
+            context.restore()
+        }
     }
 }
 
