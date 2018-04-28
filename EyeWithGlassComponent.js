@@ -76,4 +76,24 @@ class EWGAnimator {
     }
 }
 
+class EyeWithGlass {
+    constructor() {
+        this.state = new EWGState()
+    }
+
+    draw(context) {
+        context.lineWidth = size/32
+        context.lineCap = 'round'
+        context.strokeStyle = '#0D47A1'
+    }
+
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
+
 customElements.define('eye-with-glass', EyeWithGlassComponent)
