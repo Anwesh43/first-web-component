@@ -6,6 +6,7 @@ class DoubleSidedLinkedWaveComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode: 'open'})
         shadow.appendChild(this.img)
+        this.doubleSidedLinkedWave = new DoubleSidedLinkedWave()
     }
 
     render() {
@@ -15,6 +16,7 @@ class DoubleSidedLinkedWaveComponent extends HTMLElement {
         const context = canvas.getContext('2d')
         context.fillStyle = '#212121'
         context.fillRect(0, 0, w, h)
+        this.doubleSidedLinkedWave.draw(context)
         this.img.src = canvas.toDataURL()
     }
 
