@@ -7,6 +7,7 @@ class DoubleSidedLinkedWaveComponent extends HTMLElement {
         const shadow = this.attachShadow({mode: 'open'})
         shadow.appendChild(this.img)
         this.doubleSidedLinkedWave = new DoubleSidedLinkedWave()
+        this.animator = new DSLAnimator()
     }
 
     render() {
@@ -22,6 +23,16 @@ class DoubleSidedLinkedWaveComponent extends HTMLElement {
 
     connectedCallback() {
         this.render()
+        this.img.onmousedown  = () => {
+            this.doubleSidedLinkedWave.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.doubleSidedLinkedWave.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 
