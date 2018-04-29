@@ -7,7 +7,7 @@ class DoubleSidedLinkedWaveComponent extends HTMLElement {
         const shadow = this.attachShadow({mode: 'open'})
         shadow.appendChild(this.img)
         this.doubleSidedLinkedWave = new DoubleSidedLinkedWave()
-        this.animator = new DSLAnimator()
+        this.animator = new DSWLAnimator()
     }
 
     render() {
@@ -66,20 +66,20 @@ class DSWLState {
     }
 }
 
-class DSLNode {
+class DSWLNode {
     constructor(i) {
         this.i = 0
         if (i) {
             this.i = i
         }
-        this.state = new DSLState()
+        this.state = new DSWLState()
         this.addNeighbor()
     }
     addNeighbor() {
         if (this.i < NODES - 1) {
-            const NODE = new DSLNode(this.i+1)
+            const NODE = new DSWLNode(this.i+1)
             this.next = NODE
-            NODE.prev = this.next
+            NODE.prev = this
             NODE.addNeighbor()
         }
     }
@@ -98,7 +98,8 @@ class DSLNode {
             context.translate(-size/2, 0)
             context.beginPath()
             context.moveTo(size2 + size3, -size2 + size3)
-            context.lineTo(size1+size2, -size1 + size2)
+            context.lineTo(size1 + size3, -size1 + size3)
+            context.lineTo(size1 + size2, -size1 + size2)
             context.stroke()
             context.restore()
             context.restore()
@@ -129,7 +130,7 @@ class DSLNode {
 
 class DoubleSidedLinkedWave {
     constructor() {
-        this.curr = new DSLNode()
+        this.curr = new DSWLNode()
         this.dir = 1
     }
 
@@ -151,7 +152,7 @@ class DoubleSidedLinkedWave {
     }
 }
 
-class DSLAnimator {
+class DSWLAnimator {
 
     constructor() {
         this.animated = false
