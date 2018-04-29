@@ -72,6 +72,9 @@ class DSLNode {
     }
     draw(context) {
         const size = w / NODES
+        context.strokeStyle = '#2ecc71'
+        context.lineWidth = Math.min(w, h)/60
+        context.lineCap = 'round'
         context.save()
         context.translate(this.i * size + size/2, h/2)
         const size1 = size/2 * this.state.scales[0], size2 = size/2 * this.state.scales[1], size3 = size/2 * this.state.scales[2]
@@ -108,6 +111,30 @@ class DSLNode {
         }
         cb()
         return this
+    }
+}
+
+class DoubleSidedLinkedWave {
+    constructor() {
+        this.curr = new DSLNode()
+        this.dir = 1
+    }
+
+    draw(context) {
+        this.curr.draw(context)
+    }
+
+    update(stopcb) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir*=-1
+            })
+            stopcb()
+        })
+    }
+
+    startUpdating(startcb) {
+        this.curr.startUpdating(startcb)
     }
 }
 
