@@ -1,4 +1,4 @@
-const w = window.innerWidth, h = window.innerHeight
+const w = window.innerWidth, h = window.innerHeight, NODES = 5
 class DoubleSidedLinkedWaveComponent extends HTMLElement {
 
     constructor() {
@@ -50,6 +50,64 @@ class DSWLState {
             this.dir = 1 - 2 * this.prevScale
             startcb()
         }
+    }
+}
+
+class DSLNode {
+    constructor(i) {
+        this.i = 0
+        if (i) {
+            this.i = i
+        }
+        this.state = new DSLState()
+        this.addNeighbor()
+    }
+    addNeighbor() {
+        if (this.i < NODES - 1) {
+            const NODE = new DSLNode(this.i+1)
+            this.next = NODE
+            NODE.prev = this.next
+            NODE.addNeighbor()
+        }
+    }
+    draw(context) {
+        const size = w / NODES
+        context.save()
+        context.translate(this.i * size + size/2, h/2)
+        const size1 = size/2 * this.state.scales[0], size2 = size/2 * this.state.scales[1], size3 = size/2 * this.state.scales[2]
+        for (var i = 0; i < 2; i++) {
+            context.save()
+            context.scale(1, 1 - 2 * i)
+            context.save()
+            context.translate(-size/2, 0)
+            context.beginPath()
+            context.moveTo(size2 + size3, -size2 + size3)
+            context.lineTo(size1+size2, -size1 + size2)
+            context.stroke()
+            context.restore()
+            context.restore()
+        }
+        context.restore()
+    }
+
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+
+    getNext(dir, cb) {
+        var curr = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
     }
 }
 
