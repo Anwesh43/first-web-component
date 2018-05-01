@@ -108,7 +108,6 @@ class TCBNode {
     }
 
     drawCircle(context, scale) {
-        console.log(scale)
         context.beginPath()
         context.arc(0, 0, r * scale, 0, 2 * Math.PI)
         context.fill()
@@ -120,7 +119,8 @@ class TCBNode {
         context.lineWidth = Math.min(w, h)/60
         context.lineCap = 'round'
         var circScale = scale
-        if (!scale) {
+        console.log(scale)
+        if (circScale == undefined) {
             circScale = 1 - this.state.scales[0]
         }
         console.log(circScale)
