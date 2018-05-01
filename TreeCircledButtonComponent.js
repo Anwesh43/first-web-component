@@ -6,6 +6,8 @@ class TreeCircledButtonComponent extends HTMLElement {
         this.img = document.createElement('img')
         const shadow = this.attachShadow({mode : 'open'})
         shadow.appendChild(this.img)
+        this.tcb = new TreeCiecledButton()
+        this.animator = new TCBAnimator()
     }
 
     render() {
@@ -20,6 +22,16 @@ class TreeCircledButtonComponent extends HTMLElement {
 
     connectedCallback() {
         this.render()
+        this.img.onmousedown = () => {
+            this.tcb.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.tcb.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 
