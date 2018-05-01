@@ -1,4 +1,4 @@
-const w = window.innerWidth, h = window.innerHeight,r = Math.min(w, h)/10, size = Math.min(w, h)/3
+const w = window.innerWidth, h = window.innerHeight,r = Math.min(w, h)/20, size = Math.min(w, h)/7, n = 2
 
 class TreeCircledButtonComponent extends HTMLElement {
     constructor() {
@@ -72,6 +72,53 @@ class TCBAnimator {
             this.animated = false
             clearInterval(this.interval)
         }
+    }
+}
+
+class TCBNode {
+    constructor(i) {
+        this.state = new TCBState()
+        this.neighbors = []
+        this.i = i
+        this.addNeighbors()
+    }
+
+    addNeighbors() {
+        if (this.i < n - 1) {
+
+            for (var i = 0; i < 6; i++) {
+                this.neighbors.push(new TCBNode(this.i + 1))
+            }
+        }
+    }
+
+    drawCircle(context, scale) {
+        context.beginPath()
+        context.arc(0, 0, r * scale, 0, 2 * Math.PI)
+        context.fill()
+    }
+
+    draw(context) {
+        this.drawCircle(context, 1 - this.state.scales[0])
+        this.neighbors.forEach((neighbor, index) => {
+            const deg = (2 * Math.PI)/this.neighbors.length
+            context.beginPath()
+            context.moveTo(size * this.state.scales[1], 0)
+            context.lineTo(size * this.state.scales[0], 0)
+            context.stroke()
+            context.save()
+            context.rotate(deg)
+            neighbor.drawCircle()
+            context.restore()
+        })
+    }
+
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
     }
 }
 
