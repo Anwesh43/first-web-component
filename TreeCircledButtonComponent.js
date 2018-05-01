@@ -98,8 +98,12 @@ class TCBNode {
         context.fill()
     }
 
-    draw(context) {
-        this.drawCircle(context, 1 - this.state.scales[0])
+    draw(context, scale) {
+        var circScale = scale
+        if (scale) {
+            circScale = 1 - this.state.scales[0]
+        }
+        this.drawCircle(context, circScale)
         this.neighbors.forEach((neighbor, index) => {
             const deg = (2 * Math.PI)/this.neighbors.length
             context.beginPath()
@@ -108,9 +112,26 @@ class TCBNode {
             context.stroke()
             context.save()
             context.rotate(deg)
-            neighbor.drawCircle()
+            neighbor.draw(context, this.state.scales[1])
             context.restore()
         })
+    }
+
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+}
+
+class TreeCircledButton {
+    constructor() {
+        this.curr = new TCBNode(0)
+    }
+    draw(context) {
+        this.curr.draw(context)
     }
 
     update(stopcb) {
