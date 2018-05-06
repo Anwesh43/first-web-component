@@ -172,3 +172,5 @@ class RBLL {
         this.curr.startUpdating(startcb)
     }
 }
+
+customElements.define('rbll-comp', RotatingBallLinkedLineComponent)
