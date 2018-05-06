@@ -11,6 +11,7 @@ class RotatingBallLinkedLineComponent extends HTMLElement {
 
     connectedCallback() {
         this.render()
+        this.handleTap()
     }
 
     render() {
@@ -25,6 +26,7 @@ class RotatingBallLinkedLineComponent extends HTMLElement {
     }
 
     handleTap() {
+        console.log("tapped")
         this.img.onmousedown = () => {
             this.rbll.startUpdating(() => {
                 this.animator.start(() => {
@@ -48,13 +50,14 @@ class RBLLState {
 
     update(stopcb) {
         this.scales[this.j] += 0.1 * this.dir
+        console.log(this.scales)
         if (Math.abs(this.scales[this.j] - this.prevScale) > 1) {
             this.scales[this.j] = this.prevScale + this.dir
             this.j += this.dir
             if (this.j == this.scales.length || this.j == -1) {
                 this.j -= this.dir
                 this.dir = 0
-                this.scales[this.j] = this.prevScale
+                this.prevScale = this.scales[this.j]
                 stopcb()
             }
         }
@@ -113,6 +116,7 @@ class RBLLNode {
     }
 
     startUpdating(startcb) {
+        console.log(this.state)
         this.state.startUpdating(startcb)
     }
 
@@ -120,16 +124,16 @@ class RBLLNode {
         const size = w / RBLL_NODES
         const deg = -45 + 90 * this.state.scales[2]
         context.save()
-        context.translate(size/2, h/2 + size/2)
+        context.translate(this.i * size + size/2, h/2 + size/2)
         context.rotate(deg * Math.PI/180)
         context.save()
         context.translate(0, -size/2 * Math.sqrt(2))
         context.beginPath()
-        context.arc(0, 0, size/15 * (this.state.scales[0] + 1 - this.state.scales[4]), 0, 2 * Math.PI)
+        context.arc(0, 0, size/15 * (this.state.scales[0] * (1 - this.state.scales[4])), 0, 2 * Math.PI)
         context.fill()
         context.beginPath()
         context.moveTo(0, 0)
-        context.lineTo(0, -size/2 * Math.sqrt(2) * (this.state.scales[1] + 1 - this.state.scales[3]))
+        context.lineTo(0, size/2 * Math.sqrt(2) * (this.state.scales[1] * (1 - this.state.scales[3])))
         context.stroke()
         context.restore()
         context.restore()
@@ -156,7 +160,12 @@ class RBLL {
     }
 
     draw(context) {
-
+        const color = '#ec349f'
+        context.strokeStyle = color
+        context.fillStyle = color
+        context.lineWidth = Math.min(w, h) / 130
+        context.lineCap = 'round'
+        this.curr.draw(context)
     }
 
     update(stopcb) {
