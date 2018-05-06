@@ -137,3 +137,28 @@ class RBLLNode {
         return this
     }
 }
+
+class RBLL {
+
+    constructor() {
+        this.curr = new RBLLNode()
+        this.dir = 1
+    }
+
+    draw(context) {
+
+    }
+
+    update(stopcb) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir *= -1
+            })
+            stopcb()
+        })
+    }
+
+    startUpdating(startcb) {
+        this.curr.startUpdating(startcb)
+    }
+}
