@@ -79,3 +79,61 @@ class RBLLAnimator {
         }
     }
 }
+
+class RBLLNode {
+    constructor(i) {
+        this.state = new RBLLState()
+        this.i = 0
+        if (i) {
+            this.i = i
+        }
+        this.addNeighbor()
+    }
+
+    addNeighbor() {
+        if (this.i < RBLL_NODES - 1) {
+            const curr = new RBLLNode(this.i + 1)
+            this.next = curr
+            curr.prev = this
+        }
+    }
+
+    update(stopcb) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb) {
+        this.state.startUpdating(startcb)
+    }
+
+    draw(context) {
+        const size = w / RBLL_NODES
+        const deg = -45 + 90 * this.state.scales[2]
+        context.save()
+        context.translate(size/2, h/2 + size/2)
+        context.rotate(deg * Math.PI/180)
+        context.save()
+        context.translate(0, -size/2 * Math.sqrt(2))
+        context.beginPath()
+        context.arc(0, 0, size/15 * (this.state.scales[0] + 1 - this.state.scales[4]), 0, 2 * Math.PI)
+        context.fill()
+        context.beginPath()
+        context.moveTo(0, 0)
+        context.lineTo(0, -size/2 * Math.sqrt(2) * (this.state.scales[1] + 1 - this.state.scales[3]))
+        context.stroke()
+        context.restore()
+        context.restore()
+    }
+
+    getNext(dir, cb) {
+        var curr = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
+    }
+}
